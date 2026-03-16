@@ -1,0 +1,16 @@
+{
+  "_comentario": "IDs de roles de Discord. Reemplazar con los IDs reales del servidor.",
+  "admin_ids": [753351944101298327],
+  "gestor_role_id": 1318850581506297906,
+  "narrador_role_id": 1318850547872301056,
+  "usuario_role_id": 1316007802329759758,
+  "visitante_role_id": 1316007802329759757,
+  "radio_intercom_role_id": 1482052795002781769,
+  "radio_canal_role_ids": {
+    "freq_1": 1450452558622752790,
+    "freq_2": 1450452581448028333,
+    "freq_3": 1450452604378284124,
+    "freq_4": 1450452355828154428,
+    "freq_5": 1450452516851417240
+  }
+}

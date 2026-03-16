@@ -1,0 +1,290 @@
+2026-03-13 18:43:37 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 18:43:37 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 18:43:37 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 18:43:37 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 18:43:37 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 18:43:38 | ERROR    | raisa.main                | Error cargando cog cogs.inventario: Extension 'cogs.inventario' raised an error: ImportError: cannot import name 'Repository' from 'db.repository' (D:\Desarrollo\PotatoStudios\S612\db\repository.py)
+Traceback (most recent call last):
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\ext\commands\bot.py", line 962, in _load_from_module_spec
+    spec.loader.exec_module(lib)  # type: ignore
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "<frozen importlib._bootstrap_external>", line 1023, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "D:\Desarrollo\PotatoStudios\S612\cogs\inventario.py", line 19, in <module>
+    from utils.validaciones import validar_capacidad_inventario, validar_slot_pouch
+  File "D:\Desarrollo\PotatoStudios\S612\utils\validaciones.py", line 13, in <module>
+    from db.repository import Repository
+ImportError: cannot import name 'Repository' from 'db.repository' (D:\Desarrollo\PotatoStudios\S612\db\repository.py). Did you mean: 'repository'?
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Desarrollo\PotatoStudios\S612\main.py", line 96, in setup_hook
+    await self.load_extension(cog)
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\ext\commands\bot.py", line 1040, in load_extension
+    await self._load_from_module_spec(spec, name)
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\ext\commands\bot.py", line 965, in _load_from_module_spec
+    raise errors.ExtensionFailed(key, e) from e
+discord.ext.commands.errors.ExtensionFailed: Extension 'cogs.inventario' raised an error: ImportError: cannot import name 'Repository' from 'db.repository' (D:\Desarrollo\PotatoStudios\S612\db\repository.py)
+2026-03-13 18:43:38 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 18:43:38 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 18:43:38 | ERROR    | raisa.main                | Error cargando cog cogs.vehiculos: Extension 'cogs.vehiculos' raised an error: ImportError: cannot import name 'Repository' from 'db.repository' (D:\Desarrollo\PotatoStudios\S612\db\repository.py)
+Traceback (most recent call last):
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\ext\commands\bot.py", line 962, in _load_from_module_spec
+    spec.loader.exec_module(lib)  # type: ignore
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "<frozen importlib._bootstrap_external>", line 1023, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "D:\Desarrollo\PotatoStudios\S612\cogs\vehiculos.py", line 24, in <module>
+    from utils.validaciones import (
+        validar_municion, validar_capacidad_vehiculo, validar_transferencia_municion
+    )
+  File "D:\Desarrollo\PotatoStudios\S612\utils\validaciones.py", line 13, in <module>
+    from db.repository import Repository
+ImportError: cannot import name 'Repository' from 'db.repository' (D:\Desarrollo\PotatoStudios\S612\db\repository.py). Did you mean: 'repository'?
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Desarrollo\PotatoStudios\S612\main.py", line 96, in setup_hook
+    await self.load_extension(cog)
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\ext\commands\bot.py", line 1040, in load_extension
+    await self._load_from_module_spec(spec, name)
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\ext\commands\bot.py", line 965, in _load_from_module_spec
+    raise errors.ExtensionFailed(key, e) from e
+discord.ext.commands.errors.ExtensionFailed: Extension 'cogs.vehiculos' raised an error: ImportError: cannot import name 'Repository' from 'db.repository' (D:\Desarrollo\PotatoStudios\S612\db\repository.py)
+2026-03-13 18:43:39 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 18:43:39 | INFO     | raisa.main                | Slash commands sincronizados.
+2026-03-13 18:43:42 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 19:00:39 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 19:00:39 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 19:00:39 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 19:00:39 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 19:00:39 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 19:00:39 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 19:00:39 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 19:00:39 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 19:00:39 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 19:00:39 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 19:00:40 | INFO     | raisa.main                | Slash commands sincronizados.
+2026-03-13 19:00:43 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 19:08:47 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 19:08:47 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 19:08:47 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 19:08:47 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 19:08:47 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 19:08:47 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 19:08:47 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 19:08:47 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 19:08:47 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 19:08:47 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 19:08:47 | INFO     | raisa.main                | Slash commands anteriores borrados del árbol local.
+2026-03-13 19:08:47 | INFO     | raisa.main                | Slash commands sincronizados: 0 comando(s) registrado(s).
+2026-03-13 19:08:50 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 19:11:43 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 19:11:43 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 19:11:43 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 19:11:43 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 19:11:43 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 19:11:43 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 19:11:43 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 19:11:43 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 19:11:43 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 19:11:43 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 19:11:45 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 19:11:48 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 19:37:16 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 19:37:16 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 19:37:16 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 19:37:16 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 19:37:16 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 19:37:16 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 19:37:16 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 19:37:16 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 19:37:16 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 19:37:16 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 19:37:17 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 19:37:19 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 19:47:18 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 19:47:18 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 19:47:18 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 19:47:18 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 19:47:18 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 19:47:18 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 19:47:18 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 19:47:18 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 19:47:18 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 19:47:18 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 19:47:19 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 19:47:22 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 19:54:15 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 19:54:15 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 19:54:15 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 19:54:15 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 19:54:15 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 19:54:15 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 19:54:15 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 19:54:15 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 19:54:15 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 19:54:15 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 19:54:15 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 19:54:20 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 19:55:55 | INFO     | raisa.registro            | Avatar guardado para user_id=1296353896934936660 en data\characters\1296353896934936660\avatar.png
+2026-03-13 20:21:08 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 20:21:08 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 20:21:08 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 20:21:08 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 20:21:08 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 20:21:08 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 20:21:08 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 20:21:08 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 20:21:08 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 20:21:08 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 20:21:08 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 20:21:11 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 20:22:36 | INFO     | raisa.registro            | Avatar guardado para user_id=1296353896934936660 en data\characters\1296353896934936660\avatar.png
+2026-03-13 20:22:51 | ERROR    | raisa.registro            | Error al crear personaje para 1296353896934936660: CHECK constraint failed: psicotecnico IN ('Apto','Apto, pero pendejo')
+2026-03-13 20:24:19 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 20:24:19 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 20:24:19 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 20:24:19 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 20:24:19 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 20:24:19 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 20:24:19 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 20:24:19 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 20:24:19 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 20:24:19 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 20:24:20 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 20:24:22 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 20:32:42 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 20:32:42 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 20:32:42 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 20:32:42 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 20:32:42 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 20:32:42 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 20:32:42 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 20:32:42 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 20:32:42 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 20:32:42 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 20:32:42 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 20:32:45 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 20:36:24 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 20:36:24 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 20:36:24 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 20:36:24 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 20:36:24 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 20:36:24 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 20:36:24 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 20:36:24 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 20:36:24 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 20:36:24 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 20:36:25 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 20:36:27 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 20:37:47 | INFO     | raisa.registro            | Avatar guardado para user_id=1296353896934936660 en data\characters\1296353896934936660\avatar.png
+2026-03-13 20:45:37 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 20:45:37 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 20:45:37 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 20:45:37 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 20:45:37 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 20:45:37 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 20:45:37 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 20:45:37 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 20:45:37 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 20:45:37 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 20:45:38 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 20:45:40 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 20:46:49 | ERROR    | raisa.main                | Error en slash command 'activar': Command 'activar' raised an exception: OperationalError: no such column: timestamp
+Traceback (most recent call last):
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\app_commands\commands.py", line 858, in _do_call
+    return await self._callback(self.binding, interaction, **params)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Desarrollo\PotatoStudios\S612\utils\permisos.py", line 144, in wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Desarrollo\PotatoStudios\S612\cogs\eventos.py", line 65, in evento_activar
+    await self.repo.set_modo_evento("ON", interaction.user.id)
+  File "D:\Desarrollo\PotatoStudios\S612\db\repository.py", line 579, in set_estado_evento
+    await _run_in_executor(
+    ...<5 lines>...
+    )
+  File "D:\Desarrollo\PotatoStudios\S612\db\repository.py", line 134, in _run_in_executor
+    return await loop.run_in_executor(None, func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3312.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "D:\Desarrollo\PotatoStudios\S612\db\repository.py", line 154, in _execute
+    cur = conn.execute(query, params)
+sqlite3.OperationalError: no such column: timestamp
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\app_commands\tree.py", line 1302, in _call
+    await command._invoke_with_namespace(interaction, namespace)
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\app_commands\commands.py", line 884, in _invoke_with_namespace
+    return await self._do_call(interaction, transformed_values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\app_commands\commands.py", line 877, in _do_call
+    raise CommandInvokeError(self, e) from e
+discord.app_commands.errors.CommandInvokeError: Command 'activar' raised an exception: OperationalError: no such column: timestamp
+2026-03-13 21:01:52 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 21:03:17 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 21:03:17 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 21:03:17 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 21:03:17 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 21:03:17 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 21:03:17 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 21:03:17 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 21:03:17 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 21:03:17 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 21:03:17 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 21:03:17 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 21:03:20 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 21:04:03 | ERROR    | raisa.main                | Error en slash command 'activar': Command 'activar' raised an exception: OperationalError: no such column: timestamp
+Traceback (most recent call last):
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\app_commands\commands.py", line 858, in _do_call
+    return await self._callback(self.binding, interaction, **params)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Desarrollo\PotatoStudios\S612\utils\permisos.py", line 144, in wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Desarrollo\PotatoStudios\S612\cogs\eventos.py", line 65, in evento_activar
+    await self.repo.set_modo_evento("ON", interaction.user.id)
+  File "D:\Desarrollo\PotatoStudios\S612\db\repository.py", line 579, in set_estado_evento
+    await _run_in_executor(
+    ...<5 lines>...
+    )
+  File "D:\Desarrollo\PotatoStudios\S612\db\repository.py", line 134, in _run_in_executor
+    return await loop.run_in_executor(None, func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3312.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "D:\Desarrollo\PotatoStudios\S612\db\repository.py", line 154, in _execute
+    cur = conn.execute(query, params)
+sqlite3.OperationalError: no such column: timestamp
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\app_commands\tree.py", line 1302, in _call
+    await command._invoke_with_namespace(interaction, namespace)
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\app_commands\commands.py", line 884, in _invoke_with_namespace
+    return await self._do_call(interaction, transformed_values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pablo\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\discord\app_commands\commands.py", line 877, in _do_call
+    raise CommandInvokeError(self, e) from e
+discord.app_commands.errors.CommandInvokeError: Command 'activar' raised an exception: OperationalError: no such column: timestamp
+2026-03-13 21:07:31 | INFO     | raisa.db                  | Esquema aplicado desde schema.sql
+2026-03-13 21:07:31 | INFO     | raisa.db                  | Conexión SQLite establecida: D:\Desarrollo\PotatoStudios\S612\data\raisa.db (WAL)
+2026-03-13 21:07:31 | INFO     | raisa.main                | Base de datos inicializada correctamente.
+2026-03-13 21:07:31 | INFO     | raisa.main                | Cog cargado: cogs.eventos
+2026-03-13 21:07:31 | INFO     | raisa.main                | Cog cargado: cogs.economia
+2026-03-13 21:07:31 | INFO     | raisa.main                | Cog cargado: cogs.inventario
+2026-03-13 21:07:31 | INFO     | raisa.main                | Cog cargado: cogs.medico
+2026-03-13 21:07:31 | INFO     | raisa.main                | Cog cargado: cogs.radio
+2026-03-13 21:07:31 | INFO     | raisa.main                | Cog cargado: cogs.vehiculos
+2026-03-13 21:07:31 | INFO     | raisa.main                | Cog cargado: cogs.registro
+2026-03-13 21:07:31 | INFO     | raisa.main                | Slash commands sincronizados: 7 comando(s) registrado(s).
+2026-03-13 21:07:34 | INFO     | raisa.main                | RAISA operativa — Usuario: RAISA#7656 | ID: 1428659120583741613
+2026-03-13 21:08:50 | INFO     | raisa.eventos             | Evento-ON activado por user_id=1296353896934936660
+2026-03-13 21:09:00 | INFO     | raisa.eventos             | Evento-OFF activado por user_id=1296353896934936660

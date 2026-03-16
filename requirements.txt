@@ -1,0 +1,7 @@
+# RAISA — Dependencias del proyecto
+# Instalar con: pip install -r requirements.txt
+
+discord.py>=2.3.0
+python-dotenv>=1.0.0
+aiosqlite>=0.19.0
+Pillow>=10.0.0

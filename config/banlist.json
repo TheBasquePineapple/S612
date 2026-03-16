@@ -1,0 +1,8 @@
+{
+  "_comentario": "Lista de palabras prohibidas para nombres de personaje. Todo en minúsculas.",
+  "palabras": [
+    "hitler", "adolf", "stalin", "himmler", "mengele", "mussolini",
+    "negro", "puta", "puto", "mierda", "coño", "gilipollas",
+    "admin", "narrador", "gestor", "raisa", "fundacion", "scp"
+  ]
+}

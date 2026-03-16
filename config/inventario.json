@@ -1,0 +1,20 @@
+{
+  "_comentario": "Parámetros globales del sistema de inventario.",
+  "peso_maximo_kg": 40,
+  "volumen_maximo_unidades": 100,
+  "salarios": {
+    "1316007802329759758": 500,
+    "1318850547872301056": 750,
+    "1318850581506297906": 1000,
+    "753351944101298327": 1500
+  },
+  "categorias_tienda": [
+    "Armamento", "Munición", "Protecciones", "Uniformidad",
+    "Equipo médico", "Accesorios", "Electrónica", "Vehículos", "Miscelánea"
+  ],
+  "tipos_pouch": {
+    "simple": {"slots": 1, "multiplicador_capacidad": 1},
+    "dual":   {"slots": 2, "multiplicador_capacidad": 1},
+    "doble":  {"slots": 2, "multiplicador_capacidad": 2}
+  }
+}

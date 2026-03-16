@@ -1,0 +1,36 @@
+{
+  "_comentario": "Configuración del sistema de radio. channel_id = canal de Discord donde opera la frecuencia.",
+  "frecuencias": {
+    "freq_1": {
+      "nombre": "Frecuencia 30",
+      "channel_id": 1319597324065837097,
+      "role_id": 1450452558622752790
+    },
+    "freq_2": {
+      "nombre": "Frecuencia 35",
+      "channel_id": 14301535840451953640,
+      "role_id": 1450452581448028333
+    },
+    "freq_3": {
+      "nombre": "Frecuencia 40",
+      "channel_id": 1319597357892898816,
+      "role_id": 1450452604378284124
+    },
+    "freq_4": {
+      "nombre": "Frecuencia 80",
+      "channel_id": 1319597374301278248,
+      "role_id": 1450452355828154428
+    },
+    "freq_5": {
+      "nombre": "Frecuencia 120",
+      "channel_id": 1319597456136212582,
+      "role_id": 1450452516851417240
+    }
+  },
+  "intercom": {
+    "nombre": "Toda-Malla",
+    "channel_id": 1319597271402287155,
+    "role_id": 1482052795002781769
+  },
+  "avatar_default": "assets/radio/avatar_default.png"
+}
