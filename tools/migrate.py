@@ -136,62 +136,56 @@ def cmd_init(conn: sqlite3.Connection, dry_run: bool = False) -> None:
 ITEM_FIELDS = [
     "nombre", "descripcion", "categoria", "subcategoria",
     "peso_kg", "volumen_u",
-    "calibre", "tipo_arma",
-    "id_compatibilidad", "capacidad_cargador",
-    "slots_pouches", "nivel_proteccion",
-    "tipo_pouch", "slots_ocupa", "capacidad_pouch",
-    "es_hardpoint_item", "disponible_tienda", "precio_base", "imagen_url",
+    "calibre", "tipo_arma", "id_compatibilidad", "capacidad_cargador",
+    "slots_pouches", "nivel_proteccion", "tipo_pouch", "slots_ocupa", "capacidad_pouch",
+    "precio_base",
+    "codigo",          # ← NUEVO: código de catálogo único (ENT-001, CAL-001, etc.)
 ]
 
 
-def _upsert_item(conn: sqlite3.Connection, row: dict, dry_run: bool) -> int | None:
+def _upsert_item(conn: sqlite3.Connection, row: dict, dry_run: bool):
     """
     Inserta o actualiza un ítem en la tabla 'items'.
-    La clave de upsert es (nombre, categoria): si ya existe un ítem con ese
-    nombre y categoría, actualiza sus propiedades sin crear duplicado.
+    Clave de upsert: nombre + categoria.
+    Si el JSON incluye 'codigo', se persiste; si no, se deja NULL.
 
     Args:
         conn   : Conexión SQLite.
-        row    : Diccionario con datos del ítem (del JSON de seeds).
-        dry_run: Si True, no ejecuta ninguna escritura.
+        row    : Diccionario con datos del ítem.
+        dry_run: Si True, no escribe.
 
     Returns:
-        ID del registro insertado/actualizado, o None en dry_run.
+        ID del registro, o None en dry_run.
     """
-    # Filtrar claves que empiecen por '_' (comentarios editoriales en JSON)
-    data = {k: v for k, v in row.items() if not k.startswith("_")}
+    import json as _json
+    data   = {k: v for k, v in row.items() if not k.startswith("_")}
+    fields = {k: data.get(k) for k in ITEM_FIELDS if k in data}
 
-    # Extraer solo campos válidos de la tabla
-    fields = {k: data.get(k) for k in ITEM_FIELDS if k in data or k in ITEM_FIELDS}
-    # Asegurar campos obligatorios
     for required in ("nombre", "categoria"):
         if not fields.get(required):
-            log.warning(f"  ⚠  Registro omitido — falta campo '{required}': {data}")
+            import logging; logging.getLogger("migrate").warning(
+                f"  ⚠  Registro omitido — falta campo '{required}': {data}"
+            )
             return None
 
-    # Construir SQL de upsert
-    columns = list(fields.keys())
+    columns      = list(fields.keys())
     placeholders = ", ".join("?" for _ in columns)
-    updates = ", ".join(f"{c}=excluded.{c}" for c in columns if c not in ("nombre", "categoria"))
+    values       = [fields[k] for k in columns]
 
-    sql = f"""
-        INSERT INTO items ({', '.join(columns)})
-        VALUES ({placeholders})
-        ON CONFLICT(nombre) DO UPDATE SET {updates}
-    """
-    # NOTA: ON CONFLICT(nombre) requiere índice UNIQUE. Añadido abajo en schema
-    # si no existe. Usamos un enfoque alternativo: check + insert/update manual.
     sql_check  = "SELECT id FROM items WHERE nombre = ? AND categoria = ?"
     sql_insert = f"INSERT INTO items ({', '.join(columns)}) VALUES ({placeholders})"
-    sql_update = f"UPDATE items SET {', '.join(f'{c}=?' for c in columns)} WHERE nombre=? AND categoria=?"
-
-    values = [fields.get(k) for k in columns]
+    sql_update = (
+        f"UPDATE items SET {', '.join(f'{c}=?' for c in columns)} "
+        "WHERE nombre=? AND categoria=?"
+    )
 
     if dry_run:
-        log.info(f"  [DRY] UPSERT item: {fields['nombre']} ({fields['categoria']})")
+        import logging; logging.getLogger("migrate").info(
+            f"  [DRY] UPSERT item: {fields['nombre']} ({fields.get('codigo','—')})"
+        )
         return None
 
-    cur = conn.execute(sql_check, (fields["nombre"], fields["categoria"]))
+    cur      = conn.execute(sql_check, (fields["nombre"], fields["categoria"]))
     existing = cur.fetchone()
     if existing:
         conn.execute(sql_update, values + [fields["nombre"], fields["categoria"]])
@@ -247,15 +241,24 @@ def cmd_seed_items(conn: sqlite3.Connection, dry_run: bool = False) -> dict[str,
 # ---------------------------------------------------------------------------
 
 VEHICLE_FIELDS = [
-    "nombre", "tipo", "subtipo", "asientos", "estado_general",
+    "nombre", "tipo", "subtipo",
+    "matricula",       # ← NUEVO: matrícula o código de registro
+    "asientos",        # total de plazas (escalar, mantener para compatibilidad)
+    "estado_general",
     "combustible_actual", "combustible_max", "consumo_por_km",
     "inv_peso_max_kg", "inv_volumen_max_u",
     "artillado", "permite_transferencia_mun", "activo",
     "creado_por",
+    # ELIMINADO: "ubicacion" — no existe en schema, se quitó de los seeds
 ]
 
 VEHICLE_JSON_FIELDS = [
-    "componentes", "municion_json", "hardpoints_json", "tripulacion_json",
+    "componentes",
+    "municion_json",
+    "hardpoints_json",
+    "tripulacion_json",
+    "asientos_json",         # ← NUEVO: {piloto, copiloto, artillero, comandante, pasajeros}
+    "contramedidas_json",    # ← NUEVO: {chaffs:{actual,max,min}, bengalas:{actual,max,min}}
 ]
 
 
@@ -357,73 +360,105 @@ def cmd_seed_vehiculos(conn: sqlite3.Connection, dry_run: bool = False) -> dict[
 # Comando: seed tienda
 # ---------------------------------------------------------------------------
 
-def cmd_seed_tienda(conn: sqlite3.Connection, dry_run: bool = False) -> int:
+def cmd_seed_tienda(conn, dry_run: bool = False) -> int:
     """
     Importa el catálogo de tienda desde seeds/tienda/catalogo.json.
-    Resuelve nombre_item → item_id contra la tabla 'items'.
-    Si un ítem no existe, emite advertencia y omite la entrada.
-
+    Resolución de item_id: busca primero por 'codigo_item', luego por 'nombre_item'.
+    Si ninguno resuelve, emite advertencia y omite la entrada.
+ 
     Args:
         conn   : Conexión SQLite.
         dry_run: Si True, simula sin escribir.
-
+ 
     Returns:
         Número de listados importados.
     """
-    catalog = load_json(SHOP_FILE)
-    listados = catalog.get("listados", [])
-
-    count = 0
+    import json as _json
+    import logging
+    log = logging.getLogger("migrate")
+ 
+    try:
+        catalog  = load_json(SHOP_FILE)
+        listados = catalog.get("listados", [])
+    except FileNotFoundError:
+        log.error(f"No se encontró {SHOP_FILE}")
+        return 0
+ 
+    count     = 0
     not_found: list[str] = []
-
+ 
     log.info(f"🏪  Procesando catálogo de tienda ({len(listados)} entradas)...")
-
+ 
     with conn:
         for entry in listados:
             if not isinstance(entry, dict):
                 continue
-            nombre = entry.get("nombre_item")
-            if not nombre:
-                continue   # es una entrada de sección (_seccion)
-
-            # Resolver item_id
-            cur = conn.execute("SELECT id, precio_base FROM items WHERE nombre = ?", (nombre,))
-            row = cur.fetchone()
-            if not row:
-                not_found.append(nombre)
-                log.warning(f"  ⚠  Ítem no encontrado en BBDD: '{nombre}' — omitido")
+            # Saltar entradas de sección (solo tienen _seccion)
+            if not entry.get("nombre_item") and not entry.get("codigo_item"):
                 continue
-
-            item_id    = row["id"]
-            precio     = entry.get("precio") or row["precio_base"]
-            stock      = entry.get("stock", -1)
-            activo     = 1 if entry.get("activo", True) else 0
-
+ 
+            nombre  = entry.get("nombre_item", "")
+            codigo  = entry.get("codigo_item", "")
+            row     = None
+ 
+            # Resolución prioritaria: codigo_item
+            if codigo:
+                cur = conn.execute(
+                    "SELECT id, precio_base FROM items WHERE codigo = ?", (codigo,)
+                )
+                row = cur.fetchone()
+ 
+            # Fallback: nombre_item (case-insensitive)
+            if row is None and nombre:
+                cur = conn.execute(
+                    "SELECT id, precio_base FROM items WHERE LOWER(nombre) = LOWER(?)",
+                    (nombre,)
+                )
+                row = cur.fetchone()
+ 
+            if row is None:
+                ref = codigo or nombre
+                not_found.append(ref)
+                log.warning(f"  ⚠  Ítem no resuelto: '{ref}' — omitido")
+                continue
+ 
+            item_id = row["id"]
+            precio  = entry.get("precio") or row["precio_base"]
+            stock   = entry.get("stock", -1)
+            activo  = 1 if entry.get("activo", True) else 0
+ 
             if dry_run:
-                log.info(f"  [DRY] UPSERT shop: {nombre} | precio={precio} | stock={stock}")
+                log.info(
+                    f"  [DRY] UPSERT shop: {codigo or nombre} | "
+                    f"precio={precio} | stock={stock}"
+                )
                 count += 1
                 continue
-
-            # Upsert: si ya existe listing para ese item_id, actualizar
-            cur = conn.execute("SELECT id FROM shop_listings WHERE item_id = ?", (item_id,))
+ 
+            cur = conn.execute(
+                "SELECT id FROM shop_listings WHERE item_id = ?", (item_id,)
+            )
             existing = cur.fetchone()
             if existing:
                 conn.execute(
                     "UPDATE shop_listings SET precio=?, stock=?, activo=? WHERE item_id=?",
-                    (precio, stock, activo, item_id)
+                    (precio, stock, activo, item_id),
                 )
             else:
                 conn.execute(
-                    "INSERT INTO shop_listings (item_id, precio, stock, activo) VALUES (?,?,?,?)",
-                    (item_id, precio, stock, activo)
+                    "INSERT INTO shop_listings (item_id, precio, stock, activo) "
+                    "VALUES (?,?,?,?)",
+                    (item_id, precio, stock, activo),
                 )
             count += 1
-
+ 
     log.info(f"    ✅  {count} listados {'simulados' if dry_run else 'importados'}")
     if not_found:
         log.warning(
-            f"    ⚠  {len(not_found)} ítems no resueltos (ejecuta 'seed items' primero): "
-            + ", ".join(not_found[:5]) + ("..." if len(not_found) > 5 else "")
+            f"    ⚠  {len(not_found)} ítems no resueltos "
+            f"(ejecuta 'seed items' primero): "
+            + ", ".join(not_found[:5])
+            + ("..." if len(not_found) > 5 else "")
         )
     return count
 
@@ -528,6 +563,9 @@ def build_parser() -> argparse.ArgumentParser:
     # init
     subparsers.add_parser("init", help="Aplica el esquema SQL sobre la BBDD")
 
+    # patch
+    subparsers.add_parser("patch", help="Aplica el schema_patch_v2.sql sobre la BBDD")
+
     # seed
     seed_parser = subparsers.add_parser("seed", help="Importa datos desde seeds/")
     seed_parser.add_argument(
@@ -558,6 +596,27 @@ def main() -> None:
     try:
         if args.command == "init":
             cmd_init(conn, dry_run=args.dry_run)
+
+        elif args.command == "patch":
+            patch_file = PROJECT_ROOT / "db" / "schema_patch_v2.sql"
+            if not patch_file.exists():
+                log.error(f"No se encontró {patch_file}")
+                sys.exit(1)
+            sql = patch_file.read_text(encoding="utf-8")
+            # Ejecutar cada sentencia por separado (ALTER TABLE no admite multi-statement)
+            for stmt in sql.split(";"):
+                stmt = stmt.strip()
+                if stmt and not stmt.startswith("--"):
+                    try:
+                        conn.execute(stmt)
+                    except sqlite3.OperationalError as e:
+                        # "duplicate column" es esperado si el patch ya se aplicó
+                        if "duplicate column" in str(e).lower():
+                            log.info(f"  ℹ  Ya aplicado: {stmt[:60]}...")
+                        else:
+                            raise
+            conn.commit()
+            log.info("✅  Patch v2 aplicado.")
 
         elif args.command == "seed":
             target = args.target

@@ -1,307 +1,796 @@
 {
-  "_comentario": "Catálogo inicial de tienda. Cada entrada referencia un ítem por nombre exacto del JSON de ítems. El script migrate.py resuelve el item_id real antes de insertar.",
+  "_comentario": "Catálogo de tienda. migrate.py resuelve item_id por 'codigo_item' (prioritario) o 'nombre_item' (fallback).",
   "_nota": "precio: null = usar precio_base del ítem. stock: -1 = ilimitado.",
-
   "listados": [
     {
-      "_seccion": "=== ARMAS ===",
-      "nombre_item": "M4A1",
+      "_seccion": "=== ARMAS PESADAS ==="
+    },
+    {
+      "nombre_item": "McMillan Tac-50",
+      "codigo_item": "ARM-H01",
       "precio": null,
-      "stock": 10,
+      "stock": 1,
       "activo": true
     },
     {
-      "nombre_item": "HK416 A5",
+      "nombre_item": "Barrett M82A3",
+      "codigo_item": "ARM-H02",
       "precio": null,
-      "stock": 5,
+      "stock": 1,
       "activo": true
     },
     {
-      "nombre_item": "AK-74M",
+      "nombre_item": "Panzerfaust 3",
+      "codigo_item": "ARM-H03",
       "precio": null,
-      "stock": 8,
+      "stock": 4,
       "activo": true
     },
     {
-      "nombre_item": "SCAR-H",
+      "nombre_item": "AT4",
+      "codigo_item": "ARM-H04",
+      "precio": null,
+      "stock": 6,
+      "activo": true
+    },
+    {
+      "nombre_item": "Instalaza C90",
+      "codigo_item": "ARM-H05",
+      "precio": null,
+      "stock": 6,
+      "activo": true
+    },
+    {
+      "_seccion": "=== AMETRALLADORAS ==="
+    },
+    {
+      "nombre_item": "M240",
+      "codigo_item": "ARM-A01",
       "precio": null,
       "stock": 3,
       "activo": true
     },
     {
-      "nombre_item": "Glock 17 Gen5",
+      "nombre_item": "M249 SAW",
+      "codigo_item": "ARM-A02",
       "precio": null,
-      "stock": 20,
+      "stock": 4,
       "activo": true
     },
     {
-      "nombre_item": "SIG P226",
+      "nombre_item": "FN Minimi 7.62",
+      "codigo_item": "ARM-A03",
+      "precio": null,
+      "stock": 3,
+      "activo": true
+    },
+    {
+      "nombre_item": "HK MG36",
+      "codigo_item": "ARM-A04",
+      "precio": null,
+      "stock": 4,
+      "activo": true
+    },
+    {
+      "_seccion": "=== RIFLES DE PRECISIÓN ==="
+    },
+    {
+      "nombre_item": "CheyTac M-200 Intervention",
+      "codigo_item": "ARM-PR01",
+      "precio": null,
+      "stock": 2,
+      "activo": true
+    },
+    {
+      "nombre_item": "Remington M24 SWS",
+      "codigo_item": "ARM-PR02",
+      "precio": null,
+      "stock": 3,
+      "activo": true
+    },
+    {
+      "_seccion": "=== RIFLES AUTOMÁTICOS ==="
+    },
+    {
+      "nombre_item": "HK 416A5",
+      "codigo_item": "ARM-RA01",
       "precio": null,
       "stock": 10,
       "activo": true
     },
     {
-      "nombre_item": "Beretta M9A3",
+      "nombre_item": "Steyr AUG A3",
+      "codigo_item": "ARM-RA02",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "nombre_item": "Colt M16A4",
+      "codigo_item": "ARM-RA03",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "nombre_item": "HK G36",
+      "codigo_item": "ARM-RA04",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "_seccion": "=== RIFLES DE TIRADOR DESIGNADO (DMR) ==="
+    },
+    {
+      "nombre_item": "HK 417",
+      "codigo_item": "ARM-D01",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "SR-25",
+      "codigo_item": "ARM-D02",
+      "precio": null,
+      "stock": 4,
+      "activo": true
+    },
+    {
+      "nombre_item": "MK-14 EBR",
+      "codigo_item": "ARM-D03",
+      "precio": null,
+      "stock": 4,
+      "activo": true
+    },
+    {
+      "nombre_item": "M110 SASS",
+      "codigo_item": "ARM-D04",
+      "precio": null,
+      "stock": 3,
+      "activo": true
+    },
+    {
+      "_seccion": "=== CARABINAS ==="
+    },
+    {
+      "nombre_item": "Daniel Defense MK18",
+      "codigo_item": "ARM-C01",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "nombre_item": "SR-15",
+      "codigo_item": "ARM-C02",
+      "precio": null,
+      "stock": 6,
+      "activo": true
+    },
+    {
+      "nombre_item": "Colt M4A1",
+      "codigo_item": "ARM-C03",
+      "precio": null,
+      "stock": 10,
+      "activo": true
+    },
+    {
+      "nombre_item": "HK G36C",
+      "codigo_item": "ARM-C04",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "_seccion": "=== ESCOPETAS ==="
+    },
+    {
+      "nombre_item": "SPAS 12",
+      "codigo_item": "ARM-ES01",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "Remington 870",
+      "codigo_item": "ARM-ES02",
+      "precio": null,
+      "stock": 6,
+      "activo": true
+    },
+    {
+      "nombre_item": "Mossberg 500",
+      "codigo_item": "ARM-ES03",
+      "precio": null,
+      "stock": 6,
+      "activo": true
+    },
+    {
+      "_seccion": "=== SUBFUSILES / PDW ==="
+    },
+    {
+      "nombre_item": "TDI Kriss Vector Gen II",
+      "codigo_item": "ARM-SF01",
+      "precio": null,
+      "stock": 4,
+      "activo": true
+    },
+    {
+      "nombre_item": "HK MP7",
+      "codigo_item": "ARM-SF02",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "HK UMP",
+      "codigo_item": "ARM-SF03",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "FN P90",
+      "codigo_item": "ARM-SF04",
+      "precio": null,
+      "stock": 4,
+      "activo": true
+    },
+    {
+      "_seccion": "=== PISTOLAS ==="
+    },
+    {
+      "nombre_item": "FN Five-seveN",
+      "codigo_item": "ARM-PS01",
+      "precio": null,
+      "stock": 10,
+      "activo": true
+    },
+    {
+      "nombre_item": "Sig Sauer P320",
+      "codigo_item": "ARM-PS02",
       "precio": null,
       "stock": 15,
       "activo": true
     },
     {
+      "nombre_item": "Glock 45",
+      "codigo_item": "ARM-PS03",
+      "precio": null,
+      "stock": 15,
+      "activo": true
+    },
+    {
+      "nombre_item": "HK USP",
+      "codigo_item": "ARM-PS04",
+      "precio": null,
+      "stock": 10,
+      "activo": true
+    },
+    {
+      "nombre_item": "Colt M45A1",
+      "codigo_item": "ARM-PS05",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "_seccion": "=== TERCIARIAS ==="
+    },
+    {
       "nombre_item": "Cuchillo de combate Ka-Bar",
+      "codigo_item": "ARM-T01",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
-      "_seccion": "=== MUNICIÓN ===",
-      "nombre_item": "Cargador STANAG 30rds 5.56",
+      "nombre_item": "Pistola señalizadora (bengala)",
+      "codigo_item": "ARM-T02",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
-      "nombre_item": "Magpul PMAG 30rds 5.56",
+      "_seccion": "=== MUNICIÓN — CARTUCHOS ==="
+    },
+    {
+      "nombre_item": "Munición de Entrenamiento",
+      "codigo_item": "ENT-001",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
-      "nombre_item": "Cargador AK74 30rds 5.45",
+      "nombre_item": "5.56×45mm NATO",
+      "codigo_item": "CAL-001",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
-      "nombre_item": "Cargador SCAR-H 20rds 7.62",
+      "nombre_item": "7.62×51mm NATO",
+      "codigo_item": "CAL-002",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
-      "nombre_item": "Cargador Glock 17rds 9mm",
+      "nombre_item": "9×19mm Parabellum",
+      "codigo_item": "CAL-003",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
-      "nombre_item": "Cargador SIG P226 15rds 9mm",
+      "nombre_item": ".45 ACP",
+      "codigo_item": "CAL-004",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
-      "nombre_item": "Granada de fragmentación M67",
+      "nombre_item": "5.7×28mm",
+      "codigo_item": "CAL-007",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "4.6×30mm",
+      "codigo_item": "CAL-008",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "#2 Buckshot",
+      "codigo_item": "CAL-009",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "#1 Buckshot",
+      "codigo_item": "CAL-010",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "#00 Buckshot",
+      "codigo_item": "CAL-011",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "1oz Slug",
+      "codigo_item": "CAL-012",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "12.7×99mm OTAN",
+      "codigo_item": "CAL-013",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": ".375 CheyTac",
+      "codigo_item": "CAL-014",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": ".338 Lapua Magnum",
+      "codigo_item": "CAL-015",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "_seccion": "=== MUNICIÓN — OPERACIONAL ==="
+    },
+    {
+      "nombre_item": "Munición Operacional",
+      "codigo_item": "REG-001",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Munición Especializada",
+      "codigo_item": "REG-002",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Munición Anti-biomasa (Fósforo)",
+      "codigo_item": "REG-003",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Munición Perforante Blindaje",
+      "codigo_item": "REG-004",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Munición Trazadora",
+      "codigo_item": "REG-005",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "_seccion": "=== MUNICIÓN — EXPLOSIVOS Y GRANADAS ==="
+    },
+    {
+      "nombre_item": "C4",
+      "codigo_item": "EXP-001",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "Semtex",
+      "codigo_item": "EXP-002",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "Granada Aturdidora",
+      "codigo_item": "GRN-001",
+      "precio": null,
+      "stock": 20,
+      "activo": true
+    },
+    {
+      "nombre_item": "40mm Humo",
+      "codigo_item": "LGR-001",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "40mm Explosivo",
+      "codigo_item": "LGR-002",
       "precio": null,
       "stock": 30,
       "activo": true
     },
     {
-      "nombre_item": "Granada de humo (color rojo)",
+      "nombre_item": "40mm Entrenamiento",
+      "codigo_item": "LGR-003",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
-      "nombre_item": "Granada de humo (color verde)",
+      "_seccion": "=== MUNICIÓN — AT/VEHÍCULO ==="
+    },
+    {
+      "nombre_item": "PzF 3",
+      "codigo_item": "ATG-003",
+      "precio": null,
+      "stock": 4,
+      "activo": true
+    },
+    {
+      "nombre_item": "PzF 3-IT",
+      "codigo_item": "ATG-004",
+      "precio": null,
+      "stock": 2,
+      "activo": true
+    },
+    {
+      "nombre_item": "PzF 3 Bunkerfaust",
+      "codigo_item": "ATG-005",
+      "precio": null,
+      "stock": 2,
+      "activo": true
+    },
+    {
+      "nombre_item": "PzF 3 Entrenamiento",
+      "codigo_item": "ATG-006",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
-      "nombre_item": "Granada aturdidora M84",
-      "precio": null,
-      "stock": 20,
-      "activo": true
+      "_seccion": "=== CASCOS ==="
     },
     {
-      "_seccion": "=== PROTECCIONES ===",
-      "nombre_item": "Chaleco MOLLE ligero (6 slots)",
-      "precio": null,
-      "stock": 15,
-      "activo": true
-    },
-    {
-      "nombre_item": "Chaleco MOLLE completo (10 slots)",
+      "nombre_item": "MSA ACH TC-2000",
+      "codigo_item": "CC009",
       "precio": null,
       "stock": 10,
       "activo": true
     },
     {
-      "nombre_item": "Chaleco balístico NIJ IIA (4 slots)",
-      "precio": null,
-      "stock": 8,
-      "activo": true
-    },
-    {
-      "nombre_item": "Portaplacas Crye JPC 2.0 (8 slots)",
-      "precio": null,
-      "stock": 5,
-      "activo": true
-    },
-    {
-      "nombre_item": "Portaplacas MBAV (10 slots)",
-      "precio": null,
-      "stock": 5,
-      "activo": true
-    },
-    {
-      "nombre_item": "Placa cerámica NIJ III (1kg)",
-      "precio": null,
-      "stock": 20,
-      "activo": true
-    },
-    {
-      "nombre_item": "Placa UHMWPE NIJ IV (1.6kg)",
+      "nombre_item": "MSA ACH TC-2002",
+      "codigo_item": "CC010",
       "precio": null,
       "stock": 10,
       "activo": true
     },
     {
-      "nombre_item": "Soporte lateral MOLLE (4 slots)",
+      "nombre_item": "MSA Gallet TC-800",
+      "codigo_item": "CC011",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "Crye Precision Airframe",
+      "codigo_item": "CC008",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "Ops-Core FAST MT High-Cut",
+      "codigo_item": "CC001",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "Ops-Core FAST SF High-Cut",
+      "codigo_item": "CC004",
+      "precio": null,
+      "stock": 3,
+      "activo": true
+    },
+    {
+      "nombre_item": "Team Wendy EXFIL",
+      "codigo_item": "CC007",
+      "precio": null,
+      "stock": 3,
+      "activo": true
+    },
+    {
+      "nombre_item": "GENTEX TBH-IIIA",
+      "codigo_item": "CC012",
+      "precio": null,
+      "stock": 3,
+      "activo": true
+    },
+    {
+      "_seccion": "=== PROTECCIONES — CHALECOS ==="
+    },
+    {
+      "nombre_item": "Chaleco NIJ IIIA (IIIA001)",
+      "codigo_item": "IIIA001",
+      "precio": null,
+      "stock": 10,
+      "activo": true
+    },
+    {
+      "nombre_item": "Chaleco Blando NIJ IIIA (IIIA002)",
+      "codigo_item": "IIIA002",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "nombre_item": "Chaleco NIJ IIIA (IIIA003)",
+      "codigo_item": "IIIA003",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "_seccion": "=== PROTECCIONES — PORTAPLACAS ==="
+    },
+    {
+      "nombre_item": "Crye JPC",
+      "codigo_item": "PP002",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "nombre_item": "Crye CPC",
+      "codigo_item": "PP004",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "Crye AVS",
+      "codigo_item": "PP005",
+      "precio": null,
+      "stock": 3,
+      "activo": true
+    },
+    {
+      "nombre_item": "LBT-6094A",
+      "codigo_item": "PP007",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "5.11 TacTec",
+      "codigo_item": "PP022",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "nombre_item": "IOTV Gen IV",
+      "codigo_item": "PP029",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "FECSA D2106",
+      "codigo_item": "PP001",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "_seccion": "=== PROTECCIONES — PLACAS ==="
+    },
+    {
+      "nombre_item": "Placas Rígidas NIJ III (III001)",
+      "codigo_item": "III001",
       "precio": null,
       "stock": 20,
       "activo": true
     },
     {
-      "nombre_item": "Casco MICH 2000",
+      "nombre_item": "Placas Compuestas NIJ III (III004)",
+      "codigo_item": "III004",
       "precio": null,
-      "stock": 8,
+      "stock": 10,
       "activo": true
     },
     {
-      "nombre_item": "Casco ACH (Advanced Combat Helmet)",
+      "nombre_item": "Placas Rígidas NIJ IV (IV001)",
+      "codigo_item": "IV001",
       "precio": null,
-      "stock": 8,
+      "stock": 10,
       "activo": true
     },
     {
-      "_seccion": "=== UNIFORMIDAD ===",
-      "nombre_item": "Pantalón MultiCam",
+      "nombre_item": "Placas Compuestas NIJ IV (IV003)",
+      "codigo_item": "IV003",
       "precio": null,
-      "stock": -1,
+      "stock": 5,
       "activo": true
     },
     {
-      "nombre_item": "Camisa de combate MultiCam",
+      "nombre_item": "Placas Alto Rendimiento NIJ IV (IV006)",
+      "codigo_item": "IV006",
       "precio": null,
-      "stock": -1,
+      "stock": 3,
       "activo": true
     },
     {
-      "nombre_item": "Chaqueta softshell táctica",
-      "precio": null,
-      "stock": -1,
-      "activo": true
+      "_seccion": "=== MÉDICO ==="
     },
     {
-      "nombre_item": "Botas Salomon Quest 4D (táctica)",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "nombre_item": "Guantes tácticos Mechanix M-Pact",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "_seccion": "=== ACCESORIOS Y POUCHES ===",
-      "nombre_item": "Mochila táctica 25L",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "nombre_item": "Cinturón táctico HSGI Talon",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "nombre_item": "Pouch cargadores simple (1 slot)",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "nombre_item": "Pouch cargadores dual (2 slots, 2 cargadores)",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "nombre_item": "Pouch cargadores doble (2 slots, 4 cargadores)",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "nombre_item": "Pouch torniquete",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "nombre_item": "Pouch botiquín IFAK",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "nombre_item": "Pouch granadas (par)",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "nombre_item": "Funda pistola SERPA",
-      "precio": null,
-      "stock": -1,
-      "activo": true
-    },
-    {
-      "_seccion": "=== MÉDICO ===",
       "nombre_item": "Torniquete CAT (Combat Application Tourniquet)",
+      "codigo_item": "MED-001",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Torniquete SOFTT-W",
+      "codigo_item": "MED-002",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
       "nombre_item": "Vendaje hemostático QuikClot (1 pieza)",
+      "codigo_item": "MED-003",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
       "nombre_item": "Vendaje israelí (Emergency Bandage)",
+      "codigo_item": "MED-004",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Apósito oclusivo torácico (par)",
+      "codigo_item": "MED-005",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "NPA (Nasopharyngeal Airway)",
+      "codigo_item": "MED-006",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
       "nombre_item": "Botiquín IFAK básico",
+      "codigo_item": "MED-007",
       "precio": null,
       "stock": 30,
       "activo": true
     },
     {
+      "nombre_item": "Botiquín avanzado (Sanitario)",
+      "codigo_item": "MED-008",
+      "precio": null,
+      "stock": 10,
+      "activo": true
+    },
+    {
       "nombre_item": "Tijeras trauma (EMT shears)",
+      "codigo_item": "MED-009",
       "precio": null,
       "stock": -1,
       "activo": true
     },
     {
-      "_seccion": "=== RADIOS ===",
+      "_seccion": "=== RADIOS ==="
+    },
+    {
       "nombre_item": "Radio básica Kenwood TK-3401D",
+      "codigo_item": "RAD-003",
       "precio": null,
       "stock": 20,
       "activo": true
     },
     {
       "nombre_item": "Radio táctica MBITR AN/PRC-148",
+      "codigo_item": "RAD-002",
       "precio": null,
       "stock": 8,
+      "activo": true
+    },
+    {
+      "nombre_item": "Radio táctica AN/PRC-152",
+      "codigo_item": "RAD-001",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "_seccion": "=== MISCELÁNEOS ==="
+    },
+    {
+      "nombre_item": "Linterna táctica Streamlight TLR-1",
+      "codigo_item": "MSC-001",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Visión nocturna PVS-14",
+      "codigo_item": "MSC-002",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "Bridas plásticas (pack 20ud)",
+      "codigo_item": "MSC-003",
+      "precio": null,
+      "stock": -1,
       "activo": true
     }
   ]

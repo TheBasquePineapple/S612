@@ -1,13 +1,13 @@
 [
   {
-    "_comentario": "=== ÍTEMS MÉDICOS ===",
     "nombre": "Torniquete CAT (Combat Application Tourniquet)",
     "descripcion": "Torniquete de aplicación en combate. Detiene hemorragia de extremidades.",
     "categoria": "medico",
     "subcategoria": "torniquete",
     "peso_kg": 0.155,
     "volumen_u": 1,
-    "precio_base": 38.00
+    "precio_base": 38.0,
+    "codigo": "MED-001"
   },
   {
     "nombre": "Torniquete SOFTT-W",
@@ -16,7 +16,8 @@
     "subcategoria": "torniquete",
     "peso_kg": 0.17,
     "volumen_u": 1,
-    "precio_base": 42.00
+    "precio_base": 42.0,
+    "codigo": "MED-002"
   },
   {
     "nombre": "Vendaje hemostático QuikClot (1 pieza)",
@@ -25,7 +26,8 @@
     "subcategoria": "hemostasia",
     "peso_kg": 0.085,
     "volumen_u": 1,
-    "precio_base": 28.00
+    "precio_base": 28.0,
+    "codigo": "MED-003"
   },
   {
     "nombre": "Vendaje israelí (Emergency Bandage)",
@@ -34,7 +36,8 @@
     "subcategoria": "vendaje",
     "peso_kg": 0.12,
     "volumen_u": 1,
-    "precio_base": 15.00
+    "precio_base": 15.0,
+    "codigo": "MED-004"
   },
   {
     "nombre": "Apósito oclusivo torácico (par)",
@@ -43,7 +46,8 @@
     "subcategoria": "apósito",
     "peso_kg": 0.06,
     "volumen_u": 1,
-    "precio_base": 45.00
+    "precio_base": 45.0,
+    "codigo": "MED-005"
   },
   {
     "nombre": "NPA (Nasopharyngeal Airway)",
@@ -52,7 +56,8 @@
     "subcategoria": "via_aerea",
     "peso_kg": 0.03,
     "volumen_u": 1,
-    "precio_base": 12.00
+    "precio_base": 12.0,
+    "codigo": "MED-006"
   },
   {
     "nombre": "Botiquín IFAK básico",
@@ -61,7 +66,8 @@
     "subcategoria": "kit",
     "peso_kg": 0.6,
     "volumen_u": 2,
-    "precio_base": 120.00
+    "precio_base": 120.0,
+    "codigo": "MED-007"
   },
   {
     "nombre": "Botiquín avanzado (Sanitario)",
@@ -70,7 +76,8 @@
     "subcategoria": "kit_avanzado",
     "peso_kg": 2.5,
     "volumen_u": 6,
-    "precio_base": 450.00
+    "precio_base": 450.0,
+    "codigo": "MED-008"
   },
   {
     "nombre": "Tijeras trauma (EMT shears)",
@@ -79,7 +86,8 @@
     "subcategoria": "herramienta",
     "peso_kg": 0.07,
     "volumen_u": 0,
-    "precio_base": 10.00
+    "precio_base": 10.0,
+    "codigo": "MED-009"
   },
   {
     "nombre": "Morfina (autoinyectable) — uso Sanitario",
@@ -88,18 +96,18 @@
     "subcategoria": "farmaco",
     "peso_kg": 0.02,
     "volumen_u": 0,
-    "precio_base": 25.00
+    "precio_base": 25.0,
+    "codigo": "MED-010"
   },
-
   {
-    "_comentario": "=== RADIOS (slot: radio en loadout) ===",
     "nombre": "Radio táctica AN/PRC-152",
     "descripcion": "Radio JTRS multibanda. Alcance largo. Estándar fuerzas especiales USA.",
     "categoria": "radio",
     "subcategoria": "portatil",
     "peso_kg": 0.6,
     "volumen_u": 2,
-    "precio_base": 1800.00
+    "precio_base": 1800.0,
+    "codigo": "RAD-001"
   },
   {
     "nombre": "Radio táctica MBITR AN/PRC-148",
@@ -108,7 +116,8 @@
     "subcategoria": "portatil",
     "peso_kg": 0.44,
     "volumen_u": 1,
-    "precio_base": 1200.00
+    "precio_base": 1200.0,
+    "codigo": "RAD-002"
   },
   {
     "nombre": "Radio básica Kenwood TK-3401D",
@@ -117,18 +126,18 @@
     "subcategoria": "portatil",
     "peso_kg": 0.19,
     "volumen_u": 1,
-    "precio_base": 180.00
+    "precio_base": 180.0,
+    "codigo": "RAD-003"
   },
-
   {
-    "_comentario": "=== MISCELÁNEOS Y EQUIPAMIENTO TÁCTICO ===",
     "nombre": "Linterna táctica Streamlight TLR-1",
     "descripcion": "Linterna de riel para arma. 300 lúmenes. Batería CR123.",
     "categoria": "misc",
     "subcategoria": "iluminacion",
     "peso_kg": 0.09,
     "volumen_u": 0,
-    "precio_base": 120.00
+    "precio_base": 120.0,
+    "codigo": "MSC-001"
   },
   {
     "nombre": "Visión nocturna PVS-14",
@@ -137,7 +146,8 @@
     "subcategoria": "optica",
     "peso_kg": 0.55,
     "volumen_u": 2,
-    "precio_base": 4500.00
+    "precio_base": 4500.0,
+    "codigo": "MSC-002"
   },
   {
     "nombre": "Bridas plásticas (pack 20ud)",
@@ -146,6 +156,7 @@
     "subcategoria": "sujecion",
     "peso_kg": 0.1,
     "volumen_u": 1,
-    "precio_base": 5.00
+    "precio_base": 5.0,
+    "codigo": "MSC-003"
   }
 ]

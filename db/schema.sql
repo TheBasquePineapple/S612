@@ -420,3 +420,24 @@ BEGIN
     ON CONFLICT(user_id) DO UPDATE
         SET tiene_radio = CASE WHEN NEW.item_id IS NOT NULL THEN 1 ELSE 0 END;
 END;
+
+-- =============================================================================
+-- RAISA — Schema Patch v2
+-- Descripción : Añade codigo a items; matricula, asientos_json y
+--               contramedidas_json a vehicles.
+--               Seguro ejecutar múltiples veces (usa IF NOT EXISTS / OR IGNORE).
+-- Aplicar con: python tools/migrate.py patch
+-- =============================================================================
+
+-- ---------------------------------------------------------------------------
+-- items: código único de catálogo para búsqueda rápida
+-- ---------------------------------------------------------------------------
+ALTER TABLE items ADD COLUMN codigo TEXT;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_items_codigo ON items(codigo);
+
+-- ---------------------------------------------------------------------------
+-- vehicles: matrícula, desglose de asientos por rol y contramedidas
+-- ---------------------------------------------------------------------------
+ALTER TABLE vehicles ADD COLUMN matricula TEXT;
+ALTER TABLE vehicles ADD COLUMN asientos_json  TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE vehicles ADD COLUMN contramedidas_json TEXT NOT NULL DEFAULT '{}';

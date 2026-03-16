@@ -1,262 +1,1526 @@
 [
   {
-    "_comentario": "=== HELICÓPTEROS — ALA ROTATIVA ===",
-
-    "nombre": "UH-60 Black Hawk (transporte)",
+    "nombre": "ÁGUILA 1",
+    "matricula": "612-AGP6759",
     "tipo": "helicoptero_transporte",
-    "subtipo": "helicóptero_medio",
+    "subtipo": "Bell-Boeing V-22 Osprey",
+    "asientos": 24,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 6800.0,
+    "combustible_max": 6800.0,
+    "consumo_por_km": 2.8,
+    "inv_peso_max_kg": 9070.0,
+    "inv_volumen_max_u": 800.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "rotores": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "rampas": "óptimo",
+      "ametralladora_rampa": "óptimo"
+    },
+    "municion_json": {
+      "M240 7.62mm (rampa)": {
+        "cargado": 500,
+        "max": 1500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "pasajeros": 22
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 120,
+        "max": 120,
+        "minimo_alerta": 20
+      },
+      "bengalas": {
+        "actual": 120,
+        "max": 120,
+        "minimo_alerta": 20
+      }
+    }
+  },
+  {
+    "nombre": "ÁGUILA 2",
+    "matricula": "612-AGP4106",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "Bell-Boeing V-22 Osprey",
+    "asientos": 24,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 6800.0,
+    "combustible_max": 6800.0,
+    "consumo_por_km": 2.8,
+    "inv_peso_max_kg": 9070.0,
+    "inv_volumen_max_u": 800.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "rotores": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "rampas": "óptimo",
+      "ametralladora_rampa": "óptimo"
+    },
+    "municion_json": {
+      "M240 7.62mm (rampa)": {
+        "cargado": 500,
+        "max": 1500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "pasajeros": 22
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 120,
+        "max": 120,
+        "minimo_alerta": 20
+      },
+      "bengalas": {
+        "actual": 120,
+        "max": 120,
+        "minimo_alerta": 20
+      }
+    }
+  },
+  {
+    "nombre": "HALCÓN 1",
+    "matricula": "612-HAL8227",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "Sikorsky HH-60 Pave Hawk",
     "asientos": 14,
     "estado_general": "óptimo",
-    "componentes": {
-      "motor_1": "óptimo",
-      "motor_2": "óptimo",
-      "rotor_principal": "óptimo",
-      "rotor_de_cola": "óptimo",
-      "tren_aterrizaje": "óptimo",
-      "electronica_avion": "óptimo",
-      "contramedidas": "óptimo"
-    },
-    "combustible_actual": 800.0,
+    "activo": 1,
+    "combustible_actual": 1360.0,
     "combustible_max": 1360.0,
     "consumo_por_km": 1.2,
     "inv_peso_max_kg": 1200.0,
-    "inv_volumen_max_u": 200,
+    "inv_volumen_max_u": 180.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_cola": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "ametralladora_izq": "óptimo",
+      "ametralladora_der": "óptimo"
+    },
     "municion_json": {
-      "M134_Minigun_izq": {
-        "cargado": 2000,
-        "max": 4000,
-        "calibre": "7.62x51",
-        "id_compat": "M134_762x51_CINTA"
+      "M134 Minigun (izq)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
       },
-      "M134_Minigun_der": {
-        "cargado": 2000,
-        "max": 4000,
-        "calibre": "7.62x51",
-        "id_compat": "M134_762x51_CINTA"
+      "M134 Minigun (der)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
       }
     },
     "hardpoints_json": [],
-    "artillado": 1,
-    "permite_transferencia_mun": 1,
-    "activo": 1
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "artillero": 2,
+      "pasajeros": 10
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
   },
   {
-    "nombre": "CH-47 Chinook (transporte pesado)",
+    "nombre": "HALCÓN 2",
+    "matricula": "612-HAL3190",
     "tipo": "helicoptero_transporte",
-    "subtipo": "helicóptero_pesado",
+    "subtipo": "Sikorsky HH-60 Pave Hawk",
+    "asientos": 14,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 1360.0,
+    "combustible_max": 1360.0,
+    "consumo_por_km": 1.2,
+    "inv_peso_max_kg": 1200.0,
+    "inv_volumen_max_u": 180.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_cola": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "ametralladora_izq": "óptimo",
+      "ametralladora_der": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun (izq)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      },
+      "M134 Minigun (der)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "artillero": 2,
+      "pasajeros": 10
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "nombre": "HALCÓN 3",
+    "matricula": "612-HAL7573",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "Sikorsky HH-60 Pave Hawk",
+    "asientos": 14,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 1360.0,
+    "combustible_max": 1360.0,
+    "consumo_por_km": 1.2,
+    "inv_peso_max_kg": 1200.0,
+    "inv_volumen_max_u": 180.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_cola": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "ametralladora_izq": "óptimo",
+      "ametralladora_der": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun (izq)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      },
+      "M134 Minigun (der)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "artillero": 2,
+      "pasajeros": 10
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "nombre": "HALCÓN 4",
+    "matricula": "612-HAL1816",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "Sikorsky HH-60 Pave Hawk",
+    "asientos": 14,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 1360.0,
+    "combustible_max": 1360.0,
+    "consumo_por_km": 1.2,
+    "inv_peso_max_kg": 1200.0,
+    "inv_volumen_max_u": 180.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_cola": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "ametralladora_izq": "óptimo",
+      "ametralladora_der": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun (izq)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      },
+      "M134 Minigun (der)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "artillero": 2,
+      "pasajeros": 10
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "nombre": "SARDINA 1",
+    "matricula": "612-SAR4827",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "Sikorsky HH-60 Pave Hawk",
+    "asientos": 14,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 1360.0,
+    "combustible_max": 1360.0,
+    "consumo_por_km": 1.2,
+    "inv_peso_max_kg": 1200.0,
+    "inv_volumen_max_u": 180.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_cola": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "ametralladora_izq": "óptimo",
+      "ametralladora_der": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun (izq)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      },
+      "M134 Minigun (der)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "artillero": 2,
+      "pasajeros": 10
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "nombre": "SARDINA 2",
+    "matricula": "612-SAR7602",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "Sikorsky HH-60 Pave Hawk",
+    "asientos": 14,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 1360.0,
+    "combustible_max": 1360.0,
+    "consumo_por_km": 1.2,
+    "inv_peso_max_kg": 1200.0,
+    "inv_volumen_max_u": 180.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_cola": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "ametralladora_izq": "óptimo",
+      "ametralladora_der": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun (izq)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      },
+      "M134 Minigun (der)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "artillero": 2,
+      "pasajeros": 10
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "nombre": "MOSCARDÓN 1",
+    "matricula": "612-MOS5729",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "Sikorsky CH-53E Super Stallion",
+    "asientos": 37,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 3850.0,
+    "combustible_max": 3850.0,
+    "consumo_por_km": 2.5,
+    "inv_peso_max_kg": 14000.0,
+    "inv_volumen_max_u": 1200.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_1": "óptimo",
+      "motor_2": "óptimo",
+      "motor_3": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_cola": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "rampas": "óptimo",
+      "ametralladora_rampa": "óptimo"
+    },
+    "municion_json": {
+      "M240 7.62mm (rampa)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "ingeniero": 1,
+      "pasajeros": 34
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 90,
+        "max": 90,
+        "minimo_alerta": 15
+      },
+      "bengalas": {
+        "actual": 90,
+        "max": 90,
+        "minimo_alerta": 15
+      }
+    }
+  },
+  {
+    "nombre": "MOSCARDÓN 2",
+    "matricula": "612-MOS9042",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "Sikorsky CH-53E Super Stallion",
+    "asientos": 37,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 3850.0,
+    "combustible_max": 3850.0,
+    "consumo_por_km": 2.5,
+    "inv_peso_max_kg": 14000.0,
+    "inv_volumen_max_u": 1200.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_1": "óptimo",
+      "motor_2": "óptimo",
+      "motor_3": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_cola": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "rampas": "óptimo",
+      "ametralladora_rampa": "óptimo"
+    },
+    "municion_json": {
+      "M240 7.62mm (rampa)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "ingeniero": 1,
+      "pasajeros": 34
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 90,
+        "max": 90,
+        "minimo_alerta": 15
+      },
+      "bengalas": {
+        "actual": 90,
+        "max": 90,
+        "minimo_alerta": 15
+      }
+    }
+  },
+  {
+    "nombre": "LARRY",
+    "matricula": "612-LRY3188",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "Boeing CH-47G Chinook",
     "asientos": 33,
     "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 3900.0,
+    "combustible_max": 3900.0,
+    "consumo_por_km": 2.2,
+    "inv_peso_max_kg": 12700.0,
+    "inv_volumen_max_u": 1000.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
     "componentes": {
-      "motor_1": "óptimo",
-      "motor_2": "óptimo",
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
       "rotor_delantero": "óptimo",
       "rotor_trasero": "óptimo",
-      "rampa_trasera": "óptimo",
-      "electronica_avion": "óptimo",
-      "contramedidas": "óptimo"
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "rampas": "óptimo",
+      "ametralladora_rampa": "óptimo",
+      "ametralladora_proa": "óptimo"
     },
-    "combustible_actual": 2000.0,
-    "combustible_max": 3900.0,
-    "consumo_por_km": 3.2,
-    "inv_peso_max_kg": 10000.0,
-    "inv_volumen_max_u": 800,
-    "municion_json": {},
-    "hardpoints_json": [],
-    "artillado": 0,
-    "permite_transferencia_mun": 1,
-    "activo": 1
-  },
-  {
-    "nombre": "AH-64D Apache (ataque)",
-    "tipo": "helicoptero_ataque",
-    "subtipo": "helicóptero_ataque_pesado",
-    "asientos": 2,
-    "estado_general": "óptimo",
-    "componentes": {
-      "motor_1": "óptimo",
-      "motor_2": "óptimo",
-      "rotor_principal": "óptimo",
-      "rotor_de_cola": "óptimo",
-      "electronica_avion": "óptimo",
-      "sistema_armas": "óptimo",
-      "contramedidas": "óptimo",
-      "canon_m230": "óptimo"
-    },
-    "combustible_actual": 600.0,
-    "combustible_max": 1157.0,
-    "consumo_por_km": 1.6,
-    "inv_peso_max_kg": 30.0,
-    "inv_volumen_max_u": 5,
     "municion_json": {
-      "M230_30mm": {
-        "cargado": 300,
-        "max": 1200,
-        "calibre": "30x113B",
-        "id_compat": "M230_30x113B"
+      "M134 Minigun (proa)": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      },
+      "M240 7.62mm (rampa)": {
+        "cargado": 500,
+        "max": 1500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
       }
     },
-    "hardpoints_json": [
-      {"slot": 1, "descripcion": "Ala izq exterior", "carga_item_id": null},
-      {"slot": 2, "descripcion": "Ala izq interior", "carga_item_id": null},
-      {"slot": 3, "descripcion": "Ala der interior", "carga_item_id": null},
-      {"slot": 4, "descripcion": "Ala der exterior", "carga_item_id": null}
-    ],
-    "artillado": 1,
-    "permite_transferencia_mun": 0,
-    "activo": 1
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "ingeniero": 1,
+      "artillero": 1,
+      "pasajeros": 29
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 90,
+        "max": 90,
+        "minimo_alerta": 15
+      },
+      "bengalas": {
+        "actual": 90,
+        "max": 90,
+        "minimo_alerta": 15
+      }
+    }
   },
   {
-    "nombre": "MD 530F Cayuse Warrior (ataque ligero)",
+    "nombre": "MOSQUITO 1",
+    "matricula": "612-MSQ4475",
     "tipo": "helicoptero_ataque",
-    "subtipo": "helicóptero_ataque_ligero",
-    "asientos": 2,
+    "subtipo": "MD Helicopters MH-6 Little Bird",
+    "asientos": 4,
     "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 450.0,
+    "combustible_max": 450.0,
+    "consumo_por_km": 0.6,
+    "inv_peso_max_kg": 25.0,
+    "inv_volumen_max_u": 10.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
     "componentes": {
       "motor": "óptimo",
       "rotor_principal": "óptimo",
-      "rotor_de_cola": "óptimo",
-      "electronica_avion": "óptimo",
-      "sistema_armas": "óptimo",
-      "contramedidas": "óptimo"
+      "rotor_cola": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "ametralladora_izq": "óptimo",
+      "ametralladora_der": "óptimo"
     },
-    "combustible_actual": 180.0,
-    "combustible_max": 320.0,
-    "consumo_por_km": 0.6,
-    "inv_peso_max_kg": 20.0,
-    "inv_volumen_max_u": 4,
     "municion_json": {
-      "M134_Minigun": {
-        "cargado": 1500,
-        "max": 3000,
-        "calibre": "7.62x51",
-        "id_compat": "M134_762x51_CINTA"
+      "M134 Minigun (izq)": {
+        "cargado": 500,
+        "max": 1500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      },
+      "M134 Minigun (der)": {
+        "cargado": 500,
+        "max": 1500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
       }
     },
-    "hardpoints_json": [
-      {"slot": 1, "descripcion": "Lateral izquierdo", "carga_item_id": null},
-      {"slot": 2, "descripcion": "Lateral derecho",   "carga_item_id": null}
-    ],
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "artillero": 2
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 30,
+        "max": 30,
+        "minimo_alerta": 5
+      },
+      "bengalas": {
+        "actual": 30,
+        "max": 30,
+        "minimo_alerta": 5
+      }
+    }
+  },
+  {
+    "nombre": "MOSQUITO 2",
+    "matricula": "612-MSQ6904",
+    "tipo": "helicoptero_ataque",
+    "subtipo": "MD Helicopters MH-6 Little Bird",
+    "asientos": 4,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 450.0,
+    "combustible_max": 450.0,
+    "consumo_por_km": 0.6,
+    "inv_peso_max_kg": 25.0,
+    "inv_volumen_max_u": 10.0,
     "artillado": 1,
     "permite_transferencia_mun": 0,
-    "activo": 1
+    "componentes": {
+      "motor": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_cola": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "ametralladora_izq": "óptimo",
+      "ametralladora_der": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun (izq)": {
+        "cargado": 500,
+        "max": 1500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      },
+      "M134 Minigun (der)": {
+        "cargado": 500,
+        "max": 1500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "artillero": 2
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 30,
+        "max": 30,
+        "minimo_alerta": 5
+      },
+      "bengalas": {
+        "actual": 30,
+        "max": 30,
+        "minimo_alerta": 5
+      }
+    }
   },
-
   {
-    "_comentario": "=== AVIACIÓN — ALA FIJA ===",
-
-    "nombre": "C-130 Hercules (transporte estratégico)",
+    "nombre": "CHIP",
+    "matricula": "612-CHP4827",
     "tipo": "avion_transporte",
-    "subtipo": "turbohélice_pesado",
-    "asientos": 64,
+    "subtipo": "Airbus A400M Atlas",
+    "asientos": 116,
     "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 50500.0,
+    "combustible_max": 50500.0,
+    "consumo_por_km": 8.5,
+    "inv_peso_max_kg": 37000.0,
+    "inv_volumen_max_u": 4000.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
     "componentes": {
       "motor_1": "óptimo",
       "motor_2": "óptimo",
       "motor_3": "óptimo",
       "motor_4": "óptimo",
-      "rampa_trasera": "óptimo",
-      "electronica_avion": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "tren_aterrizaje": "óptimo",
+      "rampas": "óptimo",
       "contramedidas": "óptimo"
     },
-    "combustible_actual": 15000.0,
-    "combustible_max": 25000.0,
-    "consumo_por_km": 3.5,
-    "inv_peso_max_kg": 19500.0,
-    "inv_volumen_max_u": 2500,
     "municion_json": {},
     "hardpoints_json": [],
-    "artillado": 0,
-    "permite_transferencia_mun": 0,
-    "activo": 1
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "ingeniero": 1,
+      "cargador": 1,
+      "pasajeros": 112
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 120,
+        "max": 120,
+        "minimo_alerta": 20
+      },
+      "bengalas": {
+        "actual": 120,
+        "max": 120,
+        "minimo_alerta": 20
+      }
+    }
   },
   {
-    "nombre": "Casa CN-235 (transporte táctico)",
+    "nombre": "CHOP",
+    "matricula": "612-CHP9361",
     "tipo": "avion_transporte",
-    "subtipo": "turbohélice_medio",
-    "asientos": 46,
+    "subtipo": "Airbus A400M Atlas",
+    "asientos": 116,
     "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 50500.0,
+    "combustible_max": 50500.0,
+    "consumo_por_km": 8.5,
+    "inv_peso_max_kg": 37000.0,
+    "inv_volumen_max_u": 4000.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
     "componentes": {
       "motor_1": "óptimo",
       "motor_2": "óptimo",
-      "rampa_trasera": "óptimo",
-      "electronica_avion": "óptimo",
+      "motor_3": "óptimo",
+      "motor_4": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "tren_aterrizaje": "óptimo",
+      "rampas": "óptimo",
       "contramedidas": "óptimo"
     },
-    "combustible_actual": 4500.0,
-    "combustible_max": 6300.0,
-    "consumo_por_km": 1.4,
-    "inv_peso_max_kg": 6000.0,
-    "inv_volumen_max_u": 700,
     "municion_json": {},
     "hardpoints_json": [],
-    "artillado": 0,
-    "permite_transferencia_mun": 0,
-    "activo": 1
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "ingeniero": 1,
+      "cargador": 1,
+      "pasajeros": 112
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 120,
+        "max": 120,
+        "minimo_alerta": 20
+      },
+      "bengalas": {
+        "actual": 120,
+        "max": 120,
+        "minimo_alerta": 20
+      }
+    }
   },
   {
-    "nombre": "F/A-18 Super Hornet (combate multirrol)",
+    "nombre": "AVE DE PRESA 1",
+    "matricula": "612-AVP1743",
     "tipo": "avion_combate",
-    "subtipo": "caza_multirrol",
-    "asientos": 2,
+    "subtipo": "Lockheed Martin F-22 Sea Raptor",
+    "asientos": 1,
     "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 8200.0,
+    "combustible_max": 8200.0,
+    "consumo_por_km": 4.5,
+    "inv_peso_max_kg": 18.0,
+    "inv_volumen_max_u": 8.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
     "componentes": {
-      "motor_1": "óptimo",
-      "motor_2": "óptimo",
-      "electronica_avion": "óptimo",
-      "sistema_armas": "óptimo",
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "tren_aterrizaje": "óptimo",
       "contramedidas": "óptimo",
-      "canon_m61a2": "óptimo"
+      "canon_m61": "óptimo"
     },
-    "combustible_actual": 4900.0,
-    "combustible_max": 6530.0,
-    "consumo_por_km": 4.2,
-    "inv_peso_max_kg": 20.0,
-    "inv_volumen_max_u": 3,
     "municion_json": {
-      "Canon_M61A2_20mm": {
-        "cargado": 400,
-        "max": 578,
-        "calibre": "20x102",
-        "id_compat": "M61A2_20x102_VULCAN"
+      "M61A2 Vulcan 20mm": {
+        "cargado": 480,
+        "max": 480,
+        "calibre": "20mm",
+        "id_compat": "compat_20mm_vulcan"
       }
     },
     "hardpoints_json": [
-      {"slot": 1, "descripcion": "Punta ala izq",    "carga_item_id": null},
-      {"slot": 2, "descripcion": "Ala izq exterior", "carga_item_id": null},
-      {"slot": 3, "descripcion": "Ala izq media",    "carga_item_id": null},
-      {"slot": 4, "descripcion": "Ala izq interior", "carga_item_id": null},
-      {"slot": 5, "descripcion": "Fuselaje central", "carga_item_id": null},
-      {"slot": 6, "descripcion": "Ala der interior", "carga_item_id": null},
-      {"slot": 7, "descripcion": "Ala der media",    "carga_item_id": null},
-      {"slot": 8, "descripcion": "Ala der exterior", "carga_item_id": null},
-      {"slot": 9, "descripcion": "Punta ala der",    "carga_item_id": null}
+      {
+        "slot": 1,
+        "ubicacion": "bahia_interna_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 2,
+        "ubicacion": "bahia_interna_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 3,
+        "ubicacion": "bahia_lateral_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 4,
+        "ubicacion": "bahia_lateral_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 5,
+        "ubicacion": "ala_externo_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 6,
+        "ubicacion": "ala_externo_der",
+        "carga_item_id": null
+      }
     ],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "nombre": "AVE DE PRESA 2",
+    "matricula": "612-AVP9025",
+    "tipo": "avion_combate",
+    "subtipo": "Lockheed Martin F-22 Sea Raptor",
+    "asientos": 1,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 8200.0,
+    "combustible_max": 8200.0,
+    "consumo_por_km": 4.5,
+    "inv_peso_max_kg": 18.0,
+    "inv_volumen_max_u": 8.0,
     "artillado": 1,
     "permite_transferencia_mun": 0,
-    "activo": 1
-  },
-
-  {
-    "_comentario": "=== NAVAL — estructura preparada, sin funcionalidad activa ===",
-    "nombre": "Lancha de asalto RIB (reservado)",
-    "tipo": "naval",
-    "subtipo": "lancha_rigida_inflable",
-    "asientos": 10,
-    "estado_general": "óptimo",
     "componentes": {
-      "motor": "óptimo",
-      "casco": "óptimo"
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "tren_aterrizaje": "óptimo",
+      "contramedidas": "óptimo",
+      "canon_m61": "óptimo"
     },
-    "combustible_actual": 80.0,
-    "combustible_max": 150.0,
-    "consumo_por_km": 0.3,
-    "inv_peso_max_kg": 400.0,
-    "inv_volumen_max_u": 60,
+    "municion_json": {
+      "M61A2 Vulcan 20mm": {
+        "cargado": 480,
+        "max": 480,
+        "calibre": "20mm",
+        "id_compat": "compat_20mm_vulcan"
+      }
+    },
+    "hardpoints_json": [
+      {
+        "slot": 1,
+        "ubicacion": "bahia_interna_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 2,
+        "ubicacion": "bahia_interna_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 3,
+        "ubicacion": "bahia_lateral_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 4,
+        "ubicacion": "bahia_lateral_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 5,
+        "ubicacion": "ala_externo_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 6,
+        "ubicacion": "ala_externo_der",
+        "carga_item_id": null
+      }
+    ],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "nombre": "HURACÁN 1",
+    "matricula": "612-HUR1286",
+    "tipo": "avion_combate",
+    "subtipo": "Eurofighter Sea Typhoon Tranche 4",
+    "asientos": 1,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 4996.0,
+    "combustible_max": 4996.0,
+    "consumo_por_km": 3.8,
+    "inv_peso_max_kg": 18.0,
+    "inv_volumen_max_u": 8.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "tren_aterrizaje": "óptimo",
+      "contramedidas": "óptimo",
+      "canon_mauser": "óptimo"
+    },
+    "municion_json": {
+      "Mauser BK-27 27mm": {
+        "cargado": 150,
+        "max": 150,
+        "calibre": "27mm",
+        "id_compat": "compat_27mm_mauser"
+      }
+    },
+    "hardpoints_json": [
+      {
+        "slot": 1,
+        "ubicacion": "fuselaje_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 2,
+        "ubicacion": "fuselaje_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 3,
+        "ubicacion": "ala_interno_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 4,
+        "ubicacion": "ala_interno_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 5,
+        "ubicacion": "ala_medio_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 6,
+        "ubicacion": "ala_medio_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 7,
+        "ubicacion": "ala_externo_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 8,
+        "ubicacion": "ala_externo_der",
+        "carga_item_id": null
+      }
+    ],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "nombre": "HURACÁN 2",
+    "matricula": "612-HUR5369",
+    "tipo": "avion_combate",
+    "subtipo": "Eurofighter Sea Typhoon Tranche 4",
+    "asientos": 1,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 4996.0,
+    "combustible_max": 4996.0,
+    "consumo_por_km": 3.8,
+    "inv_peso_max_kg": 18.0,
+    "inv_volumen_max_u": 8.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "tren_aterrizaje": "óptimo",
+      "contramedidas": "óptimo",
+      "canon_mauser": "óptimo"
+    },
+    "municion_json": {
+      "Mauser BK-27 27mm": {
+        "cargado": 150,
+        "max": 150,
+        "calibre": "27mm",
+        "id_compat": "compat_27mm_mauser"
+      }
+    },
+    "hardpoints_json": [
+      {
+        "slot": 1,
+        "ubicacion": "fuselaje_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 2,
+        "ubicacion": "fuselaje_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 3,
+        "ubicacion": "ala_interno_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 4,
+        "ubicacion": "ala_interno_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 5,
+        "ubicacion": "ala_medio_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 6,
+        "ubicacion": "ala_medio_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 7,
+        "ubicacion": "ala_externo_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 8,
+        "ubicacion": "ala_externo_der",
+        "carga_item_id": null
+      }
+    ],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "nombre": "HURACÁN 3",
+    "matricula": "612-HUR8452",
+    "tipo": "avion_combate",
+    "subtipo": "Eurofighter Sea Typhoon Tranche 4",
+    "asientos": 1,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 4996.0,
+    "combustible_max": 4996.0,
+    "consumo_por_km": 3.8,
+    "inv_peso_max_kg": 18.0,
+    "inv_volumen_max_u": 8.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "tren_aterrizaje": "óptimo",
+      "contramedidas": "óptimo",
+      "canon_mauser": "óptimo"
+    },
+    "municion_json": {
+      "Mauser BK-27 27mm": {
+        "cargado": 150,
+        "max": 150,
+        "calibre": "27mm",
+        "id_compat": "compat_27mm_mauser"
+      }
+    },
+    "hardpoints_json": [
+      {
+        "slot": 1,
+        "ubicacion": "fuselaje_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 2,
+        "ubicacion": "fuselaje_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 3,
+        "ubicacion": "ala_interno_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 4,
+        "ubicacion": "ala_interno_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 5,
+        "ubicacion": "ala_medio_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 6,
+        "ubicacion": "ala_medio_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 7,
+        "ubicacion": "ala_externo_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 8,
+        "ubicacion": "ala_externo_der",
+        "carga_item_id": null
+      }
+    ],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "nombre": "HURACÁN 4",
+    "matricula": "612-HUR2934",
+    "tipo": "avion_combate",
+    "subtipo": "Eurofighter Sea Typhoon Tranche 4",
+    "asientos": 1,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 4996.0,
+    "combustible_max": 4996.0,
+    "consumo_por_km": 3.8,
+    "inv_peso_max_kg": 18.0,
+    "inv_volumen_max_u": 8.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "tren_aterrizaje": "óptimo",
+      "contramedidas": "óptimo",
+      "canon_mauser": "óptimo"
+    },
+    "municion_json": {
+      "Mauser BK-27 27mm": {
+        "cargado": 150,
+        "max": 150,
+        "calibre": "27mm",
+        "id_compat": "compat_27mm_mauser"
+      }
+    },
+    "hardpoints_json": [
+      {
+        "slot": 1,
+        "ubicacion": "fuselaje_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 2,
+        "ubicacion": "fuselaje_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 3,
+        "ubicacion": "ala_interno_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 4,
+        "ubicacion": "ala_interno_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 5,
+        "ubicacion": "ala_medio_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 6,
+        "ubicacion": "ala_medio_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 7,
+        "ubicacion": "ala_externo_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 8,
+        "ubicacion": "ala_externo_der",
+        "carga_item_id": null
+      }
+    ],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "_PLANTILLA": "F/A-18 — Añadir matrícula, nombre y datos reales al activar",
+    "nombre": "PLANTILLA_F18",
+    "matricula": "000-XXX0000",
+    "tipo": "avion_combate",
+    "subtipo": "Boeing F/A-18E/F Super Hornet",
+    "asientos": 2,
+    "estado_general": "óptimo",
+    "activo": 0,
+    "combustible_actual": 6531.0,
+    "combustible_max": 6531.0,
+    "consumo_por_km": 4.2,
+    "inv_peso_max_kg": 18.0,
+    "inv_volumen_max_u": 8.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor_izq": "óptimo",
+      "motor_der": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "tren_aterrizaje": "óptimo",
+      "contramedidas": "óptimo",
+      "canon_m61": "óptimo"
+    },
+    "municion_json": {
+      "M61A2 Vulcan 20mm": {
+        "cargado": 412,
+        "max": 412,
+        "calibre": "20mm",
+        "id_compat": "compat_20mm_vulcan"
+      }
+    },
+    "hardpoints_json": [
+      {
+        "slot": 1,
+        "ubicacion": "fuselaje_central",
+        "carga_item_id": null
+      },
+      {
+        "slot": 2,
+        "ubicacion": "fuselaje_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 3,
+        "ubicacion": "fuselaje_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 4,
+        "ubicacion": "ala_interno_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 5,
+        "ubicacion": "ala_interno_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 6,
+        "ubicacion": "ala_medio_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 7,
+        "ubicacion": "ala_medio_der",
+        "carga_item_id": null
+      },
+      {
+        "slot": 8,
+        "ubicacion": "ala_externo_izq",
+        "carga_item_id": null
+      },
+      {
+        "slot": 9,
+        "ubicacion": "ala_externo_der",
+        "carga_item_id": null
+      }
+    ],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      },
+      "bengalas": {
+        "actual": 60,
+        "max": 60,
+        "minimo_alerta": 10
+      }
+    }
+  },
+  {
+    "_PLANTILLA": "C-130 — Añadir matrícula, nombre y datos reales al activar",
+    "nombre": "PLANTILLA_C130",
+    "matricula": "000-XXX0000",
+    "tipo": "avion_transporte",
+    "subtipo": "Lockheed C-130J Super Hercules",
+    "asientos": 92,
+    "estado_general": "óptimo",
+    "activo": 0,
+    "combustible_actual": 25703.0,
+    "combustible_max": 25703.0,
+    "consumo_por_km": 5.8,
+    "inv_peso_max_kg": 19090.0,
+    "inv_volumen_max_u": 2000.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor_1": "óptimo",
+      "motor_2": "óptimo",
+      "motor_3": "óptimo",
+      "motor_4": "óptimo",
+      "celula": "óptimo",
+      "electronica": "óptimo",
+      "tren_aterrizaje": "óptimo",
+      "rampas": "óptimo",
+      "contramedidas": "óptimo"
+    },
     "municion_json": {},
     "hardpoints_json": [],
-    "artillado": 0,
-    "permite_transferencia_mun": 0,
-    "activo": 0,
-    "_TODO": "TODO: implementar en futura versión — funcionalidad naval pendiente"
+    "tripulacion_json": [],
+    "asientos_json": {
+      "piloto": 1,
+      "copiloto": 1,
+      "ingeniero": 1,
+      "cargador": 1,
+      "pasajeros": 88
+    },
+    "contramedidas_json": {
+      "chaffs": {
+        "actual": 120,
+        "max": 120,
+        "minimo_alerta": 20
+      },
+      "bengalas": {
+        "actual": 120,
+        "max": 120,
+        "minimo_alerta": 20
+      }
+    }
   }
 ]

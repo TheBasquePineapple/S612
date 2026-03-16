@@ -1,61 +1,19 @@
 [
   {
-    "_comentario": "=== VEHÍCULOS TERRESTRES ===",
-
-    "nombre": "Toyota Land Cruiser (blindado ligero)",
+    "nombre": "CANDY",
+    "matricula": "KDF 4821",
     "tipo": "blindado_ligero",
-    "subtipo": "SUV_blindado",
+    "subtipo": "URO VAMTAC .50",
     "asientos": 5,
     "estado_general": "óptimo",
-    "componentes": {
-      "motor": "óptimo",
-      "transmision": "óptimo",
-      "ruedas": "óptimo",
-      "blindaje": "óptimo",
-      "electronica": "óptimo"
-    },
-    "combustible_actual": 60.0,
-    "combustible_max": 90.0,
-    "consumo_por_km": 0.12,
-    "inv_peso_max_kg": 200.0,
-    "inv_volumen_max_u": 30,
-    "municion_json": {},
-    "hardpoints_json": [],
-    "artillado": 0,
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 60.0,
+    "artillado": 1,
     "permite_transferencia_mun": 1,
-    "activo": 1
-  },
-  {
-    "nombre": "Oshkosh M-ATV (MRAP)",
-    "tipo": "blindado_pesado",
-    "subtipo": "MRAP",
-    "asientos": 5,
-    "estado_general": "óptimo",
-    "componentes": {
-      "motor": "óptimo",
-      "transmision": "óptimo",
-      "ruedas": "óptimo",
-      "blindaje": "óptimo",
-      "electronica": "óptimo",
-      "escotilla": "óptimo"
-    },
-    "combustible_actual": 120.0,
-    "combustible_max": 200.0,
-    "consumo_por_km": 0.25,
-    "inv_peso_max_kg": 400.0,
-    "inv_volumen_max_u": 60,
-    "municion_json": {},
-    "hardpoints_json": [],
-    "artillado": 0,
-    "permite_transferencia_mun": 1,
-    "activo": 1
-  },
-  {
-    "nombre": "Oshkosh M-ATV artillado (M2 .50cal)",
-    "tipo": "blindado_pesado",
-    "subtipo": "MRAP_artillado",
-    "asientos": 5,
-    "estado_general": "óptimo",
     "componentes": {
       "motor": "óptimo",
       "transmision": "óptimo",
@@ -64,143 +22,1725 @@
       "electronica": "óptimo",
       "torreta": "óptimo"
     },
-    "combustible_actual": 120.0,
-    "combustible_max": 200.0,
-    "consumo_por_km": 0.27,
-    "inv_peso_max_kg": 380.0,
-    "inv_volumen_max_u": 55,
     "municion_json": {
-      "M2_50cal": {
-        "cargado": 200,
-        "max": 800,
-        "calibre": ".50BMG",
-        "id_compat": "M2_HB_50BMG"
+      "M2HB .50": {
+        "cargado": 100,
+        "max": 200,
+        "calibre": "12.7×99mm",
+        "id_compat": "compat_127x99"
       }
     },
     "hardpoints_json": [],
-    "artillado": 1,
-    "permite_transferencia_mun": 1,
-    "activo": 1
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 3
+    }
   },
   {
-    "nombre": "Furgoneta Ford Transit (civil)",
-    "tipo": "furgoneta",
-    "subtipo": "civil",
-    "asientos": 9,
-    "estado_general": "óptimo",
-    "componentes": {
-      "motor": "óptimo",
-      "transmision": "óptimo",
-      "ruedas": "óptimo"
-    },
-    "combustible_actual": 50.0,
-    "combustible_max": 70.0,
-    "consumo_por_km": 0.09,
-    "inv_peso_max_kg": 600.0,
-    "inv_volumen_max_u": 120,
-    "municion_json": {},
-    "hardpoints_json": [],
-    "artillado": 0,
-    "permite_transferencia_mun": 1,
-    "activo": 1
-  },
-  {
-    "nombre": "Sedán Toyota Camry (civil)",
-    "tipo": "coche",
-    "subtipo": "civil",
+    "nombre": "BELLA",
+    "matricula": "LPR 7610",
+    "tipo": "blindado_ligero",
+    "subtipo": "URO VAMTAC .50",
     "asientos": 5,
     "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 60.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
     "componentes": {
       "motor": "óptimo",
       "transmision": "óptimo",
-      "ruedas": "óptimo"
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "torreta": "óptimo"
     },
-    "combustible_actual": 40.0,
-    "combustible_max": 60.0,
-    "consumo_por_km": 0.07,
-    "inv_peso_max_kg": 80.0,
-    "inv_volumen_max_u": 15,
-    "municion_json": {},
+    "municion_json": {
+      "M2HB .50": {
+        "cargado": 100,
+        "max": 200,
+        "calibre": "12.7×99mm",
+        "id_compat": "compat_127x99"
+      }
+    },
     "hardpoints_json": [],
-    "artillado": 0,
-    "permite_transferencia_mun": 1,
-    "activo": 1
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 3
+    }
   },
   {
-    "nombre": "T-72B3 (MBT)",
-    "tipo": "mbt",
-    "subtipo": "T72",
+    "nombre": "CRYSTAL",
+    "matricula": "MTS 9352",
+    "tipo": "blindado_ligero",
+    "subtipo": "URO VAMTAC MG3",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 60.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "torreta": "óptimo"
+    },
+    "municion_json": {
+      "MG3": {
+        "cargado": 200,
+        "max": 500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "VICKY",
+    "matricula": "KZX 1247",
+    "tipo": "blindado_ligero",
+    "subtipo": "URO VAMTAC MG3",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 60.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "torreta": "óptimo"
+    },
+    "municion_json": {
+      "MG3": {
+        "cargado": 200,
+        "max": 500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "SCARLETT",
+    "matricula": "LHF 8571",
+    "tipo": "blindado_ligero",
+    "subtipo": "URO VAMTAC MG3",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 60.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "torreta": "óptimo"
+    },
+    "municion_json": {
+      "MG3": {
+        "cargado": 200,
+        "max": 500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "NINA",
+    "matricula": "MNL 5308",
+    "tipo": "blindado_ligero",
+    "subtipo": "URO VAMTAC MG3",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 60.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "torreta": "óptimo"
+    },
+    "municion_json": {
+      "MG3": {
+        "cargado": 200,
+        "max": 500,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "LOLA",
+    "matricula": "KBR 2984",
+    "tipo": "blindado_ligero",
+    "subtipo": "URO VAMTAC MK19",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 60.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "torreta": "óptimo"
+    },
+    "municion_json": {
+      "MK19 40mm": {
+        "cargado": 32,
+        "max": 48,
+        "calibre": "40mm",
+        "id_compat": "compat_40mm"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "ROSE",
+    "matricula": "LZT 6743",
+    "tipo": "blindado_ligero",
+    "subtipo": "URO VAMTAC MK19",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 60.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "torreta": "óptimo"
+    },
+    "municion_json": {
+      "MK19 40mm": {
+        "cargado": 32,
+        "max": 48,
+        "calibre": "40mm",
+        "id_compat": "compat_40mm"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "RUBY",
+    "matricula": "MJP 5129",
+    "tipo": "blindado_ligero",
+    "subtipo": "URO VAMTAC MISTRAL",
+    "asientos": 4,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 250.0,
+    "inv_volumen_max_u": 50.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "lanzador_misiles": "óptimo"
+    },
+    "municion_json": {
+      "Mistral": {
+        "cargado": 2,
+        "max": 4,
+        "calibre": null,
+        "id_compat": "compat_hardpoint_ligero"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 2
+    }
+  },
+  {
+    "nombre": "DIAMOND",
+    "matricula": "KCG 7462",
+    "tipo": "blindado_ligero",
+    "subtipo": "URO VAMTAC BGM-71",
+    "asientos": 4,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 250.0,
+    "inv_volumen_max_u": 50.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "lanzador_tow": "óptimo"
+    },
+    "municion_json": {
+      "TOW BGM-71": {
+        "cargado": 2,
+        "max": 4,
+        "calibre": null,
+        "id_compat": "compat_tow"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 2
+    }
+  },
+  {
+    "nombre": "ANGEL",
+    "matricula": "LND 3159",
+    "tipo": "furgoneta",
+    "subtipo": "URO VAMTAC AMBULANCIA",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.14,
+    "inv_peso_max_kg": 500.0,
+    "inv_volumen_max_u": 100.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "equipamiento_medico": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "sanitario-1": 1,
+      "sanitario-2": 1,
+      "sanitario-3": 1,
+      "pasajeros": 2
+    }
+  },
+  {
+    "nombre": "DIXIE",
+    "matricula": "LFD 2957",
+    "tipo": "furgoneta",
+    "subtipo": "MAN TGM Camión",
     "asientos": 3,
     "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 200.0,
+    "combustible_max": 200.0,
+    "consumo_por_km": 0.3,
+    "inv_peso_max_kg": 5000.0,
+    "inv_volumen_max_u": 400.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo",
+      "caja": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 1
+    }
+  },
+  {
+    "nombre": "ROXANNE",
+    "matricula": "MKT 5138",
+    "tipo": "furgoneta",
+    "subtipo": "MAN TGM Camión",
+    "asientos": 3,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 200.0,
+    "combustible_max": 200.0,
+    "consumo_por_km": 0.3,
+    "inv_peso_max_kg": 5000.0,
+    "inv_volumen_max_u": 400.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo",
+      "caja": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 1
+    }
+  },
+  {
+    "nombre": "CARMEN",
+    "matricula": "KVR 8206",
+    "tipo": "furgoneta",
+    "subtipo": "DAF XF Camión",
+    "asientos": 3,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 230.0,
+    "combustible_max": 230.0,
+    "consumo_por_km": 0.32,
+    "inv_peso_max_kg": 8000.0,
+    "inv_volumen_max_u": 600.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo",
+      "caja": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 1
+    }
+  },
+  {
+    "nombre": "LORETTA",
+    "matricula": "LMG 1093",
+    "tipo": "furgoneta",
+    "subtipo": "DAF XF Camión",
+    "asientos": 3,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 230.0,
+    "combustible_max": 230.0,
+    "consumo_por_km": 0.32,
+    "inv_peso_max_kg": 8000.0,
+    "inv_volumen_max_u": 600.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo",
+      "caja": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 1
+    }
+  },
+  {
+    "nombre": "TANYA",
+    "matricula": "MHP 9472",
+    "tipo": "furgoneta",
+    "subtipo": "DAF XF Camión",
+    "asientos": 3,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 230.0,
+    "combustible_max": 230.0,
+    "consumo_por_km": 0.32,
+    "inv_peso_max_kg": 8000.0,
+    "inv_volumen_max_u": 600.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo",
+      "caja": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 1
+    }
+  },
+  {
+    "nombre": "ELECTRA",
+    "matricula": "KTN 1345",
+    "tipo": "blindado_ligero",
+    "subtipo": "Chevrolet Suburban CEV (M134)",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 100.0,
+    "combustible_max": 100.0,
+    "consumo_por_km": 0.18,
+    "inv_peso_max_kg": 200.0,
+    "inv_volumen_max_u": 40.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "minigun": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun": {
+        "cargado": 500,
+        "max": 3000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "RITA",
+    "matricula": "LXR 2597",
+    "tipo": "blindado_ligero",
+    "subtipo": "Chevrolet Suburban CEV (M134)",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 100.0,
+    "combustible_max": 100.0,
+    "consumo_por_km": 0.18,
+    "inv_peso_max_kg": 200.0,
+    "inv_volumen_max_u": 40.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "minigun": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun": {
+        "cargado": 500,
+        "max": 3000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "STELLA",
+    "matricula": "MFS 8419",
+    "tipo": "blindado_ligero",
+    "subtipo": "Chevrolet Suburban CEV (M134)",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 100.0,
+    "combustible_max": 100.0,
+    "consumo_por_km": 0.18,
+    "inv_peso_max_kg": 200.0,
+    "inv_volumen_max_u": 40.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "minigun": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun": {
+        "cargado": 500,
+        "max": 3000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "NADIA",
+    "matricula": "KDL 5370",
+    "tipo": "blindado_ligero",
+    "subtipo": "Chevrolet Suburban CEV (M134)",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 100.0,
+    "combustible_max": 100.0,
+    "consumo_por_km": 0.18,
+    "inv_peso_max_kg": 200.0,
+    "inv_volumen_max_u": 40.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "minigun": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun": {
+        "cargado": 500,
+        "max": 3000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "GIA",
+    "matricula": "LPH 7904",
+    "tipo": "blindado_ligero",
+    "subtipo": "Chevrolet Suburban CEV (M134)",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 100.0,
+    "combustible_max": 100.0,
+    "consumo_por_km": 0.18,
+    "inv_peso_max_kg": 200.0,
+    "inv_volumen_max_u": 40.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "minigun": "óptimo"
+    },
+    "municion_json": {
+      "M134 Minigun": {
+        "cargado": 500,
+        "max": 3000,
+        "calibre": "7.62×51mm",
+        "id_compat": "compat_762nato"
+      }
+    },
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "artillero": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "ONYX",
+    "matricula": "MZJ 4725",
+    "tipo": "blindado_ligero",
+    "subtipo": "Chevrolet Suburban Blindado",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 100.0,
+    "combustible_max": 100.0,
+    "consumo_por_km": 0.18,
+    "inv_peso_max_kg": 150.0,
+    "inv_volumen_max_u": 30.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 5
+    }
+  },
+  {
+    "nombre": "VALENTINA",
+    "matricula": "KRM 6209",
+    "tipo": "blindado_ligero",
+    "subtipo": "Chevrolet Suburban Blindado",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 100.0,
+    "combustible_max": 100.0,
+    "consumo_por_km": 0.18,
+    "inv_peso_max_kg": 150.0,
+    "inv_volumen_max_u": 30.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 5
+    }
+  },
+  {
+    "nombre": "DOMINIQUE",
+    "matricula": "LTN 3851",
+    "tipo": "blindado_ligero",
+    "subtipo": "Chevrolet Suburban Blindado",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 100.0,
+    "combustible_max": 100.0,
+    "consumo_por_km": 0.18,
+    "inv_peso_max_kg": 150.0,
+    "inv_volumen_max_u": 30.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 5
+    }
+  },
+  {
+    "nombre": "SABRINA",
+    "matricula": "MCT 9327",
+    "tipo": "blindado_ligero",
+    "subtipo": "Chevrolet Suburban Blindado",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 100.0,
+    "combustible_max": 100.0,
+    "consumo_por_km": 0.18,
+    "inv_peso_max_kg": 150.0,
+    "inv_volumen_max_u": 30.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 5
+    }
+  },
+  {
+    "nombre": "KARMA",
+    "matricula": "KXZ 1486",
+    "tipo": "blindado_ligero",
+    "subtipo": "Chevrolet Suburban Blindado",
+    "asientos": 6,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 100.0,
+    "combustible_max": 100.0,
+    "consumo_por_km": 0.18,
+    "inv_peso_max_kg": 150.0,
+    "inv_volumen_max_u": 30.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 5
+    }
+  },
+  {
+    "nombre": "MÓNICA",
+    "matricula": "QTR 4829",
+    "tipo": "furgoneta",
+    "subtipo": "Citroën Jumper L2H3",
+    "asientos": 3,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 75.0,
+    "combustible_max": 75.0,
+    "consumo_por_km": 0.12,
+    "inv_peso_max_kg": 1500.0,
+    "inv_volumen_max_u": 200.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo",
+      "caja": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 1
+    }
+  },
+  {
+    "nombre": "VANESSA",
+    "matricula": "MBN 0374",
+    "tipo": "furgoneta",
+    "subtipo": "Citroën Jumper L2H3",
+    "asientos": 3,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 75.0,
+    "combustible_max": 75.0,
+    "consumo_por_km": 0.12,
+    "inv_peso_max_kg": 1500.0,
+    "inv_volumen_max_u": 200.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo",
+      "caja": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 1
+    }
+  },
+  {
+    "nombre": "MATRONA",
+    "matricula": "LKC 9182",
+    "tipo": "coche",
+    "subtipo": "Toyota HILUX Mando",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.12,
+    "inv_peso_max_kg": 400.0,
+    "inv_volumen_max_u": 60.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "LULÚ",
+    "matricula": "ZHE 5607",
+    "tipo": "coche",
+    "subtipo": "Toyota HILUX EOD",
+    "asientos": 4,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.12,
+    "inv_peso_max_kg": 500.0,
+    "inv_volumen_max_u": 80.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo",
+      "equipo_eod": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 2
+    }
+  },
+  {
+    "nombre": "SEX SHOP",
+    "matricula": "PRV 2016",
+    "tipo": "coche",
+    "subtipo": "Toyota HILUX Utilitaria",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.12,
+    "inv_peso_max_kg": 600.0,
+    "inv_volumen_max_u": 100.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "BARBARA",
+    "matricula": "JAX 7740",
+    "tipo": "coche",
+    "subtipo": "Toyota HILUX EWS",
+    "asientos": 4,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.12,
+    "inv_peso_max_kg": 400.0,
+    "inv_volumen_max_u": 60.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo",
+      "sistema_ew": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "operador_ew": 1,
+      "pasajeros": 2
+    }
+  },
+  {
+    "nombre": "PAMELA",
+    "matricula": "TWD 6532",
+    "tipo": "coche",
+    "subtipo": "Toyota HILUX Regular",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.12,
+    "inv_peso_max_kg": 500.0,
+    "inv_volumen_max_u": 80.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "KATY",
+    "matricula": "YLU 9851",
+    "tipo": "coche",
+    "subtipo": "Toyota HILUX Regular",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 80.0,
+    "combustible_max": 80.0,
+    "consumo_por_km": 0.12,
+    "inv_peso_max_kg": 500.0,
+    "inv_volumen_max_u": 80.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "ROJO 1",
+    "matricula": "LJP 7142",
+    "tipo": "coche",
+    "subtipo": "SEAT León XPerience ST",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 50.0,
+    "combustible_max": 50.0,
+    "consumo_por_km": 0.07,
+    "inv_peso_max_kg": 80.0,
+    "inv_volumen_max_u": 15.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "ROJO 2",
+    "matricula": "MND 3618",
+    "tipo": "coche",
+    "subtipo": "SEAT León XPerience ST",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 50.0,
+    "combustible_max": 50.0,
+    "consumo_por_km": 0.07,
+    "inv_peso_max_kg": 80.0,
+    "inv_volumen_max_u": 15.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "ROJO 3",
+    "matricula": "KLR 5280",
+    "tipo": "coche",
+    "subtipo": "SEAT León XPerience ST",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 50.0,
+    "combustible_max": 50.0,
+    "consumo_por_km": 0.07,
+    "inv_peso_max_kg": 80.0,
+    "inv_volumen_max_u": 15.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "ROJO 4",
+    "matricula": "LZB 8756",
+    "tipo": "coche",
+    "subtipo": "SEAT León XPerience ST",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 50.0,
+    "combustible_max": 50.0,
+    "consumo_por_km": 0.07,
+    "inv_peso_max_kg": 80.0,
+    "inv_volumen_max_u": 15.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "VERDE 1",
+    "matricula": "MVT 6923",
+    "tipo": "coche",
+    "subtipo": "Nissan Patrol GR GAR",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 95.0,
+    "combustible_max": 95.0,
+    "consumo_por_km": 0.13,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 50.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "VERDE 2",
+    "matricula": "KFS 3108",
+    "tipo": "coche",
+    "subtipo": "Nissan Patrol GR GAR",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 95.0,
+    "combustible_max": 95.0,
+    "consumo_por_km": 0.13,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 50.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "VERDE 3",
+    "matricula": "LQP 5641",
+    "tipo": "coche",
+    "subtipo": "Nissan Patrol GR GAR",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 95.0,
+    "combustible_max": 95.0,
+    "consumo_por_km": 0.13,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 50.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "VERDE 4",
+    "matricula": "MRR 2087",
+    "tipo": "coche",
+    "subtipo": "Nissan Patrol GR GAR",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 95.0,
+    "combustible_max": 95.0,
+    "consumo_por_km": 0.13,
+    "inv_peso_max_kg": 300.0,
+    "inv_volumen_max_u": 50.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "copiloto": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "FRANCHUTE 1",
+    "matricula": "FB-927-HN",
+    "tipo": "coche",
+    "subtipo": "Peugeot 3008 Police nationale",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 60.0,
+    "combustible_max": 60.0,
+    "consumo_por_km": 0.08,
+    "inv_peso_max_kg": 100.0,
+    "inv_volumen_max_u": 20.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "FRANCHUTE 2",
+    "matricula": "GJ-482-LR",
+    "tipo": "coche",
+    "subtipo": "Peugeot 3008 Police nationale",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 60.0,
+    "combustible_max": 60.0,
+    "consumo_por_km": 0.08,
+    "inv_peso_max_kg": 100.0,
+    "inv_volumen_max_u": 20.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "pasajeros": 4
+    }
+  },
+  {
+    "nombre": "ROXY",
+    "matricula": "MXL 9845",
+    "tipo": "blindado_pesado",
+    "subtipo": "Oshkosh M-ATV APC",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 450.0,
+    "combustible_max": 450.0,
+    "consumo_por_km": 0.55,
+    "inv_peso_max_kg": 800.0,
+    "inv_volumen_max_u": 120.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "comandante": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "NIKITA",
+    "matricula": "KDR 6537",
+    "tipo": "blindado_pesado",
+    "subtipo": "Oshkosh M-ATV APC",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 450.0,
+    "combustible_max": 450.0,
+    "consumo_por_km": 0.55,
+    "inv_peso_max_kg": 800.0,
+    "inv_volumen_max_u": 120.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "comandante": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "KATYA",
+    "matricula": "LFB 8720",
+    "tipo": "blindado_pesado",
+    "subtipo": "Oshkosh M-ATV APC",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 450.0,
+    "combustible_max": 450.0,
+    "consumo_por_km": 0.55,
+    "inv_peso_max_kg": 800.0,
+    "inv_volumen_max_u": 120.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "comandante": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "BRANDY",
+    "matricula": "MGT 2395",
+    "tipo": "blindado_pesado",
+    "subtipo": "Oshkosh M-ATV APC",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 450.0,
+    "combustible_max": 450.0,
+    "consumo_por_km": 0.55,
+    "inv_peso_max_kg": 800.0,
+    "inv_volumen_max_u": 120.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "comandante": 1,
+      "pasajeros": 3
+    }
+  },
+  {
+    "nombre": "IVY",
+    "matricula": "KTL 4068",
+    "tipo": "blindado_pesado",
+    "subtipo": "M1126 Stryker APC",
+    "asientos": 9,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 630.0,
+    "combustible_max": 630.0,
+    "consumo_por_km": 0.7,
+    "inv_peso_max_kg": 1200.0,
+    "inv_volumen_max_u": 200.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "comandante": 1,
+      "artillero": 1,
+      "pasajeros": 6
+    }
+  },
+  {
+    "nombre": "VENUS",
+    "matricula": "LZR 5193",
+    "tipo": "blindado_pesado",
+    "subtipo": "M1126 Stryker APC",
+    "asientos": 9,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 630.0,
+    "combustible_max": 630.0,
+    "consumo_por_km": 0.7,
+    "inv_peso_max_kg": 1200.0,
+    "inv_volumen_max_u": 200.0,
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "municion_json": {},
+    "hardpoints_json": [],
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "comandante": 1,
+      "artillero": 1,
+      "pasajeros": 6
+    }
+  },
+  {
+    "nombre": "RAVEN",
+    "matricula": "MBN 7426",
+    "tipo": "blindado_pesado",
+    "subtipo": "M3 Bradley IFV",
+    "asientos": 3,
+    "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 660.0,
+    "combustible_max": 660.0,
+    "consumo_por_km": 0.9,
+    "inv_peso_max_kg": 500.0,
+    "inv_volumen_max_u": 80.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
     "componentes": {
       "motor": "óptimo",
       "transmision": "óptimo",
       "orugas": "óptimo",
       "blindaje": "óptimo",
       "electronica": "óptimo",
-      "canon_125mm": "óptimo",
-      "ametralladora_coaxial": "óptimo",
-      "dshk_12_7mm": "óptimo"
+      "canon_25mm": "óptimo",
+      "lanzador_tow": "óptimo"
     },
-    "combustible_actual": 400.0,
-    "combustible_max": 700.0,
-    "consumo_por_km": 2.8,
-    "inv_peso_max_kg": 200.0,
-    "inv_volumen_max_u": 20,
     "municion_json": {
-      "canon_125mm": {
-        "cargado": 22,
-        "max": 45,
-        "calibre": "125mm",
-        "id_compat": "T72_125MM_OBUZ"
+      "M242 Bushmaster 25mm": {
+        "cargado": 300,
+        "max": 900,
+        "calibre": "25mm",
+        "id_compat": "compat_25mm_bushmaster"
       },
-      "ametralladora_coaxial_PKT": {
-        "cargado": 500,
-        "max": 2000,
-        "calibre": "7.62x54R",
-        "id_compat": "PKT_762x54R"
-      },
-      "dshk_12_7mm": {
-        "cargado": 150,
-        "max": 600,
-        "calibre": "12.7x108",
-        "id_compat": "DSHK_127x108"
+      "TOW BGM-71": {
+        "cargado": 2,
+        "max": 7,
+        "calibre": null,
+        "id_compat": "compat_tow"
       }
     },
     "hardpoints_json": [],
-    "artillado": 1,
-    "permite_transferencia_mun": 0,
-    "activo": 1
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "comandante": 1,
+      "artillero": 1,
+      "pasajeros": 0
+    }
   },
   {
-    "nombre": "BTR-80 (APC)",
+    "nombre": "SCAR",
+    "matricula": "KHS 3684",
     "tipo": "blindado_pesado",
-    "subtipo": "APC",
-    "asientos": 10,
+    "subtipo": "M3 Bradley IFV",
+    "asientos": 3,
     "estado_general": "óptimo",
+    "activo": 1,
+    "combustible_actual": 660.0,
+    "combustible_max": 660.0,
+    "consumo_por_km": 0.9,
+    "inv_peso_max_kg": 500.0,
+    "inv_volumen_max_u": 80.0,
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
     "componentes": {
       "motor": "óptimo",
-      "ruedas": "óptimo",
+      "transmision": "óptimo",
+      "orugas": "óptimo",
       "blindaje": "óptimo",
       "electronica": "óptimo",
-      "torreta_14_5mm": "óptimo"
+      "canon_25mm": "óptimo",
+      "lanzador_tow": "óptimo"
     },
-    "combustible_actual": 200.0,
-    "combustible_max": 300.0,
-    "consumo_por_km": 0.5,
-    "inv_peso_max_kg": 500.0,
-    "inv_volumen_max_u": 80,
     "municion_json": {
-      "KPVT_14_5mm": {
-        "cargado": 100,
-        "max": 500,
-        "calibre": "14.5x114",
-        "id_compat": "KPVT_145x114"
+      "M242 Bushmaster 25mm": {
+        "cargado": 300,
+        "max": 900,
+        "calibre": "25mm",
+        "id_compat": "compat_25mm_bushmaster"
+      },
+      "TOW BGM-71": {
+        "cargado": 2,
+        "max": 7,
+        "calibre": null,
+        "id_compat": "compat_tow"
       }
     },
     "hardpoints_json": [],
-    "artillado": 1,
-    "permite_transferencia_mun": 1,
-    "activo": 1
+    "tripulacion_json": [],
+    "asientos_json": {
+      "conductor": 1,
+      "comandante": 1,
+      "artillero": 1,
+      "pasajeros": 0
+    }
   }
 ]
