@@ -1,0 +1,308 @@
+{
+  "_comentario": "Catálogo inicial de tienda. Cada entrada referencia un ítem por nombre exacto del JSON de ítems. El script migrate.py resuelve el item_id real antes de insertar.",
+  "_nota": "precio: null = usar precio_base del ítem. stock: -1 = ilimitado.",
+
+  "listados": [
+    {
+      "_seccion": "=== ARMAS ===",
+      "nombre_item": "M4A1",
+      "precio": null,
+      "stock": 10,
+      "activo": true
+    },
+    {
+      "nombre_item": "HK416 A5",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "AK-74M",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "nombre_item": "SCAR-H",
+      "precio": null,
+      "stock": 3,
+      "activo": true
+    },
+    {
+      "nombre_item": "Glock 17 Gen5",
+      "precio": null,
+      "stock": 20,
+      "activo": true
+    },
+    {
+      "nombre_item": "SIG P226",
+      "precio": null,
+      "stock": 10,
+      "activo": true
+    },
+    {
+      "nombre_item": "Beretta M9A3",
+      "precio": null,
+      "stock": 15,
+      "activo": true
+    },
+    {
+      "nombre_item": "Cuchillo de combate Ka-Bar",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "_seccion": "=== MUNICIÓN ===",
+      "nombre_item": "Cargador STANAG 30rds 5.56",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Magpul PMAG 30rds 5.56",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Cargador AK74 30rds 5.45",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Cargador SCAR-H 20rds 7.62",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Cargador Glock 17rds 9mm",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Cargador SIG P226 15rds 9mm",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Granada de fragmentación M67",
+      "precio": null,
+      "stock": 30,
+      "activo": true
+    },
+    {
+      "nombre_item": "Granada de humo (color rojo)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Granada de humo (color verde)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Granada aturdidora M84",
+      "precio": null,
+      "stock": 20,
+      "activo": true
+    },
+    {
+      "_seccion": "=== PROTECCIONES ===",
+      "nombre_item": "Chaleco MOLLE ligero (6 slots)",
+      "precio": null,
+      "stock": 15,
+      "activo": true
+    },
+    {
+      "nombre_item": "Chaleco MOLLE completo (10 slots)",
+      "precio": null,
+      "stock": 10,
+      "activo": true
+    },
+    {
+      "nombre_item": "Chaleco balístico NIJ IIA (4 slots)",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "nombre_item": "Portaplacas Crye JPC 2.0 (8 slots)",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "Portaplacas MBAV (10 slots)",
+      "precio": null,
+      "stock": 5,
+      "activo": true
+    },
+    {
+      "nombre_item": "Placa cerámica NIJ III (1kg)",
+      "precio": null,
+      "stock": 20,
+      "activo": true
+    },
+    {
+      "nombre_item": "Placa UHMWPE NIJ IV (1.6kg)",
+      "precio": null,
+      "stock": 10,
+      "activo": true
+    },
+    {
+      "nombre_item": "Soporte lateral MOLLE (4 slots)",
+      "precio": null,
+      "stock": 20,
+      "activo": true
+    },
+    {
+      "nombre_item": "Casco MICH 2000",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "nombre_item": "Casco ACH (Advanced Combat Helmet)",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    },
+    {
+      "_seccion": "=== UNIFORMIDAD ===",
+      "nombre_item": "Pantalón MultiCam",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Camisa de combate MultiCam",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Chaqueta softshell táctica",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Botas Salomon Quest 4D (táctica)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Guantes tácticos Mechanix M-Pact",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "_seccion": "=== ACCESORIOS Y POUCHES ===",
+      "nombre_item": "Mochila táctica 25L",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Cinturón táctico HSGI Talon",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Pouch cargadores simple (1 slot)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Pouch cargadores dual (2 slots, 2 cargadores)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Pouch cargadores doble (2 slots, 4 cargadores)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Pouch torniquete",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Pouch botiquín IFAK",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Pouch granadas (par)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Funda pistola SERPA",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "_seccion": "=== MÉDICO ===",
+      "nombre_item": "Torniquete CAT (Combat Application Tourniquet)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Vendaje hemostático QuikClot (1 pieza)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Vendaje israelí (Emergency Bandage)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "nombre_item": "Botiquín IFAK básico",
+      "precio": null,
+      "stock": 30,
+      "activo": true
+    },
+    {
+      "nombre_item": "Tijeras trauma (EMT shears)",
+      "precio": null,
+      "stock": -1,
+      "activo": true
+    },
+    {
+      "_seccion": "=== RADIOS ===",
+      "nombre_item": "Radio básica Kenwood TK-3401D",
+      "precio": null,
+      "stock": 20,
+      "activo": true
+    },
+    {
+      "nombre_item": "Radio táctica MBITR AN/PRC-148",
+      "precio": null,
+      "stock": 8,
+      "activo": true
+    }
+  ]
+}

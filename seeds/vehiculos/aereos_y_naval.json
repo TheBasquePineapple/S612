@@ -1,0 +1,262 @@
+[
+  {
+    "_comentario": "=== HELICÓPTEROS — ALA ROTATIVA ===",
+
+    "nombre": "UH-60 Black Hawk (transporte)",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "helicóptero_medio",
+    "asientos": 14,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor_1": "óptimo",
+      "motor_2": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_de_cola": "óptimo",
+      "tren_aterrizaje": "óptimo",
+      "electronica_avion": "óptimo",
+      "contramedidas": "óptimo"
+    },
+    "combustible_actual": 800.0,
+    "combustible_max": 1360.0,
+    "consumo_por_km": 1.2,
+    "inv_peso_max_kg": 1200.0,
+    "inv_volumen_max_u": 200,
+    "municion_json": {
+      "M134_Minigun_izq": {
+        "cargado": 2000,
+        "max": 4000,
+        "calibre": "7.62x51",
+        "id_compat": "M134_762x51_CINTA"
+      },
+      "M134_Minigun_der": {
+        "cargado": 2000,
+        "max": 4000,
+        "calibre": "7.62x51",
+        "id_compat": "M134_762x51_CINTA"
+      }
+    },
+    "hardpoints_json": [],
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "activo": 1
+  },
+  {
+    "nombre": "CH-47 Chinook (transporte pesado)",
+    "tipo": "helicoptero_transporte",
+    "subtipo": "helicóptero_pesado",
+    "asientos": 33,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor_1": "óptimo",
+      "motor_2": "óptimo",
+      "rotor_delantero": "óptimo",
+      "rotor_trasero": "óptimo",
+      "rampa_trasera": "óptimo",
+      "electronica_avion": "óptimo",
+      "contramedidas": "óptimo"
+    },
+    "combustible_actual": 2000.0,
+    "combustible_max": 3900.0,
+    "consumo_por_km": 3.2,
+    "inv_peso_max_kg": 10000.0,
+    "inv_volumen_max_u": 800,
+    "municion_json": {},
+    "hardpoints_json": [],
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "activo": 1
+  },
+  {
+    "nombre": "AH-64D Apache (ataque)",
+    "tipo": "helicoptero_ataque",
+    "subtipo": "helicóptero_ataque_pesado",
+    "asientos": 2,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor_1": "óptimo",
+      "motor_2": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_de_cola": "óptimo",
+      "electronica_avion": "óptimo",
+      "sistema_armas": "óptimo",
+      "contramedidas": "óptimo",
+      "canon_m230": "óptimo"
+    },
+    "combustible_actual": 600.0,
+    "combustible_max": 1157.0,
+    "consumo_por_km": 1.6,
+    "inv_peso_max_kg": 30.0,
+    "inv_volumen_max_u": 5,
+    "municion_json": {
+      "M230_30mm": {
+        "cargado": 300,
+        "max": 1200,
+        "calibre": "30x113B",
+        "id_compat": "M230_30x113B"
+      }
+    },
+    "hardpoints_json": [
+      {"slot": 1, "descripcion": "Ala izq exterior", "carga_item_id": null},
+      {"slot": 2, "descripcion": "Ala izq interior", "carga_item_id": null},
+      {"slot": 3, "descripcion": "Ala der interior", "carga_item_id": null},
+      {"slot": 4, "descripcion": "Ala der exterior", "carga_item_id": null}
+    ],
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
+    "activo": 1
+  },
+  {
+    "nombre": "MD 530F Cayuse Warrior (ataque ligero)",
+    "tipo": "helicoptero_ataque",
+    "subtipo": "helicóptero_ataque_ligero",
+    "asientos": 2,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor": "óptimo",
+      "rotor_principal": "óptimo",
+      "rotor_de_cola": "óptimo",
+      "electronica_avion": "óptimo",
+      "sistema_armas": "óptimo",
+      "contramedidas": "óptimo"
+    },
+    "combustible_actual": 180.0,
+    "combustible_max": 320.0,
+    "consumo_por_km": 0.6,
+    "inv_peso_max_kg": 20.0,
+    "inv_volumen_max_u": 4,
+    "municion_json": {
+      "M134_Minigun": {
+        "cargado": 1500,
+        "max": 3000,
+        "calibre": "7.62x51",
+        "id_compat": "M134_762x51_CINTA"
+      }
+    },
+    "hardpoints_json": [
+      {"slot": 1, "descripcion": "Lateral izquierdo", "carga_item_id": null},
+      {"slot": 2, "descripcion": "Lateral derecho",   "carga_item_id": null}
+    ],
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
+    "activo": 1
+  },
+
+  {
+    "_comentario": "=== AVIACIÓN — ALA FIJA ===",
+
+    "nombre": "C-130 Hercules (transporte estratégico)",
+    "tipo": "avion_transporte",
+    "subtipo": "turbohélice_pesado",
+    "asientos": 64,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor_1": "óptimo",
+      "motor_2": "óptimo",
+      "motor_3": "óptimo",
+      "motor_4": "óptimo",
+      "rampa_trasera": "óptimo",
+      "electronica_avion": "óptimo",
+      "contramedidas": "óptimo"
+    },
+    "combustible_actual": 15000.0,
+    "combustible_max": 25000.0,
+    "consumo_por_km": 3.5,
+    "inv_peso_max_kg": 19500.0,
+    "inv_volumen_max_u": 2500,
+    "municion_json": {},
+    "hardpoints_json": [],
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "activo": 1
+  },
+  {
+    "nombre": "Casa CN-235 (transporte táctico)",
+    "tipo": "avion_transporte",
+    "subtipo": "turbohélice_medio",
+    "asientos": 46,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor_1": "óptimo",
+      "motor_2": "óptimo",
+      "rampa_trasera": "óptimo",
+      "electronica_avion": "óptimo",
+      "contramedidas": "óptimo"
+    },
+    "combustible_actual": 4500.0,
+    "combustible_max": 6300.0,
+    "consumo_por_km": 1.4,
+    "inv_peso_max_kg": 6000.0,
+    "inv_volumen_max_u": 700,
+    "municion_json": {},
+    "hardpoints_json": [],
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "activo": 1
+  },
+  {
+    "nombre": "F/A-18 Super Hornet (combate multirrol)",
+    "tipo": "avion_combate",
+    "subtipo": "caza_multirrol",
+    "asientos": 2,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor_1": "óptimo",
+      "motor_2": "óptimo",
+      "electronica_avion": "óptimo",
+      "sistema_armas": "óptimo",
+      "contramedidas": "óptimo",
+      "canon_m61a2": "óptimo"
+    },
+    "combustible_actual": 4900.0,
+    "combustible_max": 6530.0,
+    "consumo_por_km": 4.2,
+    "inv_peso_max_kg": 20.0,
+    "inv_volumen_max_u": 3,
+    "municion_json": {
+      "Canon_M61A2_20mm": {
+        "cargado": 400,
+        "max": 578,
+        "calibre": "20x102",
+        "id_compat": "M61A2_20x102_VULCAN"
+      }
+    },
+    "hardpoints_json": [
+      {"slot": 1, "descripcion": "Punta ala izq",    "carga_item_id": null},
+      {"slot": 2, "descripcion": "Ala izq exterior", "carga_item_id": null},
+      {"slot": 3, "descripcion": "Ala izq media",    "carga_item_id": null},
+      {"slot": 4, "descripcion": "Ala izq interior", "carga_item_id": null},
+      {"slot": 5, "descripcion": "Fuselaje central", "carga_item_id": null},
+      {"slot": 6, "descripcion": "Ala der interior", "carga_item_id": null},
+      {"slot": 7, "descripcion": "Ala der media",    "carga_item_id": null},
+      {"slot": 8, "descripcion": "Ala der exterior", "carga_item_id": null},
+      {"slot": 9, "descripcion": "Punta ala der",    "carga_item_id": null}
+    ],
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
+    "activo": 1
+  },
+
+  {
+    "_comentario": "=== NAVAL — estructura preparada, sin funcionalidad activa ===",
+    "nombre": "Lancha de asalto RIB (reservado)",
+    "tipo": "naval",
+    "subtipo": "lancha_rigida_inflable",
+    "asientos": 10,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor": "óptimo",
+      "casco": "óptimo"
+    },
+    "combustible_actual": 80.0,
+    "combustible_max": 150.0,
+    "consumo_por_km": 0.3,
+    "inv_peso_max_kg": 400.0,
+    "inv_volumen_max_u": 60,
+    "municion_json": {},
+    "hardpoints_json": [],
+    "artillado": 0,
+    "permite_transferencia_mun": 0,
+    "activo": 0,
+    "_TODO": "TODO: implementar en futura versión — funcionalidad naval pendiente"
+  }
+]

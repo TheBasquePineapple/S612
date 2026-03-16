@@ -1,834 +1,1072 @@
 """
-RAISA — Cog de Sistema de Registro
-cogs/registro.py
+cogs/registro.py — Sistema de registro de personajes de RAISA
+=============================================================
+Responsabilidad : Formulario completo de registro por Mensaje Directo.
+                  Persistencia de progreso, verificación de fichas,
+                  compresión de avatar con Pillow.
+Dependencias    : db.repository, utils.embeds, utils.permisos,
+                  utils.validaciones, Pillow (PIL)
+Autor           : RAISA Dev
 
-Responsabilidad : Flujo completo de registro de personaje por MD.
-                  Persiste progreso en SQLite. Formulario en 4 bloques.
-                  Verificación mediante botones en canal prefijado.
-Dependencias    : discord.py, db/repository, Pillow, utils/permisos, utils/embeds
-Autor           : Proyecto RAISA
+Flujo
+-----
+  1. Usuario ejecuta /registro en el servidor
+  2. Bot inicia MD secuencial con 12 pasos (4 bloques)
+  3. Progreso guardado en BBDD tras cada respuesta
+  4. Inactividad 20 min → formulario suspendido (no borrado)
+  5. Al completar → ficha enviada al canal de verificación
+  6. Narrador acepta/deniega con botones persistentes
+  7. Aceptar → asignar rol Usuario automáticamente
+  8. Denegar → solicitar feedback → enviar al usuario por MD
+
+Ver REVIEW.md §2.1 — manejo de "No apto"
+Ver REVIEW.md §2.2 — restauración de Views tras reinicio
+Ver REVIEW.md §3.2 — compresión de avatares con Pillow
 """
 
 import asyncio
+import io
 import json
-import logging
-import os
 from pathlib import Path
 
 import discord
-from discord import app_commands
-from discord.ext import commands, tasks
+from discord import Interaction, app_commands
+from discord.ext import commands
 
-from utils.embeds import embed_ficha_personaje, embed_ok, embed_error, embed_aviso
-from utils.permisos import require_role, RANGO_VISITANTE, RANGO_NARRADOR, _cargar_config_roles
+from db import repository as repo
+from utils import embeds as emb
+from utils.logger import audit, log_info, log_warning
+from utils.permisos import NARRADOR, VISITANTE, USUARIO, get_user_level, require_role
+from utils.validaciones import (
+    validar_edad,
+    validar_nombre_banlist,
+    validar_url_imagen,
+)
 
-log = logging.getLogger("raisa.registro")
+# ---------------------------------------------------------------------------
+# Constantes del formulario
+# ---------------------------------------------------------------------------
+TIMEOUT_SEGUNDOS    = 20 * 60   # 20 minutos de inactividad → suspender
+AVATAR_MAX_SIZE     = (800, 800)
+AVATAR_QUALITY      = 85
+AVATAR_DIR          = Path("data/characters")
 
-TIMEOUT_INACTIVIDAD = 20 * 60  # 20 minutos en segundos
-
-# ──────────────────────────────────────────────────────────────────────────────
-# CLASES DE ESPECIALIDAD
-# ──────────────────────────────────────────────────────────────────────────────
-
+# Clases disponibles
 CLASES_REGULARES = [
     "JTAC", "Mecánico", "Operador de Drones", "K9 Handler",
     "Ametrallador", "Tirador Designado", "Especialista AT/AA",
-    "Experto en Contención", "Conductor", "Intérprete", "Operador",
+    "Experto en Contención", "Conductor", "Intérprete",
+    "Operador (Especialidad Base)",
 ]
 CLASES_COMPLEJAS = [
-    "Piloto {Σ-9}", "Tirador de Precisión", "EOD", "Experto en EW",
-    "Auxiliar de Seguridad", "Sanitario", "Especialista NBQ", "Zapador",
+    "Piloto {Σ-9}", "Tirador de Precisión", "EOD",
+    "Experto en EW", "Auxiliar de Seguridad", "Sanitario",
+    "Especialista NBQ", "Zapador",
 ]
 
-# Preguntas del examen psicotécnico — respuesta libre, sin evaluación automática
-PREGUNTAS_PSI = [
-    "Un compañero comete un error grave en misión que compromete la operación entera. "
-    "¿Qué pasos tomas al respecto?",
-
-    "Encuentras documentos clasificados de la Fundación fuera de su lugar seguro. "
-    "Describe tu reacción inmediata y las acciones posteriores que tomarías.",
-
-    "Durante una operación recibes una orden que consideras moralmente cuestionable "
-    "pero no ilegítima. ¿Cómo lo manejas?",
-
-    "Llevas varios turnos sin descanso y empiezas a notar que tu rendimiento disminuye. "
-    "¿Cuál es tu protocolo personal para gestionarlo?",
-
-    "Describe brevemente por qué crees que tu personaje encajaría en las filas de la "
-    "Fundación SCP y qué aporta al equipo.",
+# Preguntas del psicotécnico con respuestas evaluadas
+PREGUNTAS_PSICO = [
+    {
+        "pregunta": "En una situación de emboscada, tu primer instinto es:\n"
+                    "A) Buscar cobertura y evaluar la situación\n"
+                    "B) Abrir fuego en la dirección del enemigo\n"
+                    "C) Pedir instrucciones por radio",
+        "correcta": "A",
+        "apto_pero": "B",
+    },
+    {
+        "pregunta": "Un compañero cae herido durante una operación. ¿Qué haces?\n"
+                    "A) Lo dejas y continúas el objetivo\n"
+                    "B) Lo arrastras a cobertura y aplicas primeros auxilios\n"
+                    "C) Llamas por radio sin moverte",
+        "correcta": "B",
+        "apto_pero": "C",
+    },
 ]
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# VIEWS DE DISCORD
-# ──────────────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# Select para clase
+# ---------------------------------------------------------------------------
 
-class SeleccionGeneroView(discord.ui.View):
-    """Botones de selección de género en el registro."""
+class ClaseSelect(discord.ui.Select):
+    """Desplegable de selección de clase dividido en regulares y complejas."""
 
     def __init__(self) -> None:
-        super().__init__(timeout=TIMEOUT_INACTIVIDAD)
-        self.valor: str | None = None
+        opciones = [
+            discord.SelectOption(
+                label=c, value=c,
+                description="Clase regular",
+                emoji="🔹"
+            )
+            for c in CLASES_REGULARES
+        ] + [
+            discord.SelectOption(
+                label=c, value=c,
+                description="Clase compleja — requiere confirmación",
+                emoji="🔶"
+            )
+            for c in CLASES_COMPLEJAS
+        ]
+        super().__init__(
+            placeholder="Selecciona tu clase...",
+            min_values=1,
+            max_values=1,
+            options=opciones[:25],  # límite de Discord
+        )
+        self.clase_seleccionada: str | None = None
 
-    @discord.ui.button(label="Hombre", style=discord.ButtonStyle.primary)
-    async def hombre(self, interaction: discord.Interaction, _: discord.ui.Button) -> None:
-        self.valor = "Hombre"
+    async def callback(self, interaction: Interaction) -> None:
+        self.clase_seleccionada = self.values[0]
+        if self.clase_seleccionada in CLASES_COMPLEJAS:
+            # Mostrar confirmación
+            view = ConfirmacionClaseView(self.clase_seleccionada, self.view)
+            await interaction.response.send_message(
+                embed=emb.advertencia(
+                    "Clase compleja",
+                    f"La clase **{self.clase_seleccionada}** requiere conocimientos o "
+                    "formación avanzados.\n¿Confirmas que cumples estos requisitos?",
+                ),
+                view=view,
+                ephemeral=True,
+            )
+        else:
+            self.view.clase_confirmada = self.clase_seleccionada
+            self.view.stop()
+            await interaction.response.defer()
+
+
+class ConfirmacionClaseView(discord.ui.View):
+    """View de confirmación para clases complejas."""
+
+    def __init__(self, clase: str, parent_view) -> None:
+        super().__init__(timeout=120)
+        self.clase        = clase
+        self.parent_view  = parent_view
+
+    @discord.ui.button(label="✅ Confirmar", style=discord.ButtonStyle.success)
+    async def confirmar(self, interaction: Interaction,
+                         button: discord.ui.Button) -> None:
+        self.parent_view.clase_confirmada = self.clase
+        self.parent_view.stop()
+        await interaction.response.edit_message(
+            embed=emb.ok("Clase confirmada", f"Clase **{self.clase}** seleccionada."),
+            view=None,
+        )
+
+    @discord.ui.button(label="↩ Volver", style=discord.ButtonStyle.secondary)
+    async def volver(self, interaction: Interaction,
+                      button: discord.ui.Button) -> None:
+        self.parent_view.clase_confirmada = None
+        await interaction.response.edit_message(
+            embed=emb.info("Selección cancelada", "Por favor vuelve a seleccionar tu clase."),
+            view=None,
+        )
+
+
+class ClaseView(discord.ui.View):
+    """View con el desplegable de selección de clase."""
+
+    def __init__(self) -> None:
+        super().__init__(timeout=TIMEOUT_SEGUNDOS)
+        self.clase_confirmada: str | None = None
+        self.select = ClaseSelect()
+        self.add_item(self.select)
+
+
+# ---------------------------------------------------------------------------
+# View de género (botones)
+# ---------------------------------------------------------------------------
+
+class GeneroView(discord.ui.View):
+    """View con botones de selección de género."""
+
+    def __init__(self) -> None:
+        super().__init__(timeout=TIMEOUT_SEGUNDOS)
+        self.genero: str | None = None
+
+    @discord.ui.button(label="Hombre", style=discord.ButtonStyle.primary, emoji="🧑")
+    async def hombre(self, interaction: Interaction,
+                      button: discord.ui.Button) -> None:
+        self.genero = "Hombre"
         self.stop()
         await interaction.response.defer()
 
-    @discord.ui.button(label="Mujer", style=discord.ButtonStyle.primary)
-    async def mujer(self, interaction: discord.Interaction, _: discord.ui.Button) -> None:
-        self.valor = "Mujer"
+    @discord.ui.button(label="Mujer", style=discord.ButtonStyle.primary, emoji="👩")
+    async def mujer(self, interaction: Interaction,
+                     button: discord.ui.Button) -> None:
+        self.genero = "Mujer"
         self.stop()
         await interaction.response.defer()
 
 
-class SaltarView(discord.ui.View):
-    """Botón para saltar una pregunta opcional."""
+# ---------------------------------------------------------------------------
+# View de servicio previo (opcional con botón Saltar)
+# ---------------------------------------------------------------------------
+
+class ServicioPrevioView(discord.ui.View):
+    """View con botón de saltar para el servicio previo."""
 
     def __init__(self) -> None:
-        super().__init__(timeout=TIMEOUT_INACTIVIDAD)
-        self.saltado: bool = False
+        super().__init__(timeout=TIMEOUT_SEGUNDOS)
+        self.saltado = False
 
-    @discord.ui.button(label="⏭️ Saltar", style=discord.ButtonStyle.secondary)
-    async def saltar(self, interaction: discord.Interaction, _: discord.ui.Button) -> None:
+    @discord.ui.button(label="[Saltar]", style=discord.ButtonStyle.secondary, emoji="⏭️")
+    async def saltar(self, interaction: Interaction,
+                      button: discord.ui.Button) -> None:
         self.saltado = True
         self.stop()
         await interaction.response.defer()
 
 
-class SeleccionClaseView(discord.ui.View):
-    """Desplegable de selección de clase (Regulares + Complejas)."""
+# ---------------------------------------------------------------------------
+# View de verificación de fichas (persistente)
+# ---------------------------------------------------------------------------
 
-    def __init__(self) -> None:
-        super().__init__(timeout=TIMEOUT_INACTIVIDAD)
-        self.clase: str | None = None
-        self.es_compleja: bool = False
+class VerificationView(discord.ui.View):
+    """
+    View con botones de Aceptar/Denegar para fichas de personaje.
+    Persistente: se restaura tras reinicio del bot cargando el message_id.
+    Ver REVIEW.md §2.2.
+    """
 
-        opciones_regulares = [discord.SelectOption(label=c, description="Clase Regular") for c in CLASES_REGULARES]
-        opciones_complejas = [discord.SelectOption(label=c, description="⚠️ Clase Compleja", emoji="⚠️") for c in CLASES_COMPLEJAS]
+    def __init__(self, char_id: int, user_id: int, nombre: str) -> None:
+        super().__init__(timeout=None)  # Sin timeout — persistente
+        self.char_id  = char_id
+        self.user_id  = user_id
+        self.nombre   = nombre
 
-        self.select = discord.ui.Select(
-            placeholder="Selecciona tu clase…",
-            options=opciones_regulares + opciones_complejas,
-        )
-        self.select.callback = self._on_select
-        self.add_item(self.select)
-
-    async def _on_select(self, interaction: discord.Interaction) -> None:
-        self.clase = self.select.values[0]
-        self.es_compleja = self.clase in CLASES_COMPLEJAS
-        self.stop()
-        await interaction.response.defer()
-
-
-class ConfirmarClaseComplejaView(discord.ui.View):
-    """Confirmación para clases complejas."""
-
-    def __init__(self) -> None:
-        super().__init__(timeout=TIMEOUT_INACTIVIDAD)
-        self.confirmado: bool = False
-
-    @discord.ui.button(label="✅ Confirmar", style=discord.ButtonStyle.success)
-    async def confirmar(self, interaction: discord.Interaction, _: discord.ui.Button) -> None:
-        self.confirmado = True
-        self.stop()
-        await interaction.response.defer()
-
-    @discord.ui.button(label="↩️ Volver", style=discord.ButtonStyle.danger)
-    async def volver(self, interaction: discord.Interaction, _: discord.ui.Button) -> None:
-        self.confirmado = False
-        self.stop()
-        await interaction.response.defer()
-
-
-class VerificacionFichaView(discord.ui.View):
-    """Botones de aceptar/denegar ficha en el canal de verificación."""
-
-    def __init__(self, cog, user_id: int) -> None:
-        super().__init__(timeout=None)   # Sin timeout: persiste hasta interacción
-        self.cog = cog
-        self.user_id = user_id
-
-    @discord.ui.button(label="✅ Aceptar", style=discord.ButtonStyle.success, custom_id="ficha_aceptar")
-    async def aceptar(self, interaction: discord.Interaction, _: discord.ui.Button) -> None:
-        """Acepta la ficha, asigna roles de Usuario al personaje."""
-        from utils.permisos import get_rango, RANGO_NARRADOR
-        if get_rango(interaction.user) < RANGO_NARRADOR:
-            await interaction.response.send_message("Sin permisos.", ephemeral=True)
-            return
-
-        # No usar actualizar_verificacion directamente si el personaje no existe
-        # await self.cog.repo.actualizar_verificacion(self.user_id, 1)
-
-        # 1. Recuperar datos del formulario
-        form = await self.cog.repo.get_formulario(self.user_id)
-        if not form:
+    @discord.ui.button(
+        label="✅ Aceptar",
+        style=discord.ButtonStyle.success,
+        custom_id="verify_accept",
+    )
+    async def aceptar(self, interaction: Interaction,
+                       button: discord.ui.Button) -> None:
+        """Acepta la ficha y asigna el rol Usuario."""
+        # Verificar que quien pulsa es Narrador+
+        if get_user_level(interaction) < NARRADOR:
             await interaction.response.send_message(
-                embed=embed_error("No se encontró el formulario de registro. El usuario podría haberlo reiniciado."),
-                ephemeral=True
+                embed=emb.acceso_denegado("Narrador"), ephemeral=True
             )
             return
 
-        datos = json.loads(form["datos_json"])
-
-        # 2. Preparar datos para la tabla 'personajes'
-        # Eliminamos lo que no va en la tabla o necesita mapeo
-        personaje_data = datos.copy()
-        personaje_data.pop("psi_respuestas", None)
-        personaje_data.pop("_salto_servicio", None)
-        
-        # El usuario pidió que el test psicotécnico pase a ser 'Apto' si la ficha se acepta
-        personaje_data["psicotecnico"] = "Apto" 
-        personaje_data["verificado"] = 1
-
-        # 3. Crear el personaje en la BBDD
-        try:
-            await self.cog.repo.crear_personaje(self.user_id, personaje_data)
-        except Exception as exc:
-            log.error("Error al crear personaje para %s: %s", self.user_id, exc)
-            await interaction.response.send_message(
-                embed=embed_error(f"Error crítico al crear el personaje: {exc}"),
-                ephemeral=True
+        async with await repo.get_conn() as conn:
+            await repo.update_character_estado(
+                conn, self.user_id, "activo",
+                verificado_por=interaction.user.id,
             )
-            return
+            await repo.resolve_verification(conn, self.char_id)
+            await audit(
+                conn,
+                tipo="verificacion",
+                descripcion=f"Ficha de {self.nombre} ACEPTADA",
+                actor_id=interaction.user.id,
+                target_id=self.user_id,
+            )
 
-        # 4. Asignar roles
-        cfg = _cargar_config_roles()
-        usuario_role_id = int(cfg.get("usuario_role_id", 0))
+        # Asignar rol Usuario en el servidor
+        guild = interaction.guild
+        if guild:
+            cfg      = getattr(interaction.client, "raisa_config", {})
+            rol_id   = cfg.get("roles", {}).get("usuario")
+            if rol_id:
+                member = guild.get_member(self.user_id)
+                rol    = guild.get_role(rol_id)
+                if member and rol:
+                    try:
+                        await member.add_roles(rol, reason="Ficha verificada por RAISA")
+                    except discord.Forbidden:
+                        log_warning(f"[REGISTRO] Sin permisos para asignar rol a {self.user_id}")
 
-        miembro = interaction.guild.get_member(self.user_id)
-        if miembro and usuario_role_id:
-            rol = interaction.guild.get_role(usuario_role_id)
-            if rol:
-                await miembro.add_roles(rol, reason="Ficha de personaje aceptada")
-
-        # 5. Limpieza y notificación
-        await self.cog.repo.borrar_formulario(self.user_id)
-
+        # Notificar al usuario
         try:
-            user = await interaction.client.fetch_user(self.user_id)
-            await user.send(
-                embed=embed_ok(
-                    "Ficha aceptada",
-                    "¡Tu ficha de personaje ha sido **aceptada** por el personal de la Fundación!\n"
-                    "Ya tienes acceso a los sistemas operativos."
+            usuario = interaction.client.get_user(self.user_id)
+            if usuario:
+                await usuario.send(
+                    embed=emb.ok(
+                        "Ficha aceptada",
+                        f"Tu ficha para **{self.nombre}** ha sido **aceptada**.\n"
+                        "Ya tienes acceso al servidor como Usuario.",
+                    )
                 )
-            )
         except discord.Forbidden:
             pass
 
+        # Deshabilitar botones del mensaje
+        for item in self.children:
+            item.disabled = True
         await interaction.response.edit_message(
-            embed=embed_ok("Ficha aceptada", f"Ficha de <@{self.user_id}> aceptada por {interaction.user.mention}."),
-            view=None,
+            embed=emb.ok("Ficha aceptada", f"**{self.nombre}** verificado por {interaction.user.mention}"),
+            view=self,
         )
 
-    @discord.ui.button(label="❌ Denegar", style=discord.ButtonStyle.danger, custom_id="ficha_denegar")
-    async def denegar(self, interaction: discord.Interaction, _: discord.ui.Button) -> None:
-        """Abre modal para escribir feedback de denegación."""
-        from utils.permisos import get_rango, RANGO_NARRADOR
-        if get_rango(interaction.user) < RANGO_NARRADOR:
-            await interaction.response.send_message("Sin permisos.", ephemeral=True)
+    @discord.ui.button(
+        label="❌ Denegar",
+        style=discord.ButtonStyle.danger,
+        custom_id="verify_deny",
+    )
+    async def denegar(self, interaction: Interaction,
+                       button: discord.ui.Button) -> None:
+        """Abre un modal para pedir el motivo de denegación."""
+        if get_user_level(interaction) < NARRADOR:
+            await interaction.response.send_message(
+                embed=emb.acceso_denegado("Narrador"), ephemeral=True
+            )
             return
 
-        await interaction.response.send_modal(DenegarFichaModal(self.cog, self.user_id, interaction.message))
+        modal = DenegacionModal(self.char_id, self.user_id, self.nombre, self)
+        await interaction.response.send_modal(modal)
 
 
-class DenegarFichaModal(discord.ui.Modal, title="Motivo de denegación"):
-    """Modal para escribir el feedback de denegación al usuario."""
+class DenegacionModal(discord.ui.Modal, title="Motivo de denegación"):
+    """Modal para capturar el motivo de denegación de una ficha."""
 
     motivo = discord.ui.TextInput(
         label="Motivo",
-        style=discord.TextStyle.long,
-        placeholder="Explica el motivo de la denegación para que el usuario pueda corregirlo.",
-        max_length=1000,
+        placeholder="Explica el motivo de la denegación...",
+        style=discord.TextStyle.paragraph,
+        max_length=500,
     )
 
-    def __init__(self, cog, user_id: int, original_message: discord.Message) -> None:
+    def __init__(self, char_id: int, user_id: int, nombre: str,
+                  parent_view: VerificationView) -> None:
         super().__init__()
-        self.cog = cog
-        self.user_id = user_id
-        self.original_message = original_message
+        self.char_id     = char_id
+        self.user_id     = user_id
+        self.nombre      = nombre
+        self.parent_view = parent_view
 
-    async def on_submit(self, interaction: discord.Interaction) -> None:
-        await self.cog.repo.actualizar_verificacion(self.user_id, 2)
+    async def on_submit(self, interaction: Interaction) -> None:
+        motivo_txt = self.motivo.value
 
-        # Borrar formulario de la BBDD para que pueda re-registrarse
-        await self.cog.repo.borrar_formulario(self.user_id)
-
-        # Enviar feedback al usuario
-        try:
-            user = await interaction.client.fetch_user(self.user_id)
-            await user.send(
-                embed=discord.Embed(
-                    title="❌ Ficha denegada",
-                    description=(
-                        f"Tu ficha de personaje ha sido **denegada** por el personal de verificación.\n\n"
-                        f"**Motivo:**\n{self.motivo.value}\n\n"
-                        f"Puedes volver a registrarte corrigiendo los puntos indicados."
-                    ),
-                    color=discord.Color.red(),
-                )
+        async with await repo.get_conn() as conn:
+            await repo.update_character_estado(
+                conn, self.user_id, "denegado",
+                verificado_por=interaction.user.id,
+                motivo=motivo_txt,
             )
+            await repo.delete_form(conn, self.user_id)
+            await repo.resolve_verification(conn, self.char_id)
+            await audit(
+                conn,
+                tipo="verificacion",
+                descripcion=f"Ficha de {self.nombre} DENEGADA — {motivo_txt}",
+                actor_id=interaction.user.id,
+                target_id=self.user_id,
+            )
+
+        # Notificar al usuario
+        try:
+            usuario = interaction.client.get_user(self.user_id)
+            if usuario:
+                await usuario.send(
+                    embed=emb.error(
+                        "Ficha denegada",
+                        f"Tu ficha para **{self.nombre}** ha sido **denegada**.\n\n"
+                        f"**Motivo:** {motivo_txt}\n\n"
+                        "Puedes contactar con un Narrador para más información.",
+                    )
+                )
         except discord.Forbidden:
             pass
 
+        for item in self.parent_view.children:
+            item.disabled = True
         await interaction.response.edit_message(
-            embed=embed_error(f"Ficha de <@{self.user_id}> denegada por {interaction.user.mention}."),
-            view=None,
+            embed=emb.error("Ficha denegada",
+                             f"**{self.nombre}** denegado por {interaction.user.mention}\n"
+                             f"Motivo: {motivo_txt}"),
+            view=self.parent_view,
         )
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# COG PRINCIPAL
-# ──────────────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# Cog principal
+# ---------------------------------------------------------------------------
 
 class RegistroCog(commands.Cog, name="Registro"):
-    """Cog para el sistema de registro de personajes de RAISA."""
+    """Cog del sistema de registro de personajes."""
 
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-        self._suspender_formularios_inactivos.start()
+        # Tareas de timeout activas: {user_id: asyncio.Task}
+        self._timeout_tasks: dict[int, asyncio.Task] = {}
 
-    def cog_unload(self) -> None:
-        self._suspender_formularios_inactivos.cancel()
+    # -----------------------------------------------------------------------
+    # /registro
+    # -----------------------------------------------------------------------
 
-    @property
-    def repo(self):
-        return self.bot.repo
-
-    # ──────────────────────────────────────────────────────────────────────
-    # TAREA PERIÓDICA: Suspender formularios inactivos
-    # ──────────────────────────────────────────────────────────────────────
-
-    @tasks.loop(minutes=10)
-    async def _suspender_formularios_inactivos(self) -> None:
-        """Marca como suspendidos los formularios sin actividad > 20 min."""
-        n = await self.repo.suspender_formularios_inactivos(minutos=20)
-        if n:
-            log.info("%d formularios de registro suspendidos por inactividad.", n)
-
-    @_suspender_formularios_inactivos.before_loop
-    async def _wait(self) -> None:
-        await self.bot.wait_until_ready()
-
-    # ──────────────────────────────────────────────────────────────────────
-    # HELPERS
-    # ──────────────────────────────────────────────────────────────────────
-
-    def _cargar_banlist(self) -> list[str]:
-        """Carga la lista de palabras prohibidas para nombres."""
-        path = Path("config/banlist.json")
-        if not path.exists():
-            return []
-        return json.loads(path.read_text(encoding="utf-8")).get("palabras", [])
-
-    def _nombre_en_banlist(self, nombre: str, banlist: list[str]) -> bool:
-        """Verifica si alguna palabra de la banlist aparece en el nombre."""
-        nombre_lower = nombre.lower()
-        return any(palabra in nombre_lower for palabra in banlist)
-
-    async def _guardar_progreso(self, user_id: int, paso: int, datos: dict) -> None:
-        """Persiste el progreso del formulario en SQLite."""
-        await self.repo.upsert_formulario(user_id, paso, datos)
-
-    async def _esperar_mensaje(
-        self, dm: discord.DMChannel, user_id: int, timeout: float = TIMEOUT_INACTIVIDAD
-    ) -> discord.Message | None:
+    @app_commands.command(
+        name="registro",
+        description="Iniciar o retomar el registro de tu personaje"
+    )
+    async def registro(self, interaction: Interaction) -> None:
         """
-        Espera un mensaje del usuario en su MD.
-        Retorna None si hay timeout (inactividad).
+        Punto de entrada del formulario de registro.
+        Comprueba si hay progreso guardado y pregunta si continuar o empezar de cero.
+
+        Args:
+            interaction: Contexto de Discord.
         """
-        def check(m: discord.Message) -> bool:
-            return m.channel.id == dm.id and m.author.id == user_id
+        user_id = interaction.user.id
 
-        try:
-            msg = await self.bot.wait_for("message", check=check, timeout=timeout)
-            return msg
-        except asyncio.TimeoutError:
-            return None
-
-    async def _guardar_avatar(self, user_id: int, attachment: discord.Attachment) -> str | None:
-        """
-        Descarga y procesa la imagen de avatar del personaje.
-        Comprime a 85% de calidad y redimensiona a máx 800x800px usando Pillow.
-        Restricción de disco: nunca guardar sin comprimir.
-
-        :param user_id: ID del usuario.
-        :param attachment: Adjunto de Discord con la imagen.
-        :returns: Ruta relativa del archivo guardado o None si falla.
-        """
-        try:
-            from PIL import Image
-            import io
-
-            directorio = Path(f"data/characters/{user_id}")
-            directorio.mkdir(parents=True, exist_ok=True)
-            ruta = directorio / "avatar.png"
-
-            # Descargar bytes de la imagen
-            img_bytes = await attachment.read()
-            img = Image.open(io.BytesIO(img_bytes))
-
-            # Redimensionar si supera 800x800
-            img.thumbnail((800, 800), Image.LANCZOS)
-
-            # Convertir a RGB si tiene canal alpha (para guardar como PNG/JPEG)
-            if img.mode in ("RGBA", "P"):
-                img = img.convert("RGB")
-
-            img.save(str(ruta), format="PNG", optimize=True, quality=85)
-            log.info("Avatar guardado para user_id=%s en %s", user_id, ruta)
-            return str(ruta)
-
-        except Exception as exc:
-            log.error("Error guardando avatar de user_id=%s: %s", user_id, exc)
-            return None
-
-
-
-    @app_commands.command(name="registrar", description="Inicia o retoma el formulario de registro de personaje.")
-    async def registrar(self, interaction: discord.Interaction) -> None:
-        """
-        Punto de entrada del sistema de registro.
-        - Si hay formulario en progreso, pregunta si continuar o empezar de cero.
-        - Si no hay, inicia un nuevo formulario.
-        Todo el flujo ocurre por MD.
-        """
-        uid = interaction.user.id
-
-        # Verificar que no tenga ya un personaje verificado
-        personaje = await self.repo.get_personaje(uid)
-        if personaje and personaje["verificado"] == 1:
-            await interaction.response.send_message(
-                embed=embed_aviso("Ya registrado", "Ya tienes un personaje activo en el sistema."),
-                ephemeral=True,
-            )
-            return
-
-        # Intentar abrir MD
-        try:
-            dm = await interaction.user.create_dm()
-        except discord.Forbidden:
-            await interaction.response.send_message(
-                embed=embed_error("No se pueden abrir tus Mensajes Directos. Habilítalos para el servidor."),
-                ephemeral=True,
-            )
-            return
-
-        await interaction.response.send_message(
-            embed=embed_ok("Registro iniciado", "Revisa tus **Mensajes Directos** para continuar."),
-            ephemeral=True,
-        )
-
-        # ¿Hay formulario en progreso?
-        formulario = await self.repo.get_formulario(uid)
-        datos_previos = {}
-        paso_inicial = 1
-
-        if formulario:
-            datos_previos = json.loads(formulario["datos_json"])
-            paso_guardado = formulario["paso_actual"]
-
-            view_retomar = discord.ui.View(timeout=60)
-            btn_continuar = discord.ui.Button(label="▶️ Continuar desde donde lo dejé", style=discord.ButtonStyle.success)
-            btn_reiniciar = discord.ui.Button(label="🔄 Empezar de cero", style=discord.ButtonStyle.secondary)
-            respuesta_retomar = {"elegido": None}
-
-            async def on_continuar(it):
-                respuesta_retomar["elegido"] = "continuar"
-                view_retomar.stop()
-                await it.response.defer()
-
-            async def on_reiniciar(it):
-                respuesta_retomar["elegido"] = "reiniciar"
-                view_retomar.stop()
-                await it.response.defer()
-
-            btn_continuar.callback = on_continuar
-            btn_reiniciar.callback = on_reiniciar
-            view_retomar.add_item(btn_continuar)
-            view_retomar.add_item(btn_reiniciar)
-
-            await dm.send(
-                embed=embed_aviso(
-                    "Formulario en progreso",
-                    f"Tienes un formulario guardado en el paso `{paso_guardado}` de 12.\n"
-                    f"¿Deseas continuar donde lo dejaste o empezar de nuevo?"
-                ),
-                view=view_retomar,
-            )
-            await view_retomar.wait()
-
-            if respuesta_retomar["elegido"] == "continuar":
-                paso_inicial = paso_guardado
-            else:
-                datos_previos = {}
-                paso_inicial = 1
-                await self.repo.borrar_formulario(uid)
-
-        # Lanzar el flujo del formulario en una tarea independiente
-        asyncio.ensure_future(
-            self._flujo_formulario(dm, uid, datos_previos, paso_inicial)
-        )
-
-    # ──────────────────────────────────────────────────────────────────────
-    # FLUJO PRINCIPAL DEL FORMULARIO
-    # ──────────────────────────────────────────────────────────────────────
-
-    async def _flujo_formulario(
-        self, dm: discord.DMChannel, uid: int, datos: dict, paso_inicial: int
-    ) -> None:
-        """
-        Conduce el formulario de registro pregunta a pregunta.
-        Guarda el progreso en SQLite tras cada respuesta.
-        Suspende si hay inactividad de 20 minutos.
-        """
-        banlist = self._cargar_banlist()
-
-        # ── BLOQUE 1: Datos de personaje ──────────────────────────────────
-
-        # Paso 1 — Nombre y Apellidos
-        if paso_inicial <= 1:
-            while True:
-                await dm.send(embed=discord.Embed(
-                    title="📋 Registro — Paso 1/12",
-                    description="Escribe el **nombre completo** de tu personaje (nombre y apellidos).",
-                    color=discord.Color.blue(),
-                ))
-                msg = await self._esperar_mensaje(dm, uid)
-                if not msg:
-                    await self._timeout_formulario(dm, uid, 1, datos)
-                    return
-
-                nombre_completo = msg.content.strip()
-                if self._nombre_en_banlist(nombre_completo, banlist):
-                    await dm.send(embed=embed_error("Ese nombre no está permitido. Por favor, elige otro."))
-                    continue
-
-                partes = nombre_completo.split(maxsplit=1)
-                datos["nombre"] = partes[0]
-                datos["apellidos"] = partes[1] if len(partes) > 1 else ""
-                await self._guardar_progreso(uid, 2, datos)
-                break
-
-        # Paso 2 — Edad
-        if paso_inicial <= 2:
-            while True:
-                await dm.send(embed=discord.Embed(
-                    title="📋 Registro — Paso 2/12",
-                    description="¿Cuál es la **edad** de tu personaje? (Mínimo 18 años.)",
-                    color=discord.Color.blue(),
-                ))
-                msg = await self._esperar_mensaje(dm, uid)
-                if not msg:
-                    await self._timeout_formulario(dm, uid, 2, datos)
-                    return
-
-                try:
-                    edad = int(msg.content.strip())
-                    if edad < 18 or edad > 60:
-                        raise ValueError
-                    datos["edad"] = edad
-                    await self._guardar_progreso(uid, 3, datos)
-                    break
-                except ValueError:
-                    await dm.send(embed=embed_error("La edad debe ser un número válido y tener al menos **18 años**."))
-
-        # Paso 3 — Género
-        if paso_inicial <= 3:
-            view_genero = SeleccionGeneroView()
-            await dm.send(
-                embed=discord.Embed(title="📋 Registro — Paso 3/12", description="Selecciona el **género** de tu personaje.", color=discord.Color.blue()),
-                view=view_genero,
-            )
-            await view_genero.wait()
-            if not view_genero.valor:
-                await self._timeout_formulario(dm, uid, 3, datos)
-                return
-            datos["genero"] = view_genero.valor
-            await self._guardar_progreso(uid, 4, datos)
-
-        # Paso 4 — Nacionalidad
-        if paso_inicial <= 4:
-            await dm.send(embed=discord.Embed(
-                title="📋 Registro — Paso 4/12",
-                description="¿Cuál es la **nacionalidad** del personaje?",
-                color=discord.Color.blue(),
-            ))
-            msg = await self._esperar_mensaje(dm, uid)
-            if not msg:
-                await self._timeout_formulario(dm, uid, 4, datos)
-                return
-            datos["nacionalidad"] = msg.content.strip()
-            await self._guardar_progreso(uid, 5, datos)
-
-        # ── BLOQUE 2: Datos de servicio ───────────────────────────────────
-
-        # Paso 5 — Servicio previo (opcional)
-        if paso_inicial <= 5:
-            view_saltar = SaltarView()
-            await dm.send(
-                embed=discord.Embed(
-                    title="📋 Registro — Paso 5/12",
-                    description="¿Tiene tu personaje **servicio previo** (Fundación SCP, fuerzas armadas, etc.)?\n"
-                                "Escríbelo o pulsa **Saltar** si no aplica.",
-                    color=discord.Color.blue(),
-                ),
-                view=view_saltar,
-            )
-
-            # Esperar tanto mensaje como botón saltar (race)
-            done, pending = await asyncio.wait(
-                [
-                    asyncio.create_task(self._esperar_mensaje(dm, uid, timeout=TIMEOUT_INACTIVIDAD)),
-                    asyncio.create_task(self._esperar_view(view_saltar)),
-                ],
-                return_when=asyncio.FIRST_COMPLETED,
-            )
-            for t in pending:
-                t.cancel()
-
-            resultado = list(done)[0].result()
-            if resultado is None:
-                await self._timeout_formulario(dm, uid, 5, datos)
-                return
-
-            if isinstance(resultado, discord.Message):
-                datos["servicio_previo"] = resultado.content.strip()
-                datos["_salto_servicio"] = False
-            else:
-                datos["servicio_previo"] = None
-                datos["_salto_servicio"] = True
-
-            await self._guardar_progreso(uid, 6, datos)
-
-        # Paso 6 — Destinos y operaciones (solo si no saltó paso 5)
-        if paso_inicial <= 6 and not datos.get("_salto_servicio"):
-            await dm.send(embed=discord.Embed(
-                title="📋 Registro — Paso 6/12",
-                description="Describe los **destinos y operaciones previas** en los que ha estado tu personaje.",
-                color=discord.Color.blue(),
-            ))
-            msg = await self._esperar_mensaje(dm, uid)
-            if not msg:
-                await self._timeout_formulario(dm, uid, 6, datos)
-                return
-            datos["destinos"] = msg.content.strip()
-            await self._guardar_progreso(uid, 7, datos)
-        elif paso_inicial <= 6:
-            datos["destinos"] = None
-            await self._guardar_progreso(uid, 7, datos)
-
-        # Paso 7 — Clase
-        if paso_inicial <= 7:
-            clase_seleccionada = None
-            while clase_seleccionada is None:
-                view_clase = SeleccionClaseView()
-                await dm.send(
-                    embed=discord.Embed(title="📋 Registro — Paso 7/12", description="Selecciona la **clase** de tu personaje.", color=discord.Color.blue()),
-                    view=view_clase,
+        # Verificar que no tiene ya un personaje activo
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, user_id)
+            if char and char["estado"] in ("activo", "pendiente"):
+                await interaction.response.send_message(
+                    embed=emb.advertencia(
+                        "Ya tienes un personaje",
+                        "Ya tienes un personaje activo o pendiente de verificación.\n"
+                        "Contacta con un Narrador si necesitas ayuda.",
+                    ),
+                    ephemeral=True,
                 )
-                await view_clase.wait()
-                if not view_clase.clase:
-                    await self._timeout_formulario(dm, uid, 7, datos)
-                    return
+                return
 
-                if view_clase.es_compleja:
-                    # Mostrar aviso de confirmación
-                    view_confirm = ConfirmarClaseComplejaView()
-                    await dm.send(
-                        embed=embed_aviso(
-                            "Clase compleja",
-                            f"La clase **{view_clase.clase}** requiere conocimientos o formación avanzados.\n"
-                            f"¿Confirmas que tu personaje cumple estos requisitos?"
-                        ),
-                        view=view_confirm,
-                    )
-                    await view_confirm.wait()
-                    if view_confirm.confirmado:
-                        clase_seleccionada = view_clase.clase
-                    # Si no confirma, vuelve al selector
-                else:
-                    clase_seleccionada = view_clase.clase
+            # Ver si hay un formulario denegado previo (ver REVIEW.md §2.1)
+            if char and char["estado"] == "denegado":
+                await interaction.response.send_message(
+                    embed=emb.error(
+                        "Registro denegado",
+                        "Tu ficha fue denegada anteriormente. "
+                        "Contacta con un Gestor+ para reiniciar el proceso.",
+                    ),
+                    ephemeral=True,
+                )
+                return
 
-            datos["clase"] = clase_seleccionada
-            await self._guardar_progreso(uid, 8, datos)
+            form = await repo.get_form(conn, user_id)
 
-        # Paso 8 — Examen psicotécnico (5 preguntas de respuesta libre)
-        if paso_inicial <= 8:
-            respuestas_psi: list[str] = []
+        # Confirmar si se puede enviar MD
+        try:
+            await interaction.response.send_message(
+                embed=emb.ok("Registro iniciado",
+                              "Te he enviado un Mensaje Directo para continuar el proceso."),
+                ephemeral=True,
+            )
+        except Exception:
+            await interaction.response.send_message(
+                embed=emb.error("Error", "No se pudo iniciar el proceso de registro."),
+                ephemeral=True,
+            )
+            return
 
-            await dm.send(embed=discord.Embed(
-                title="📋 Registro — Examen Psicotécnico (Paso 8/12)",
-                description=(
-                    "A continuación se te harán **5 preguntas** de carácter psicológico.\n"
-                    "Responde con sinceridad y con tus propias palabras.\n"
-                    "No hay respuestas correctas ni incorrectas: el personal de verificación "
-                    "leerá tus respuestas directamente."
+        # Si hay formulario en progreso, preguntar
+        if form and not form["suspendido"]:
+            continuado = await self._preguntar_continuar(interaction.user)
+            if continuado is None:
+                return
+            if not continuado:
+                async with await repo.get_conn() as conn:
+                    await repo.delete_form(conn, user_id)
+                form = None
+
+        # Iniciar formulario
+        asyncio.create_task(
+            self._ejecutar_formulario(interaction.user, form)
+        )
+
+    # -----------------------------------------------------------------------
+    # Preguntar si continuar
+    # -----------------------------------------------------------------------
+
+    async def _preguntar_continuar(self, user: discord.User) -> bool | None:
+        """
+        Pregunta al usuario si desea continuar el formulario o empezar de cero.
+
+        Args:
+            user: Usuario de Discord.
+
+        Returns:
+            True para continuar, False para empezar de cero, None si timeout.
+        """
+        class ContinuarView(discord.ui.View):
+            def __init__(self):
+                super().__init__(timeout=120)
+                self.resultado: bool | None = None
+
+            @discord.ui.button(label="Continuar", style=discord.ButtonStyle.primary, emoji="▶️")
+            async def continuar(self, interaction, button):
+                self.resultado = True
+                self.stop()
+                await interaction.response.defer()
+
+            @discord.ui.button(label="Empezar de cero", style=discord.ButtonStyle.danger, emoji="🔄")
+            async def de_cero(self, interaction, button):
+                self.resultado = False
+                self.stop()
+                await interaction.response.defer()
+
+        view = ContinuarView()
+        try:
+            await user.send(
+                embed=emb.info(
+                    "Formulario en progreso",
+                    "Tienes un formulario de registro pendiente.\n"
+                    "¿Deseas continuar desde donde lo dejaste o empezar de cero?",
                 ),
-                color=discord.Color.orange(),
-            ))
-
-            for idx, pregunta in enumerate(PREGUNTAS_PSI, start=1):
-                await dm.send(embed=discord.Embed(
-                    title=f"🧠 Pregunta {idx}/5",
-                    description=pregunta,
-                    color=discord.Color.orange(),
-                ))
-                msg = await self._esperar_mensaje(dm, uid)
-                if not msg:
-                    await self._timeout_formulario(dm, uid, 8, datos)
-                    return
-                respuestas_psi.append(msg.content.strip())
-
-            # Guardar todas las respuestas en datos (solo para el embed, no a la BBDD final)
-            datos["psi_respuestas"] = respuestas_psi
-            await dm.send(embed=embed_ok("Examen completado", "Has completado el examen psicotécnico. Tus respuestas han sido registradas."))
-            await self._guardar_progreso(uid, 9, datos)
-
-        # ── BLOQUE 3: Datos civiles ───────────────────────────────────────
-
-        # Paso 9 — Estudios
-        if paso_inicial <= 9:
-            await dm.send(embed=discord.Embed(
-                title="📋 Registro — Paso 9/12",
-                description="Describe los **estudios** del personaje.",
-                color=discord.Color.blue(),
-            ))
-            msg = await self._esperar_mensaje(dm, uid)
-            if not msg:
-                await self._timeout_formulario(dm, uid, 9, datos)
-                return
-            datos["estudios"] = msg.content.strip()
-            await self._guardar_progreso(uid, 10, datos)
-
-        # Paso 10 — Ocupaciones previas
-        if paso_inicial <= 10:
-            await dm.send(embed=discord.Embed(
-                title="📋 Registro — Paso 10/12",
-                description="¿Cuáles han sido las **ocupaciones previas** del personaje?",
-                color=discord.Color.blue(),
-            ))
-            msg = await self._esperar_mensaje(dm, uid)
-            if not msg:
-                await self._timeout_formulario(dm, uid, 10, datos)
-                return
-            datos["ocupaciones"] = msg.content.strip()
-            await self._guardar_progreso(uid, 11, datos)
-
-        # ── BLOQUE 4: Off-rol ─────────────────────────────────────────────
-
-        # Paso 11 — Trasfondo
-        if paso_inicial <= 11:
-            await dm.send(embed=discord.Embed(
-                title="📋 Registro — Paso 11/12",
-                description="Escribe el **trasfondo e historia** de tu personaje.",
-                color=discord.Color.blue(),
-            ))
-            msg = await self._esperar_mensaje(dm, uid)
-            if not msg:
-                await self._timeout_formulario(dm, uid, 11, datos)
-                return
-            datos["trasfondo"] = msg.content.strip()
-            await self._guardar_progreso(uid, 12, datos)
-
-        # Paso 12 — Apariencia / Foto (IMAGEN OBLIGATORIA)
-        if paso_inicial <= 12:
-            avatar_guardado = False
-            while not avatar_guardado:
-                await dm.send(embed=discord.Embed(
-                    title="📋 Registro — Paso 12/12 — Apariencia",
-                    description="Envía una **imagen** que represente la apariencia de tu personaje.\n"
-                                "Esta imagen se usará como foto de perfil en el sistema de radio.",
-                    color=discord.Color.blue(),
-                ))
-                msg = await self._esperar_mensaje(dm, uid)
-                if not msg:
-                    await self._timeout_formulario(dm, uid, 12, datos)
-                    return
-
-                if not msg.attachments:
-                    await dm.send(embed=embed_error("Debes adjuntar una **imagen** a tu mensaje."))
-                    continue
-
-                adjunto = msg.attachments[0]
-                if not adjunto.content_type or not adjunto.content_type.startswith("image/"):
-                    await dm.send(embed=embed_error("El archivo adjunto debe ser una **imagen** (JPG, PNG, etc.)."))
-                    continue
-
-                ruta = await self._guardar_avatar(uid, adjunto)
-                if not ruta:
-                    await dm.send(embed=embed_error("Error al procesar la imagen. Intenta con otro archivo."))
-                    continue
-
-                datos["avatar_path"] = ruta
-                datos["user_id"] = uid
-                avatar_guardado = True
-
-        # ── ENVIAR FICHA AL CANAL DE VERIFICACIÓN ────────────────────────
-
-        await self._enviar_ficha_verificacion(uid, datos)
-        # ELIMINADO: self.repo.borrar_formulario(uid) -> Se borra al ACEPTAR o DENEGAR
-
-        await dm.send(
-            embed=embed_ok(
-                "Formulario completado",
-                "Tu ficha ha sido enviada al personal de verificación.\n"
-                "Recibirás una notificación cuando sea revisada."
+                view=view,
             )
-        )
+        except discord.Forbidden:
+            return None
 
-    async def _esperar_view(self, view: discord.ui.View) -> bool:
-        """Espera a que una View sea interactuada. Devuelve True al completarse."""
         await view.wait()
-        return True
+        return view.resultado
 
-    async def _timeout_formulario(self, dm: discord.DMChannel, uid: int, paso: int, datos: dict) -> None:
-        """Gestiona el timeout del formulario: guarda progreso y notifica."""
-        await self.repo.upsert_formulario(uid, paso, datos, suspendido=True)
-        await dm.send(
-            embed=embed_aviso(
-                "Formulario suspendido",
-                "No has respondido en 20 minutos. El formulario ha sido **guardado**.\n"
-                "Usa `/registrar` para retomarlo donde lo dejaste."
-            )
-        )
-        log.info("Formulario suspendido por inactividad: user_id=%s paso=%s", uid, paso)
+    # -----------------------------------------------------------------------
+    # Ejecutar formulario completo
+    # -----------------------------------------------------------------------
 
-    async def _enviar_ficha_verificacion(self, uid: int, datos: dict) -> None:
-        """Envía la ficha completada al canal de verificación definido en .env."""
-        canal_id = int(os.getenv("CANAL_VERIFICACION_ID", "0"))
-        if not canal_id:
-            log.error("CANAL_VERIFICACION_ID no configurado en .env")
-            return
+    async def _ejecutar_formulario(self, user: discord.User,
+                                    form_existente=None) -> None:
+        """
+        Ejecuta el flujo completo del formulario de registro por MD.
+        Cada respuesta se persiste antes de continuar.
 
-        canal = self.bot.get_channel(canal_id)
-        if not canal:
-            log.error("Canal de verificación no encontrado: %s", canal_id)
-            return
+        Args:
+            user          : Usuario de Discord.
+            form_existente: Fila de registration_forms si hay progreso guardado.
+        """
+        user_id = user.id
 
-        # Construir URL de avatar si existe
-        avatar_url = None
-        avatar_path = Path(datos.get("avatar_path", ""))
-        if avatar_path.exists():
-            # Discord no puede acceder a rutas locales; en prod se usaría un CDN o attachment
-            # Aquí enviamos la imagen como adjunto junto al embed
-            pass
+        # Restaurar datos guardados o iniciar vacío
+        if form_existente:
+            datos   = json.loads(form_existente["datos_json"] or "{}")
+            paso_ini= form_existente["paso_actual"]
+        else:
+            datos    = {}
+            paso_ini = 1
 
-        embed = embed_ficha_personaje(datos)
-        view = VerificacionFichaView(self, uid)
+        # Iniciar/reanudar tarea de timeout
+        self._reiniciar_timeout(user_id)
 
         try:
-            if avatar_path.exists():
-                file = discord.File(str(avatar_path), filename="avatar.png")
-                embed.set_image(url="attachment://avatar.png")
-                await canal.send(embed=embed, view=view, file=file)
-            else:
-                await canal.send(embed=embed, view=view)
-        except Exception as exc:
-            log.error("Error enviando ficha al canal de verificación: %s", exc)
+            datos = await self._bloque1(user, user_id, datos, paso_ini)
+            if datos is None: return
 
+            datos = await self._bloque2(user, user_id, datos, paso_ini)
+            if datos is None: return
+
+            datos = await self._bloque3(user, user_id, datos, paso_ini)
+            if datos is None: return
+
+            datos = await self._bloque4(user, user_id, datos, paso_ini)
+            if datos is None: return
+
+            # Formulario completado
+            await self._completar_formulario(user, datos)
+
+        except asyncio.TimeoutError:
+            async with await repo.get_conn() as conn:
+                await repo.suspend_form(conn, user_id)
+            try:
+                await user.send(embed=emb.formulario_suspendido())
+            except discord.Forbidden:
+                pass
+        except discord.Forbidden:
+            log_warning(f"[REGISTRO] MD bloqueados para user_id={user_id}")
+        finally:
+            self._cancelar_timeout(user_id)
+
+    # -----------------------------------------------------------------------
+    # Helper: esperar respuesta de texto por MD
+    # -----------------------------------------------------------------------
+
+    async def _esperar_texto(self, user: discord.User, user_id: int,
+                               prompt_embed: discord.Embed,
+                               view: discord.ui.View | None = None) -> str | None:
+        """
+        Envía un embed de pregunta y espera la respuesta de texto del usuario por MD.
+
+        Args:
+            user        : Usuario de Discord.
+            user_id     : discord user_id (para filtrar mensajes).
+            prompt_embed: Embed con la pregunta.
+            view        : View opcional con botones (Saltar, etc.).
+
+        Returns:
+            Texto de la respuesta, o None si timeout.
+        """
+        await user.send(embed=prompt_embed, view=view)
+
+        def check(m: discord.Message) -> bool:
+            return (
+                isinstance(m.channel, discord.DMChannel)
+                and m.author.id == user_id
+            )
+
+        self._reiniciar_timeout(user_id)
+        msg = await self.bot.wait_for("message", check=check, timeout=TIMEOUT_SEGUNDOS)
+        self._reiniciar_timeout(user_id)
+        return msg.content.strip()
+
+    async def _esperar_view(self, user: discord.User, user_id: int,
+                             prompt_embed: discord.Embed,
+                             view: discord.ui.View) -> discord.ui.View:
+        """
+        Envía un embed con una View y espera a que el usuario interactúe.
+
+        Returns:
+            La view después de que el usuario interactuó.
+        """
+        await user.send(embed=prompt_embed, view=view)
+        self._reiniciar_timeout(user_id)
+        try:
+            await asyncio.wait_for(view.wait(), timeout=TIMEOUT_SEGUNDOS)
+        finally:
+            self._reiniciar_timeout(user_id)
+        return view
+
+    # -----------------------------------------------------------------------
+    # Helper: timeout
+    # -----------------------------------------------------------------------
+
+    def _reiniciar_timeout(self, user_id: int) -> None:
+        """Reinicia el contador de timeout para un usuario."""
+        self._cancelar_timeout(user_id)
+
+    def _cancelar_timeout(self, user_id: int) -> None:
+        """Cancela la tarea de timeout activa para un usuario."""
+        task = self._timeout_tasks.pop(user_id, None)
+        if task and not task.done():
+            task.cancel()
+
+    # -----------------------------------------------------------------------
+    # BLOQUE 1 — Datos de personaje
+    # -----------------------------------------------------------------------
+
+    async def _bloque1(self, user: discord.User, user_id: int,
+                        datos: dict, paso_ini: int) -> dict | None:
+        """
+        Bloque 1: nombre, edad, género, nacionalidad.
+        Pasos 1-4.
+        """
+        # Paso 1: Nombre
+        if paso_ini <= 1:
+            while True:
+                nombre = await self._esperar_texto(
+                    user, user_id,
+                    emb.formulario_inicio(1, 12, "¿Cuál es el **nombre completo** de tu personaje?"),
+                )
+                if nombre is None: return None
+                resultado = validar_nombre_banlist(nombre)
+                if resultado:
+                    datos["nombre_completo"] = nombre
+                    break
+                await user.send(embed=emb.error("Nombre no válido", resultado.motivo))
+
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 1, datos)
+
+        # Paso 2: Edad
+        if paso_ini <= 2:
+            while True:
+                edad_txt = await self._esperar_texto(
+                    user, user_id,
+                    emb.formulario_inicio(2, 12, "¿Cuántos años tiene tu personaje?"),
+                )
+                if edad_txt is None: return None
+                resultado = validar_edad(edad_txt)
+                if resultado:
+                    datos["edad"] = int(edad_txt.strip())
+                    break
+                await user.send(embed=emb.error("Edad inválida", resultado.motivo))
+
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 2, datos)
+
+        # Paso 3: Género
+        if paso_ini <= 3:
+            view = GeneroView()
+            await self._esperar_view(
+                user, user_id,
+                emb.formulario_inicio(3, 12, "Selecciona el **género** de tu personaje:"),
+                view,
+            )
+            if view.genero is None: return None
+            datos["genero"] = view.genero
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 3, datos)
+
+        # Paso 4: Nacionalidad
+        if paso_ini <= 4:
+            nac = await self._esperar_texto(
+                user, user_id,
+                emb.formulario_inicio(4, 12, "¿Cuál es la **nacionalidad** de tu personaje?"),
+            )
+            if nac is None: return None
+            datos["nacionalidad"] = nac
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 4, datos)
+
+        return datos
+
+    # -----------------------------------------------------------------------
+    # BLOQUE 2 — Datos de servicio
+    # -----------------------------------------------------------------------
+
+    async def _bloque2(self, user: discord.User, user_id: int,
+                        datos: dict, paso_ini: int) -> dict | None:
+        """
+        Bloque 2: servicio previo (opcional), destinos/ops, clase, psicotécnico.
+        Pasos 5-8.
+        """
+        # Paso 5: Servicio previo (opcional)
+        if paso_ini <= 5:
+            view = ServicioPrevioView()
+            servicio = await self._esperar_texto(
+                user, user_id,
+                emb.formulario_inicio(
+                    5, 12,
+                    "¿Tu personaje tiene **servicio militar previo**?\n"
+                    "Descríbelo o pulsa **[Saltar]** si no aplica.",
+                ),
+                view=view,
+            )
+            if view.saltado:
+                datos["servicio_previo"] = None
+                datos["destinos_ops"]    = None
+            else:
+                if servicio is None: return None
+                datos["servicio_previo"] = servicio
+
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 5, datos)
+
+        # Paso 6: Destinos y operaciones (solo si no saltó paso 5)
+        if paso_ini <= 6 and datos.get("servicio_previo") is not None:
+            destinos = await self._esperar_texto(
+                user, user_id,
+                emb.formulario_inicio(
+                    6, 12,
+                    "Detalla los **destinos y operaciones** en las que participó tu personaje.",
+                ),
+            )
+            if destinos is None: return None
+            datos["destinos_ops"] = destinos
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 6, datos)
+
+        # Paso 7: Clase
+        if paso_ini <= 7:
+            clase_seleccionada: str | None = None
+            while not clase_seleccionada:
+                view = ClaseView()
+                await self._esperar_view(
+                    user, user_id,
+                    emb.formulario_inicio(7, 12, "Selecciona la **clase** de tu personaje:"),
+                    view,
+                )
+                clase_seleccionada = view.clase_confirmada
+
+            datos["clase"]        = clase_seleccionada
+            datos["clase_compleja"] = 1 if clase_seleccionada in CLASES_COMPLEJAS else 0
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 7, datos)
+
+        # Paso 8: Psicotécnico
+        if paso_ini <= 8:
+            resultado_psico = await self._evaluar_psicotecnico(user, user_id)
+
+            if resultado_psico == "No apto":
+                # Cancelar registro (ver REVIEW.md §2.1)
+                async with await repo.get_conn() as conn:
+                    # Crear personaje con estado denegado para bloquear reintento
+                    datos.update({
+                        "user_id": user_id, "estado": "denegado",
+                        "resultado_psico": "No apto",
+                        "estudios": "", "ocupaciones_previas": "",
+                        "trasfondo": "",
+                    })
+                    await repo.create_character(conn, datos)
+                    await repo.delete_form(conn, user_id)
+                    await audit(
+                        conn,
+                        tipo="verificacion",
+                        descripcion=f"Registro denegado por psicotécnico: user_id={user_id}",
+                        target_id=user_id,
+                    )
+                await user.send(
+                    embed=emb.error(
+                        "Registro denegado",
+                        "No has superado el examen psicotécnico.\n"
+                        "No puedes continuar con el proceso de registro.",
+                    )
+                )
+                return None
+
+            datos["resultado_psico"] = resultado_psico
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 8, datos)
+
+        return datos
+
+    async def _evaluar_psicotecnico(self, user: discord.User, user_id: int) -> str:
+        """
+        Ejecuta el examen psicotécnico y devuelve el resultado.
+
+        Returns:
+            'Apto' | 'Apto, pero pendejo' | 'No apto'
+        """
+        import random
+        pregunta_data = random.choice(PREGUNTAS_PSICO)
+
+        respuesta = await self._esperar_texto(
+            user, user_id,
+            emb.formulario_inicio(
+                8, 12,
+                f"**Examen psicotécnico**\n\n{pregunta_data['pregunta']}\n\n"
+                "Responde con la letra (A, B o C):",
+            ),
+        )
+        if respuesta is None:
+            return "No apto"
+
+        respuesta_upper = respuesta.strip().upper()[:1]
+
+        if respuesta_upper == pregunta_data["correcta"]:
+            return "Apto"
+        elif respuesta_upper == pregunta_data["apto_pero"]:
+            return "Apto, pero pendejo"
+        else:
+            return "No apto"
+
+    # -----------------------------------------------------------------------
+    # BLOQUE 3 — Datos civiles
+    # -----------------------------------------------------------------------
+
+    async def _bloque3(self, user: discord.User, user_id: int,
+                        datos: dict, paso_ini: int) -> dict | None:
+        """
+        Bloque 3: estudios, ocupaciones previas.
+        Pasos 9-10.
+        """
+        if paso_ini <= 9:
+            estudios = await self._esperar_texto(
+                user, user_id,
+                emb.formulario_inicio(9, 12,
+                                       "¿Qué **estudios** tiene tu personaje?"),
+            )
+            if estudios is None: return None
+            datos["estudios"] = estudios
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 9, datos)
+
+        if paso_ini <= 10:
+            ocupaciones = await self._esperar_texto(
+                user, user_id,
+                emb.formulario_inicio(10, 12,
+                                       "¿Cuáles han sido las **ocupaciones previas** de tu personaje?"),
+            )
+            if ocupaciones is None: return None
+            datos["ocupaciones_previas"] = ocupaciones
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 10, datos)
+
+        return datos
+
+    # -----------------------------------------------------------------------
+    # BLOQUE 4 — Off-rol
+    # -----------------------------------------------------------------------
+
+    async def _bloque4(self, user: discord.User, user_id: int,
+                        datos: dict, paso_ini: int) -> dict | None:
+        """
+        Bloque 4: trasfondo e historia, apariencia/avatar.
+        Pasos 11-12.
+        """
+        if paso_ini <= 11:
+            trasfondo = await self._esperar_texto(
+                user, user_id,
+                emb.formulario_inicio(
+                    11, 12,
+                    "Escribe el **trasfondo e historia** de tu personaje.\n"
+                    "_(off-rol: este texto no es IC)_",
+                ),
+            )
+            if trasfondo is None: return None
+            datos["trasfondo"] = trasfondo
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 11, datos)
+
+        # Paso 12: Avatar (imagen adjunta obligatoria)
+        if paso_ini <= 12:
+            avatar_path = await self._solicitar_avatar(user, user_id)
+            if avatar_path is None: return None
+            datos["avatar_path"] = str(avatar_path)
+            async with await repo.get_conn() as conn:
+                await repo.upsert_form(conn, user_id, 12, datos)
+
+        return datos
+
+    async def _solicitar_avatar(self, user: discord.User,
+                                 user_id: int) -> Path | None:
+        """
+        Solicita y descarga la imagen de apariencia del personaje.
+        Comprime con Pillow: máx 800×800px, calidad 85%.
+        Ver REVIEW.md §3.2.
+
+        Returns:
+            Path al archivo guardado, o None si falla/timeout.
+        """
+        await user.send(
+            embed=emb.formulario_inicio(
+                12, 12,
+                "**Paso final:** Envía una **imagen** de la apariencia de tu personaje.\n"
+                "_(adjunta el archivo directamente en este chat)_",
+            )
+        )
+
+        def check(m: discord.Message) -> bool:
+            return (
+                isinstance(m.channel, discord.DMChannel)
+                and m.author.id == user_id
+                and bool(m.attachments)
+            )
+
+        self._reiniciar_timeout(user_id)
+        msg = await self.bot.wait_for("message", check=check, timeout=TIMEOUT_SEGUNDOS)
+        attachment = msg.attachments[0]
+
+        # Verificar que es imagen
+        if not any(attachment.filename.lower().endswith(ext)
+                   for ext in (".png", ".jpg", ".jpeg", ".webp")):
+            await user.send(
+                embed=emb.error("Formato inválido",
+                                "Por favor envía una imagen PNG, JPG o WEBP.")
+            )
+            return await self._solicitar_avatar(user, user_id)  # reintentar
+
+        # Descargar y comprimir
+        try:
+            imagen_bytes = await attachment.read()
+            avatar_path  = await self._comprimir_avatar(user_id, imagen_bytes)
+            return avatar_path
+        except Exception as exc:
+            log_warning(f"[REGISTRO] Error procesando avatar de {user_id}: {exc}")
+            await user.send(
+                embed=emb.error("Error al procesar imagen",
+                                "Ocurrió un error. Por favor envía otra imagen.")
+            )
+            return None
+
+    async def _comprimir_avatar(self, user_id: int, imagen_bytes: bytes) -> Path:
+        """
+        Comprime el avatar con Pillow: redimensionar a máx 800×800, calidad 85%.
+        Operación ejecutada en executor para no bloquear el event loop.
+
+        Args:
+            user_id     : discord user_id (para nombre del archivo).
+            imagen_bytes: Bytes de la imagen original.
+
+        Returns:
+            Path al archivo guardado.
+        """
+        def _comprimir(uid: int, data: bytes) -> Path:
+            try:
+                from PIL import Image
+            except ImportError:
+                # Pillow no instalado → guardar sin comprimir
+                path = AVATAR_DIR / str(uid)
+                path.mkdir(parents=True, exist_ok=True)
+                out  = path / "avatar.png"
+                out.write_bytes(data)
+                return out
+
+            img = Image.open(io.BytesIO(data)).convert("RGB")
+            img.thumbnail(AVATAR_MAX_SIZE, Image.LANCZOS)
+
+            path = AVATAR_DIR / str(uid)
+            path.mkdir(parents=True, exist_ok=True)
+            out  = path / "avatar.png"
+            img.save(out, format="PNG", optimize=True, quality=AVATAR_QUALITY)
+            return out
+
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, _comprimir, user_id, imagen_bytes)
+
+    # -----------------------------------------------------------------------
+    # Completar formulario → enviar ficha a verificación
+    # -----------------------------------------------------------------------
+
+    async def _completar_formulario(self, user: discord.User, datos: dict) -> None:
+        """
+        Finaliza el formulario: crea el personaje en BBDD, envía la ficha al
+        canal de verificación y notifica al usuario.
+
+        Args:
+            user  : Usuario de Discord.
+            datos : Respuestas acumuladas del formulario.
+        """
+        user_id = user.id
+        datos["user_id"] = user_id
+        datos.setdefault("estado", "pendiente")
+
+        async with await repo.get_conn() as conn:
+            # Crear personaje en estado 'pendiente'
+            char_id = await repo.create_character(conn, datos)
+
+            # Obtener config de canal de verificación
+            cfg       = getattr(self.bot, "raisa_config", {})
+            canal_id  = cfg.get("canales", {}).get("verificacion")
+
+            if not canal_id:
+                log_warning("[REGISTRO] Canal de verificación no configurado en roles.json")
+                await repo.delete_form(conn, user_id)
+                await user.send(embed=emb.error(
+                    "Error de configuración",
+                    "El canal de verificación no está configurado. Contacta con un Admin.",
+                ))
+                return
+
+            # Enviar ficha al canal de verificación
+            embed_ficha = emb.ficha_verificacion({**datos, "user_id": user_id})
+            view        = VerificationView(char_id=char_id, user_id=user_id,
+                                           nombre=datos.get("nombre_completo", "—"))
+
+            msg = None
+            for guild in self.bot.guilds:
+                canal = guild.get_channel(canal_id)
+                if canal and isinstance(canal, discord.TextChannel):
+                    try:
+                        # Adjuntar avatar si existe
+                        avatar_path = datos.get("avatar_path")
+                        if avatar_path and Path(avatar_path).exists():
+                            archivo = discord.File(avatar_path, filename="avatar.png")
+                            msg = await canal.send(
+                                embed=embed_ficha, view=view, file=archivo
+                            )
+                        else:
+                            msg = await canal.send(embed=embed_ficha, view=view)
+                        break
+                    except discord.Forbidden:
+                        log_warning(f"[REGISTRO] Sin permisos en canal {canal_id}")
+
+            if msg:
+                await repo.add_to_verification_queue(conn, char_id, msg.id, canal_id)
+
+            # Limpiar formulario en progreso
+            await repo.delete_form(conn, user_id)
+
+        # Notificar al usuario
+        await user.send(
+            embed=emb.ok(
+                "Formulario completado",
+                f"Tu ficha para **{datos.get('nombre_completo', '—')}** ha sido enviada "
+                "al equipo de verificación.\n\n"
+                "Recibirás un mensaje cuando tu ficha sea revisada.",
+            )
+        )
+        log_info(f"[REGISTRO] Ficha completada para user_id={user_id} "
+                 f"nombre={datos.get('nombre_completo')}")
+
+
+# ---------------------------------------------------------------------------
+# Setup
+# ---------------------------------------------------------------------------
 
 async def setup(bot: commands.Bot) -> None:
+    """Registra el cog en el bot."""
     await bot.add_cog(RegistroCog(bot))

@@ -1,0 +1,151 @@
+[
+  {
+    "_comentario": "=== ÍTEMS MÉDICOS ===",
+    "nombre": "Torniquete CAT (Combat Application Tourniquet)",
+    "descripcion": "Torniquete de aplicación en combate. Detiene hemorragia de extremidades.",
+    "categoria": "medico",
+    "subcategoria": "torniquete",
+    "peso_kg": 0.155,
+    "volumen_u": 1,
+    "precio_base": 38.00
+  },
+  {
+    "nombre": "Torniquete SOFTT-W",
+    "descripcion": "Tourniquete especial fuerzas operativas. Alternativa al CAT.",
+    "categoria": "medico",
+    "subcategoria": "torniquete",
+    "peso_kg": 0.17,
+    "volumen_u": 1,
+    "precio_base": 42.00
+  },
+  {
+    "nombre": "Vendaje hemostático QuikClot (1 pieza)",
+    "descripcion": "Gasa impregnada en agente hemostático. Para heridas que no admiten torniquete.",
+    "categoria": "medico",
+    "subcategoria": "hemostasia",
+    "peso_kg": 0.085,
+    "volumen_u": 1,
+    "precio_base": 28.00
+  },
+  {
+    "nombre": "Vendaje israelí (Emergency Bandage)",
+    "descripcion": "Vendaje de presión para control de hemorragia. Incluye barra de presión.",
+    "categoria": "medico",
+    "subcategoria": "vendaje",
+    "peso_kg": 0.12,
+    "volumen_u": 1,
+    "precio_base": 15.00
+  },
+  {
+    "nombre": "Apósito oclusivo torácico (par)",
+    "descripcion": "Sello torácico para heridas de entrada/salida en tórax. Prevent neumotórax.",
+    "categoria": "medico",
+    "subcategoria": "apósito",
+    "peso_kg": 0.06,
+    "volumen_u": 1,
+    "precio_base": 45.00
+  },
+  {
+    "nombre": "NPA (Nasopharyngeal Airway)",
+    "descripcion": "Cánula nasofaríngea para mantenimiento de vía aérea en semiconsciente.",
+    "categoria": "medico",
+    "subcategoria": "via_aerea",
+    "peso_kg": 0.03,
+    "volumen_u": 1,
+    "precio_base": 12.00
+  },
+  {
+    "nombre": "Botiquín IFAK básico",
+    "descripcion": "Individual First Aid Kit. Incluye: 2 torniquetes CAT, 2 vendajes, 1 QuikClot, guantes.",
+    "categoria": "medico",
+    "subcategoria": "kit",
+    "peso_kg": 0.6,
+    "volumen_u": 2,
+    "precio_base": 120.00
+  },
+  {
+    "nombre": "Botiquín avanzado (Sanitario)",
+    "descripcion": "Kit médico avanzado para Sanitario certificado. Incluye suero, desfibrilador, etc.",
+    "categoria": "medico",
+    "subcategoria": "kit_avanzado",
+    "peso_kg": 2.5,
+    "volumen_u": 6,
+    "precio_base": 450.00
+  },
+  {
+    "nombre": "Tijeras trauma (EMT shears)",
+    "descripcion": "Tijeras de trauma para cortar ropa y equipo en emergencia. Acero inoxidable.",
+    "categoria": "medico",
+    "subcategoria": "herramienta",
+    "peso_kg": 0.07,
+    "volumen_u": 0,
+    "precio_base": 10.00
+  },
+  {
+    "nombre": "Morfina (autoinyectable) — uso Sanitario",
+    "descripcion": "Analgésico opioide. Solo puede administrarlo personal con clase Sanitario.",
+    "categoria": "medico",
+    "subcategoria": "farmaco",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 25.00
+  },
+
+  {
+    "_comentario": "=== RADIOS (slot: radio en loadout) ===",
+    "nombre": "Radio táctica AN/PRC-152",
+    "descripcion": "Radio JTRS multibanda. Alcance largo. Estándar fuerzas especiales USA.",
+    "categoria": "radio",
+    "subcategoria": "portatil",
+    "peso_kg": 0.6,
+    "volumen_u": 2,
+    "precio_base": 1800.00
+  },
+  {
+    "nombre": "Radio táctica MBITR AN/PRC-148",
+    "descripcion": "Radio intermedia compacta. Multibanda. Ligera y fiable.",
+    "categoria": "radio",
+    "subcategoria": "portatil",
+    "peso_kg": 0.44,
+    "volumen_u": 1,
+    "precio_base": 1200.00
+  },
+  {
+    "nombre": "Radio básica Kenwood TK-3401D",
+    "descripcion": "Radio PMR-446 digital. Alcance limitado. Uso general de tropa.",
+    "categoria": "radio",
+    "subcategoria": "portatil",
+    "peso_kg": 0.19,
+    "volumen_u": 1,
+    "precio_base": 180.00
+  },
+
+  {
+    "_comentario": "=== MISCELÁNEOS Y EQUIPAMIENTO TÁCTICO ===",
+    "nombre": "Linterna táctica Streamlight TLR-1",
+    "descripcion": "Linterna de riel para arma. 300 lúmenes. Batería CR123.",
+    "categoria": "misc",
+    "subcategoria": "iluminacion",
+    "peso_kg": 0.09,
+    "volumen_u": 0,
+    "precio_base": 120.00
+  },
+  {
+    "nombre": "Visión nocturna PVS-14",
+    "descripcion": "Monóculo NVG gen3. Compatible con casco ACH/MICH. Operaciones nocturnas.",
+    "categoria": "misc",
+    "subcategoria": "optica",
+    "peso_kg": 0.55,
+    "volumen_u": 2,
+    "precio_base": 4500.00
+  },
+  {
+    "nombre": "Bridas plásticas (pack 20ud)",
+    "descripcion": "Bridas de 30cm. Uso detención y sujeción.",
+    "categoria": "misc",
+    "subcategoria": "sujecion",
+    "peso_kg": 0.1,
+    "volumen_u": 1,
+    "precio_base": 5.00
+  }
+]

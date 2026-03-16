@@ -1,305 +1,526 @@
 """
-RAISA — Cog de Sistema Médico
-cogs/medico.py
+cogs/medico.py — Sistema médico de RAISA
+=========================================
+Responsabilidad : Gestión del estado médico de los personajes.
+                  Usuarios ven y usan ítems. Narradores modifican estado.
+Dependencias    : db.repository, utils.embeds, utils.permisos,
+                  utils.validaciones, cogs.eventos
+Autor           : RAISA Dev
 
-Responsabilidad : Gestión del estado médico de personajes.
-                  Narradores aplican/modifican heridas; Usuarios visualizan.
-Dependencias    : discord.py, db/repository, utils/permisos, utils/embeds
-Autor           : Proyecto RAISA
+Comandos
+--------
+  /medico estado [usuario]     — Ver estado médico (Usuario ve el propio, Narrador ve cualquiera)
+  /medico herir                — Aplicar herida (Narrador+)
+  /medico curar-herida         — Tratar/retirar herida (Narrador+)
+  /medico fractura             — Aplicar fractura (Narrador+)
+  /medico consciencia          — Cambiar consciencia (Narrador+)
+  /medico sangre               — Modificar sangre (Narrador+)
+  /medico muerte               — Ejecutar muerte (permisos según Evento)
 """
 
 import json
-import logging
 
 import discord
-from discord import app_commands
+from discord import Interaction, app_commands
 from discord.ext import commands
 
-from utils.embeds import embed_estado_medico, embed_ok, embed_error, embed_aviso
-from utils.permisos import (
-    require_role, RANGO_USUARIO, RANGO_NARRADOR, RANGO_GESTOR, get_rango
-)
+from cogs.eventos import evento_activo
+from db import repository as repo
+from utils import embeds as emb
+from utils.logger import audit, log_info
+from utils.permisos import GESTOR, NARRADOR, USUARIO, get_user_level, require_role
+from utils.validaciones import calcular_estado_general
 
-log = logging.getLogger("raisa.medico")
+# Opciones de consciencia
+OPCIONES_CONSCIENCIA = [
+    app_commands.Choice(name="Consciente",      value="Consciente"),
+    app_commands.Choice(name="Semiconsciente",   value="Semiconsciente"),
+    app_commands.Choice(name="Inconsciente",     value="Inconsciente"),
+    app_commands.Choice(name="Clínico",          value="Clínico"),
+]
 
-CONSCIENCIAS = ["Consciente", "Semiconsciente", "Inconsciente", "Clínico"]
+OPCIONES_GRAVEDAD = [
+    app_commands.Choice(name="Leve",    value="leve"),
+    app_commands.Choice(name="Moderada", value="moderada"),
+    app_commands.Choice(name="Grave",   value="grave"),
+]
 
-# Estados generales calculados según sangre
-def _calcular_estado_general(sangre: int, heridas: list, fracturas: list) -> str:
-    """
-    Calcula el estado general automáticamente.
-    Lógica: combina sangre, número de heridas graves y fracturas expuestas.
-    """
-    heridas_criticas = sum(1 for h in heridas if h.get("gravedad") in ("Crítica", "Grave"))
-    fracturas_expuestas = sum(1 for f in fracturas if f.get("tipo") == "expuesta")
-
-    if sangre <= 0 or (heridas_criticas >= 2 and fracturas_expuestas >= 1):
-        return "Crítico"
-    if sangre <= 20 or heridas_criticas >= 2:
-        return "Grave"
-    if sangre <= 50 or heridas_criticas >= 1 or fracturas_expuestas >= 1:
-        return "Herido"
-    if sangre <= 75 or len(heridas) >= 2:
-        return "Levemente herido"
-    return "Óptimo"
-
-
-class MedicoModal(discord.ui.Modal, title="Aplicar Herida"):
-    """Modal para que el Narrador aplique una herida a un personaje."""
-
-    tipo         = discord.ui.TextInput(label="Tipo de herida",          placeholder="Ej: Herida de bala, Quemadura")
-    localizacion = discord.ui.TextInput(label="Localización",            placeholder="Ej: Hombro izquierdo, Torso")
-    gravedad     = discord.ui.TextInput(label="Gravedad",                placeholder="Leve / Moderada / Grave / Crítica")
-    tratamiento  = discord.ui.TextInput(label="Estado de tratamiento",   placeholder="Sin tratar / En tratamiento / Estabilizado", required=False)
-
-    def __init__(self, cog, objetivo_id: int) -> None:
-        super().__init__()
-        self.cog = cog
-        self.objetivo_id = objetivo_id
-
-    async def on_submit(self, interaction: discord.Interaction) -> None:
-        herida = {
-            "tipo":               self.tipo.value,
-            "localizacion":       self.localizacion.value,
-            "gravedad":           self.gravedad.value,
-            "estado_tratamiento": self.tratamiento.value or "Sin tratar",
-        }
-
-        medico = await self.cog.repo.get_estado_medico(self.objetivo_id)
-        if not medico:
-            await interaction.response.send_message(
-                embed=embed_error("Personaje no encontrado."), ephemeral=True
-            )
-            return
-
-        heridas = medico["heridas"]
-        heridas.append(herida)
-        estado_general = _calcular_estado_general(medico["sangre"], heridas, medico["fracturas"])
-
-        await self.cog.repo.actualizar_estado_medico(
-            self.objetivo_id,
-            {"heridas": heridas, "estado_general": estado_general}
-        )
-        await self.cog.repo.log_accion(
-            "HERIDA_APLICADA", interaction.user.id, self.objetivo_id,
-            detalle=herida
-        )
-
-        personaje = await self.cog.repo.get_personaje(self.objetivo_id)
-        medico_actualizado = await self.cog.repo.get_estado_medico(self.objetivo_id)
-        await interaction.response.send_message(
-            embed=embed_estado_medico(personaje, medico_actualizado), ephemeral=False
-        )
+OPCIONES_FRACTURA = [
+    app_commands.Choice(name="Simple",   value="simple"),
+    app_commands.Choice(name="Expuesta", value="expuesta"),
+]
 
 
 class MedicoCog(commands.Cog, name="Médico"):
-    """Cog para el sistema médico de RAISA."""
+    """Cog del sistema médico."""
 
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    @property
-    def repo(self):
-        return self.bot.repo
+    medico_group = app_commands.Group(
+        name="medico", description="Sistema médico de personajes"
+    )
 
-    medico_group = app_commands.Group(name="medico", description="Sistema médico de personajes")
+    # -----------------------------------------------------------------------
+    # Helper: obtener estado médico enriquecido con estado_general calculado
+    # -----------------------------------------------------------------------
 
-    # ──────────────────────────────────────────────────────────────────────
-    # USUARIO — Ver estado
-    # ──────────────────────────────────────────────────────────────────────
-
-    @medico_group.command(name="estado", description="Muestra tu estado médico actual.")
-    @require_role(RANGO_USUARIO)
-    async def ver_estado(self, interaction: discord.Interaction) -> None:
-        """El usuario visualiza su propio estado médico."""
-        uid = interaction.user.id
-        personaje = await self.repo.get_personaje(uid)
-        if not personaje:
-            await interaction.response.send_message(
-                embed=embed_error("No tienes un personaje registrado."), ephemeral=True
-            )
-            return
-
-        medico = await self.repo.get_estado_medico(uid)
-        if not medico:
-            await interaction.response.send_message(
-                embed=embed_error("Estado médico no encontrado."), ephemeral=True
-            )
-            return
-
-        await interaction.response.send_message(
-            embed=embed_estado_medico(personaje, medico), ephemeral=True
-        )
-
-    # ──────────────────────────────────────────────────────────────────────
-    # NARRADOR — Aplicar herida
-    # ──────────────────────────────────────────────────────────────────────
-
-    @medico_group.command(name="herida_aplicar", description="[Narrador] Aplica una herida a un personaje.")
-    @app_commands.describe(usuario="Usuario objetivo")
-    @require_role(RANGO_NARRADOR)
-    async def herida_aplicar(
-        self, interaction: discord.Interaction, usuario: discord.Member
-    ) -> None:
-        """Abre un modal para que el Narrador defina la herida."""
-        personaje = await self.repo.get_personaje(usuario.id)
-        if not personaje:
-            await interaction.response.send_message(
-                embed=embed_error(f"{usuario.mention} no tiene personaje registrado."), ephemeral=True
-            )
-            return
-        await interaction.response.send_modal(MedicoModal(self, usuario.id))
-
-    @medico_group.command(name="herida_retirar", description="[Narrador] Retira una herida de un personaje.")
-    @app_commands.describe(usuario="Usuario objetivo", indice="Índice de la herida (1 = primera)")
-    @require_role(RANGO_NARRADOR)
-    async def herida_retirar(
-        self, interaction: discord.Interaction, usuario: discord.Member, indice: int
-    ) -> None:
-        """Retira la herida en posición `indice` (base 1)."""
-        medico = await self.repo.get_estado_medico(usuario.id)
-        if not medico:
-            await interaction.response.send_message(embed=embed_error("Personaje no encontrado."), ephemeral=True)
-            return
-
-        heridas = medico["heridas"]
-        if not heridas or not (1 <= indice <= len(heridas)):
-            await interaction.response.send_message(
-                embed=embed_error(f"Índice `{indice}` inválido. El personaje tiene `{len(heridas)}` heridas."),
-                ephemeral=True
-            )
-            return
-
-        herida_retirada = heridas.pop(indice - 1)
-        estado_general = _calcular_estado_general(medico["sangre"], heridas, medico["fracturas"])
-        await self.repo.actualizar_estado_medico(usuario.id, {"heridas": heridas, "estado_general": estado_general})
-        await self.repo.log_accion("HERIDA_RETIRADA", interaction.user.id, usuario.id, detalle=herida_retirada)
-
-        await interaction.response.send_message(
-            embed=embed_ok("Herida retirada", f"Se eliminó la herida: **{herida_retirada['tipo']}** en {herida_retirada['localizacion']}."),
-        )
-
-    @medico_group.command(name="sangre", description="[Narrador] Modifica la cantidad de sangre de un personaje.")
-    @app_commands.describe(usuario="Usuario objetivo", valor="Valor de sangre (0-100)")
-    @require_role(RANGO_NARRADOR)
-    async def cambiar_sangre(
-        self, interaction: discord.Interaction, usuario: discord.Member, valor: int
-    ) -> None:
-        """Cambia directamente el nivel de sangre. Recalcula estado general."""
-        if not (0 <= valor <= 100):
-            await interaction.response.send_message(
-                embed=embed_error("El valor debe estar entre `0` y `100`."), ephemeral=True
-            )
-            return
-
-        medico = await self.repo.get_estado_medico(usuario.id)
-        if not medico:
-            await interaction.response.send_message(embed=embed_error("Personaje no encontrado."), ephemeral=True)
-            return
-
-        estado_general = _calcular_estado_general(valor, medico["heridas"], medico["fracturas"])
-        await self.repo.actualizar_estado_medico(usuario.id, {"sangre": valor, "estado_general": estado_general})
-        await self.repo.log_accion("SANGRE_CAMBIADA", interaction.user.id, usuario.id, detalle={"sangre": valor})
-
-        await interaction.response.send_message(
-            embed=embed_ok("Sangre actualizada", f"Sangre de {usuario.mention}: `{valor}%`\nEstado general: **{estado_general}**"),
-        )
-
-    @medico_group.command(name="consciencia", description="[Narrador] Cambia el nivel de consciencia de un personaje.")
-    @app_commands.describe(usuario="Usuario objetivo", nivel="Nivel de consciencia")
-    @app_commands.choices(nivel=[app_commands.Choice(name=c, value=c) for c in CONSCIENCIAS])
-    @require_role(RANGO_NARRADOR)
-    async def cambiar_consciencia(
-        self, interaction: discord.Interaction, usuario: discord.Member, nivel: str
-    ) -> None:
-        """Cambia el nivel de consciencia del personaje."""
-        medico = await self.repo.get_estado_medico(usuario.id)
-        if not medico:
-            await interaction.response.send_message(embed=embed_error("Personaje no encontrado."), ephemeral=True)
-            return
-
-        await self.repo.actualizar_estado_medico(usuario.id, {"consciencia": nivel})
-        await self.repo.log_accion("CONSCIENCIA_CAMBIADA", interaction.user.id, usuario.id, detalle={"consciencia": nivel})
-
-        await interaction.response.send_message(
-            embed=embed_ok("Consciencia actualizada", f"Consciencia de {usuario.mention}: **{nivel}**"),
-        )
-
-    @medico_group.command(name="fractura", description="[Narrador] Añade una fractura a un personaje.")
-    @app_commands.describe(usuario="Usuario objetivo", miembro="Miembro fracturado", tipo="Tipo de fractura")
-    @app_commands.choices(tipo=[
-        app_commands.Choice(name="Simple", value="simple"),
-        app_commands.Choice(name="Expuesta", value="expuesta"),
-    ])
-    @require_role(RANGO_NARRADOR)
-    async def añadir_fractura(
-        self, interaction: discord.Interaction, usuario: discord.Member, miembro: str, tipo: str
-    ) -> None:
-        """Añade una fractura al registro del personaje."""
-        medico = await self.repo.get_estado_medico(usuario.id)
-        if not medico:
-            await interaction.response.send_message(embed=embed_error("Personaje no encontrado."), ephemeral=True)
-            return
-
-        fracturas = medico["fracturas"]
-        fracturas.append({"miembro": miembro, "tipo": tipo})
-        estado_general = _calcular_estado_general(medico["sangre"], medico["heridas"], fracturas)
-        await self.repo.actualizar_estado_medico(usuario.id, {"fracturas": fracturas, "estado_general": estado_general})
-        await self.repo.log_accion("FRACTURA_AÑADIDA", interaction.user.id, usuario.id, detalle={"miembro": miembro, "tipo": tipo})
-
-        await interaction.response.send_message(
-            embed=embed_ok("Fractura registrada", f"Fractura **{tipo}** en `{miembro}` de {usuario.mention}."),
-        )
-
-    @medico_group.command(name="muerte", description="[Gestor+] Ejecuta la muerte de un personaje.")
-    @app_commands.describe(usuario="Usuario objetivo", motivo="Motivo de la muerte")
-    @require_role(RANGO_GESTOR)
-    async def ejecutar_muerte(
-        self, interaction: discord.Interaction, usuario: discord.Member, motivo: str
-    ) -> None:
+    async def _get_estado_enriquecido(self, conn, user_id: int) -> dict | None:
         """
-        Ejecuta la muerte de un personaje.
-        En Evento-OFF requiere Gestor+.
-        En Evento-ON el Narrador puede ejecutarla libremente (verificado por permisos).
-        """
-        modo = await self.repo.get_modo_evento()
+        Obtiene el estado médico de un personaje con estado_general calculado.
 
-        # En Evento-ON un Narrador puede matar; en OFF solo Gestor+.
-        rango = get_rango(interaction.user)
-        if modo == "OFF" and rango < RANGO_GESTOR:
+        Args:
+            conn    : Conexión aiosqlite.
+            user_id : discord user_id.
+
+        Returns:
+            Dict con todos los campos médicos + estado_general, o None si no existe.
+        """
+        row = await repo.get_medical_state(conn, user_id)
+        if not row:
+            return None
+
+        heridas   = json.loads(row["heridas"]   or "[]")
+        fracturas = json.loads(row["fracturas"] or "[]")
+
+        estado = dict(row)
+        estado["heridas"]        = heridas
+        estado["fracturas"]      = fracturas
+        estado["estado_general"] = calcular_estado_general(
+            sangre      = row["sangre"],
+            consciencia = row["consciencia"],
+            heridas     = heridas,
+            fracturas   = fracturas,
+        )
+        return estado
+
+    # -----------------------------------------------------------------------
+    # /medico estado
+    # -----------------------------------------------------------------------
+
+    @medico_group.command(name="estado", description="Ver estado médico de un personaje")
+    @app_commands.describe(usuario="Usuario a consultar (solo Narrador+ puede ver a otros)")
+    @require_role(USUARIO)
+    async def medico_estado(self, interaction: Interaction,
+                             usuario: discord.Member | None = None) -> None:
+        """
+        Muestra el estado médico completo de un personaje.
+        Un Usuario solo puede ver el suyo propio.
+        Un Narrador+ puede ver el de cualquier personaje.
+
+        Args:
+            interaction: Contexto de Discord.
+            usuario    : Miembro a consultar (None = el propio usuario).
+        """
+        nivel = get_user_level(interaction)
+
+        # Si el usuario intenta ver a otro sin ser Narrador+
+        if usuario and usuario.id != interaction.user.id and nivel < NARRADOR:
             await interaction.response.send_message(
-                embed=embed_error(
-                    "En **Evento-OFF** la muerte de un personaje requiere autorización de **Gestor+**."
-                ),
+                embed=emb.acceso_denegado("Narrador"), ephemeral=True
+            )
+            return
+
+        target_id = (usuario.id if usuario else interaction.user.id)
+
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, target_id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje",
+                                    "El usuario no tiene un personaje activo."),
+                    ephemeral=True,
+                )
+                return
+
+            estado = await self._get_estado_enriquecido(conn, target_id)
+
+        if not estado:
+            # Estado médico no inicializado → operativo por defecto
+            estado = {
+                "heridas": [], "fracturas": [],
+                "consciencia": "Consciente", "sangre": 100,
+                "estado_general": "Operativo",
+            }
+
+        await interaction.response.send_message(
+            embed=emb.estado_medico(char["nombre_completo"], estado),
+            ephemeral=True,
+        )
+
+    # -----------------------------------------------------------------------
+    # /medico herir
+    # -----------------------------------------------------------------------
+
+    @medico_group.command(name="herir", description="Aplicar herida a un personaje (Narrador+)")
+    @app_commands.describe(
+        usuario="Personaje afectado",
+        tipo="Tipo de herida",
+        localizacion="Localización anatómica",
+        gravedad="Gravedad de la herida",
+    )
+    @app_commands.choices(gravedad=OPCIONES_GRAVEDAD)
+    @require_role(NARRADOR)
+    async def medico_herir(self, interaction: Interaction,
+                            usuario: discord.Member,
+                            tipo: str,
+                            localizacion: str,
+                            gravedad: str = "leve") -> None:
+        """
+        Aplica una nueva herida al estado médico de un personaje.
+
+        Args:
+            interaction  : Contexto de Discord.
+            usuario      : Miembro afectado.
+            tipo         : Descripción del tipo de herida.
+            localizacion : Localización anatómica (torso, pierna izq., etc.).
+            gravedad     : 'leve' | 'moderada' | 'grave'.
+        """
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, usuario.id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "El usuario no tiene personaje activo."),
+                    ephemeral=True,
+                )
+                return
+
+            estado_actual = await repo.get_medical_state(conn, usuario.id)
+            heridas = json.loads(estado_actual["heridas"] if estado_actual else "[]") or []
+
+            nueva_herida = {
+                "tipo":              tipo,
+                "localizacion":      localizacion,
+                "gravedad":          gravedad,
+                "estado_tratamiento": "sin tratar",
+            }
+            heridas.append(nueva_herida)
+
+            await repo.upsert_medical_state(
+                conn, usuario.id,
+                campos={"heridas": heridas},
+                modificado_por=interaction.user.id,
+            )
+            await audit(
+                conn,
+                tipo        = "mod_medica",
+                descripcion = f"Herida aplicada a {char['nombre_completo']}: {tipo} en {localizacion} ({gravedad})",
+                actor_id    = interaction.user.id,
+                target_id   = usuario.id,
+                detalles    = nueva_herida,
+            )
+
+        await interaction.response.send_message(
+            embed=emb.ok(
+                "Herida aplicada",
+                f"**{char['nombre_completo']}** — {tipo} en **{localizacion}** ({gravedad})",
+            )
+        )
+
+    # -----------------------------------------------------------------------
+    # /medico curar-herida
+    # -----------------------------------------------------------------------
+
+    @medico_group.command(name="curar-herida",
+                          description="Tratar o retirar una herida (Narrador+)")
+    @app_commands.describe(usuario="Personaje", indice="Índice de la herida (ver /medico estado)",
+                            estado_tratamiento="Nuevo estado de tratamiento")
+    @require_role(NARRADOR)
+    async def medico_curar(self, interaction: Interaction,
+                            usuario: discord.Member,
+                            indice: int,
+                            estado_tratamiento: str = "tratada") -> None:
+        """
+        Modifica el estado de tratamiento de una herida existente.
+
+        Args:
+            interaction         : Contexto de Discord.
+            usuario             : Miembro afectado.
+            indice              : Índice 1-based de la herida en la lista.
+            estado_tratamiento  : Nuevo estado ('tratada', 'estabilizada', 'sin tratar').
+        """
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, usuario.id)
+            if not char:
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "Personaje no encontrado."), ephemeral=True
+                )
+                return
+
+            estado_actual = await repo.get_medical_state(conn, usuario.id)
+            heridas = json.loads(estado_actual["heridas"] if estado_actual else "[]") or []
+
+            idx = indice - 1   # convertir a 0-based
+            if idx < 0 or idx >= len(heridas):
+                await interaction.response.send_message(
+                    embed=emb.error("Índice inválido",
+                                    f"Solo hay {len(heridas)} herida(s). Índice recibido: {indice}"),
+                    ephemeral=True,
+                )
+                return
+
+            heridas[idx]["estado_tratamiento"] = estado_tratamiento
+            await repo.upsert_medical_state(
+                conn, usuario.id,
+                campos={"heridas": heridas},
+                modificado_por=interaction.user.id,
+            )
+            await audit(
+                conn,
+                tipo        = "mod_medica",
+                descripcion = f"Herida #{indice} de {char['nombre_completo']} → {estado_tratamiento}",
+                actor_id    = interaction.user.id,
+                target_id   = usuario.id,
+            )
+
+        await interaction.response.send_message(
+            embed=emb.ok("Herida actualizada",
+                          f"Herida #{indice} de **{char['nombre_completo']}** → `{estado_tratamiento}`")
+        )
+
+    # -----------------------------------------------------------------------
+    # /medico fractura
+    # -----------------------------------------------------------------------
+
+    @medico_group.command(name="fractura", description="Aplicar fractura a un personaje (Narrador+)")
+    @app_commands.describe(usuario="Personaje", miembro="Miembro afectado", tipo="Tipo de fractura")
+    @app_commands.choices(tipo=OPCIONES_FRACTURA)
+    @require_role(NARRADOR)
+    async def medico_fractura(self, interaction: Interaction,
+                               usuario: discord.Member,
+                               miembro: str,
+                               tipo: str) -> None:
+        """
+        Aplica una fractura al estado médico de un personaje.
+
+        Args:
+            interaction: Contexto de Discord.
+            usuario    : Miembro afectado.
+            miembro    : Miembro afectado (brazo der., tibia izq., etc.).
+            tipo       : 'simple' o 'expuesta'.
+        """
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, usuario.id)
+            if not char:
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "Personaje no encontrado."), ephemeral=True
+                )
+                return
+
+            estado_actual = await repo.get_medical_state(conn, usuario.id)
+            fracturas = json.loads(estado_actual["fracturas"] if estado_actual else "[]") or []
+            fracturas.append({"miembro": miembro, "tipo": tipo})
+
+            await repo.upsert_medical_state(
+                conn, usuario.id,
+                campos={"fracturas": fracturas},
+                modificado_por=interaction.user.id,
+            )
+            await audit(
+                conn,
+                tipo        = "mod_medica",
+                descripcion = f"Fractura {tipo} en {miembro} de {char['nombre_completo']}",
+                actor_id    = interaction.user.id,
+                target_id   = usuario.id,
+            )
+
+        await interaction.response.send_message(
+            embed=emb.ok("Fractura registrada",
+                          f"**{char['nombre_completo']}** — fractura {tipo} en **{miembro}**")
+        )
+
+    # -----------------------------------------------------------------------
+    # /medico consciencia
+    # -----------------------------------------------------------------------
+
+    @medico_group.command(name="consciencia",
+                          description="Cambiar nivel de consciencia (Narrador+)")
+    @app_commands.describe(usuario="Personaje", nivel="Nuevo nivel de consciencia")
+    @app_commands.choices(nivel=OPCIONES_CONSCIENCIA)
+    @require_role(NARRADOR)
+    async def medico_consciencia(self, interaction: Interaction,
+                                  usuario: discord.Member,
+                                  nivel: str) -> None:
+        """
+        Modifica el nivel de consciencia de un personaje.
+
+        Args:
+            interaction: Contexto de Discord.
+            usuario    : Miembro afectado.
+            nivel      : Nuevo nivel de consciencia.
+        """
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, usuario.id)
+            if not char:
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "Personaje no encontrado."), ephemeral=True
+                )
+                return
+
+            await repo.upsert_medical_state(
+                conn, usuario.id,
+                campos={"consciencia": nivel},
+                modificado_por=interaction.user.id,
+            )
+            await audit(
+                conn,
+                tipo        = "mod_medica",
+                descripcion = f"Consciencia de {char['nombre_completo']} → {nivel}",
+                actor_id    = interaction.user.id,
+                target_id   = usuario.id,
+            )
+
+        await interaction.response.send_message(
+            embed=emb.ok("Consciencia actualizada",
+                          f"**{char['nombre_completo']}** → `{nivel}`")
+        )
+
+    # -----------------------------------------------------------------------
+    # /medico sangre
+    # -----------------------------------------------------------------------
+
+    @medico_group.command(name="sangre", description="Modificar nivel de sangre (Narrador+)")
+    @app_commands.describe(usuario="Personaje", valor="Nivel de sangre (0-100)")
+    @require_role(NARRADOR)
+    async def medico_sangre(self, interaction: Interaction,
+                             usuario: discord.Member,
+                             valor: int) -> None:
+        """
+        Modifica el nivel de sangre de un personaje.
+
+        Args:
+            interaction: Contexto de Discord.
+            usuario    : Miembro afectado.
+            valor      : Nuevo nivel de sangre (0-100).
+        """
+        if not 0 <= valor <= 100:
+            await interaction.response.send_message(
+                embed=emb.error("Valor inválido", "El nivel de sangre debe estar entre 0 y 100."),
                 ephemeral=True,
             )
             return
 
-        personaje = await self.repo.get_personaje(usuario.id)
-        if not personaje:
-            await interaction.response.send_message(embed=embed_error("Personaje no encontrado."), ephemeral=True)
-            return
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, usuario.id)
+            if not char:
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "Personaje no encontrado."), ephemeral=True
+                )
+                return
 
-        # Poner sangre a 0 y marcar inconsciente/clínico
-        await self.repo.actualizar_estado_medico(
-            usuario.id,
-            {"sangre": 0, "consciencia": "Clínico", "estado_general": "Crítico"}
-        )
-        await self.repo.log_accion("MUERTE", interaction.user.id, usuario.id, detalle={"motivo": motivo, "modo_evento": modo})
-        log.warning("MUERTE ejecutada: objetivo=%s por=%s motivo=%s", usuario.id, interaction.user.id, motivo)
+            await repo.upsert_medical_state(
+                conn, usuario.id,
+                campos={"sangre": valor},
+                modificado_por=interaction.user.id,
+            )
+            await audit(
+                conn,
+                tipo        = "mod_medica",
+                descripcion = f"Sangre de {char['nombre_completo']} → {valor}%",
+                actor_id    = interaction.user.id,
+                target_id   = usuario.id,
+            )
 
         await interaction.response.send_message(
-            embed=discord.Embed(
-                title="☠️ Muerte ejecutada",
-                description=(
-                    f"**{personaje['nombre']} {personaje['apellidos']}** ha muerto.\n"
-                    f"**Motivo:** {motivo}\n"
-                    f"Registrado por: {interaction.user.mention}"
-                ),
-                color=discord.Color.dark_red(),
-            )
+            embed=emb.ok("Sangre actualizada",
+                          f"**{char['nombre_completo']}** → `{valor}%`")
         )
 
+    # -----------------------------------------------------------------------
+    # /medico muerte
+    # -----------------------------------------------------------------------
+
+    @medico_group.command(name="muerte", description="Ejecutar muerte de personaje")
+    @app_commands.describe(usuario="Personaje", motivo="Circunstancias de la muerte")
+    @require_role(NARRADOR)
+    async def medico_muerte(self, interaction: Interaction,
+                             usuario: discord.Member,
+                             motivo: str = "Causa no especificada") -> None:
+        """
+        Ejecuta la muerte de un personaje.
+
+        En Evento-ON:  Narrador puede ejecutarla libremente (cuando sangre=0
+                       o consciencia=Clínico, o narrativamente).
+        En Evento-OFF: Requiere nivel Gestor+.
+
+        Ver REVIEW.md §1.4 para la justificación del umbral.
+
+        Args:
+            interaction: Contexto de Discord.
+            usuario    : Miembro cuyo personaje muere.
+            motivo     : Descripción narrativa de la muerte.
+        """
+        nivel     = get_user_level(interaction)
+        en_evento = await evento_activo()
+
+        # En Evento-OFF, solo Gestor+ puede ejecutar muerte (RESTRICCIÓN ABSOLUTA)
+        if not en_evento and nivel < GESTOR:
+            await interaction.response.send_message(
+                embed=emb.acceso_denegado("Gestor (fuera de evento)"), ephemeral=True
+            )
+            return
+
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, usuario.id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje activo",
+                                    "El usuario no tiene un personaje activo."),
+                    ephemeral=True,
+                )
+                return
+
+            # Poner sangre a 0 y consciencia a Clínico
+            await repo.upsert_medical_state(
+                conn, usuario.id,
+                campos={"sangre": 0, "consciencia": "Clínico"},
+                modificado_por=interaction.user.id,
+            )
+            # Marcar personaje como 'baja'
+            await repo.update_character_estado(
+                conn, usuario.id,
+                estado="baja",
+                verificado_por=interaction.user.id,
+                motivo=f"Muerte narrativa: {motivo}",
+            )
+            await audit(
+                conn,
+                tipo        = "muerte",
+                descripcion = f"MUERTE de {char['nombre_completo']} — {motivo}",
+                actor_id    = interaction.user.id,
+                target_id   = usuario.id,
+                detalles    = {"motivo": motivo, "evento_activo": en_evento},
+            )
+
+        log_info(f"[MUERTE] {char['nombre_completo']} ({usuario.id}) ejecutada por "
+                 f"{interaction.user} ({interaction.user.id})")
+
+        embed = discord.Embed(
+            title="💀  Muerte registrada",
+            description=f"**{char['nombre_completo']}** ha sido marcado como baja.\n\n"
+                        f"**Circunstancias:** {motivo}",
+            color=0x000000,
+        )
+        embed.set_footer(text=emb.FOOTER_TEXT)
+        await interaction.response.send_message(embed=embed)
+
+        # Notificar al usuario por MD
+        try:
+            await usuario.send(embed=discord.Embed(
+                title="💀  Tu personaje ha caído",
+                description=f"**{char['nombre_completo']}** ha sido marcado como baja definitiva.\n"
+                            f"**Circunstancias:** {motivo}\n\n"
+                            "Contacta con un Narrador o Gestor para más información.",
+                color=0x000000,
+            ))
+        except discord.Forbidden:
+            pass  # El usuario tiene los MD cerrados
+
+
+# ---------------------------------------------------------------------------
+# Setup
+# ---------------------------------------------------------------------------
 
 async def setup(bot: commands.Bot) -> None:
+    """Registra el cog en el bot."""
     await bot.add_cog(MedicoCog(bot))

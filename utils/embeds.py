@@ -1,343 +1,525 @@
 """
-RAISA — Builders de Embeds reutilizables
-utils/embeds.py
+utils/embeds.py — Constructores de Embeds reutilizables de RAISA
+================================================================
+Responsabilidad : Centralizar la creación de todos los Embeds del bot.
+                  NUNCA responder fuera de Embeds (salvo mensajes técnicos
+                  internos de Discord como errors de rate-limit).
+Dependencias    : discord.py >= 2.0
+Autor           : RAISA Dev
 
-Responsabilidad : Todas las respuestas del bot se emiten como Embeds.
-                  Este módulo centraliza su construcción para coherencia visual.
-Dependencias    : discord.py
-Autor           : Proyecto RAISA
+Paleta de colores
+-----------------
+  VERDE    0x2ECC71  — éxito, aprobación, operativo
+  ROJO     0xE74C3C  — error, denegado, crítico
+  NARANJA  0xE67E22  — advertencia, pendiente
+  AZUL     0x3498DB  — información general
+  GRIS     0x95A5A6  — estado neutral / desactivado
+  NEGRO    0x2C2F33  — embeds oscuros / narrativos
+  DORADO   0xF1C40F  — económico, recompensa
+  CIAN     0x1ABC9C  — médico, sanitario
+  MORADO   0x9B59B6  — SUDO / seguridad
 """
 
 import discord
 
-# Paleta de colores institucional RAISA
-COLOR_OK      = discord.Color.from_str("#2ecc71")   # Verde — éxito
-COLOR_ERROR   = discord.Color.from_str("#e74c3c")   # Rojo — error / denegado
-COLOR_AVISO   = discord.Color.from_str("#f39c12")   # Naranja — advertencia
-COLOR_INFO    = discord.Color.from_str("#3498db")   # Azul — información
-COLOR_NEUTRO  = discord.Color.from_str("#95a5a6")   # Gris — neutro / sistema
-COLOR_MEDICO  = discord.Color.from_str("#c0392b")   # Rojo oscuro — médico
-COLOR_RADIO   = discord.Color.from_str("#27ae60")   # Verde oscuro — radio
-COLOR_EVENTO  = discord.Color.from_str("#8e44ad")   # Morado — evento
+# ---------------------------------------------------------------------------
+# Colores
+# ---------------------------------------------------------------------------
+C_OK      = 0x2ECC71
+C_ERROR   = 0xE74C3C
+C_WARN    = 0xE67E22
+C_INFO    = 0x3498DB
+C_NEUTRAL = 0x95A5A6
+C_DARK    = 0x2C2F33
+C_GOLD    = 0xF1C40F
+C_TEAL    = 0x1ABC9C
+C_PURPLE  = 0x9B59B6
 
-FOOTER_TEXT = "RAISA · Fundación SCP — Sistema de Gestión Operativa"
-FOOTER_ICON = "https://i.imgur.com/placeholder.png"  # Reemplazar con icono real
+FOOTER_TEXT = "RAISA · Sistema de Gestión Operativa · Fundación SCP"
 
 
-def _base(titulo: str, descripcion: str, color: discord.Color) -> discord.Embed:
-    """Crea un embed base con footer institucional."""
-    e = discord.Embed(title=titulo, description=descripcion, color=color)
+def _base(title: str, description: str, color: int) -> discord.Embed:
+    """Crea un embed base con footer estándar de RAISA."""
+    e = discord.Embed(title=title, description=description, color=color)
     e.set_footer(text=FOOTER_TEXT)
     return e
 
 
-# ── SISTEMA ───────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# Embeds genéricos
+# ---------------------------------------------------------------------------
 
-def embed_acceso_denegado(rango_requerido: str) -> discord.Embed:
-    """Embed de acceso denegado con el rango mínimo requerido."""
-    return _base(
-        "🔒 Acceso denegado",
-        f"No tienes autorización para ejecutar esta acción.\n"
-        f"**Rango mínimo requerido:** `{rango_requerido}`",
-        COLOR_ERROR,
-    )
+def ok(titulo: str, descripcion: str = "") -> discord.Embed:
+    """Embed de éxito (verde)."""
+    return _base(f"✅  {titulo}", descripcion, C_OK)
 
 
-def embed_error(mensaje: str) -> discord.Embed:
-    """Embed de error genérico."""
-    return _base("❌ Error", mensaje, COLOR_ERROR)
+def error(titulo: str, descripcion: str = "") -> discord.Embed:
+    """Embed de error (rojo)."""
+    return _base(f"❌  {titulo}", descripcion, C_ERROR)
 
 
-def embed_ok(titulo: str, mensaje: str) -> discord.Embed:
-    """Embed de confirmación / éxito."""
-    return _base(f"✅ {titulo}", mensaje, COLOR_OK)
+def advertencia(titulo: str, descripcion: str = "") -> discord.Embed:
+    """Embed de advertencia (naranja)."""
+    return _base(f"⚠️  {titulo}", descripcion, C_WARN)
 
 
-def embed_aviso(titulo: str, mensaje: str) -> discord.Embed:
-    """Embed de advertencia."""
-    return _base(f"⚠️ {titulo}", mensaje, COLOR_AVISO)
+def info(titulo: str, descripcion: str = "") -> discord.Embed:
+    """Embed informativo (azul)."""
+    return _base(f"ℹ️  {titulo}", descripcion, C_INFO)
 
 
-def embed_info(titulo: str, mensaje: str) -> discord.Embed:
-    """Embed informativo."""
-    return _base(f"ℹ️ {titulo}", mensaje, COLOR_INFO)
-
-
-def embed_tienda_bloqueada() -> discord.Embed:
-    """Embed específico para acceso a tienda en Evento-ON."""
-    return _base(
-        "🔒 Tienda bloqueada",
-        "La tienda está **cerrada** durante los eventos activos.\n"
-        "Vuelve cuando el evento haya concluido.",
-        COLOR_AVISO,
-    )
-
-
-# ── PERSONAJE / REGISTRO ──────────────────────────────────────────────────────
-
-def embed_ficha_personaje(datos: dict, avatar_url: str | None = None) -> discord.Embed:
+def acceso_denegado(rango_requerido: str) -> discord.Embed:
     """
-    Construye el embed de presentación de ficha para el canal de verificación.
+    Embed de acceso denegado. Indica el rango mínimo sin exponer detalles técnicos.
 
-    :param datos: Dict con los campos del personaje.
-    :param avatar_url: URL de la imagen del personaje (opcional).
+    Args:
+        rango_requerido: Nombre del rango mínimo requerido para la acción.
+    """
+    return _base(
+        "Acceso denegado",
+        f"No tienes autorización para ejecutar esta acción.\n"
+        f"**Rango mínimo requerido:** {rango_requerido}",
+        C_ERROR,
+    )
+
+
+def evento_bloqueado(accion: str) -> discord.Embed:
+    """Embed para operaciones bloqueadas durante Evento-ON."""
+    return _base(
+        "Operación no disponible",
+        f"**{accion}** no está disponible mientras hay un Evento activo.\n"
+        "Espera a que el Narrador declare Evento-OFF.",
+        C_WARN,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Embeds de registro
+# ---------------------------------------------------------------------------
+
+def formulario_inicio(paso: int, total: int, pregunta: str) -> discord.Embed:
+    """
+    Embed para cada pregunta del formulario de registro.
+
+    Args:
+        paso     : Número de paso actual (1-12).
+        total    : Total de pasos.
+        pregunta : Texto de la pregunta a mostrar.
     """
     e = discord.Embed(
-        title=f"📋 Nueva ficha — {datos.get('nombre')} {datos.get('apellidos')}",
-        color=COLOR_INFO,
+        title=f"📋  Formulario de Registro — Paso {paso}/{total}",
+        description=pregunta,
+        color=C_INFO,
     )
-    e.add_field(name="Edad", value=str(datos.get("edad", "—")), inline=True)
-    e.add_field(name="Género", value=datos.get("genero", "—"), inline=True)
-    e.add_field(name="Nacionalidad", value=datos.get("nacionalidad", "—"), inline=True)
-    e.add_field(name="Clase", value=datos.get("clase", "—"), inline=True)
-    e.add_field(name="Estudios", value=datos.get("estudios", "—"), inline=False)
-    e.add_field(name="Ocupaciones previas", value=datos.get("ocupaciones", "—"), inline=False)
+    e.set_footer(text=f"{FOOTER_TEXT} | Tienes 20 minutos para responder.")
+    return e
+
+
+def formulario_suspendido() -> discord.Embed:
+    """Embed para notificar que el formulario fue suspendido por inactividad."""
+    return _base(
+        "Formulario suspendido",
+        "Tu formulario de registro quedó suspendido por inactividad (20 minutos).\n"
+        "Usa `/registro` para retomarlo desde donde lo dejaste.",
+        C_WARN,
+    )
+
+
+def ficha_verificacion(datos: dict) -> discord.Embed:
+    """
+    Embed de ficha de personaje para el canal de verificación.
+
+    Args:
+        datos: Dict con todos los campos del personaje.
+    """
+    e = discord.Embed(
+        title="📄  Ficha pendiente de verificación",
+        color=C_DARK,
+    )
+    e.add_field(name="Nombre",        value=datos.get("nombre_completo", "—"), inline=True)
+    e.add_field(name="Edad",          value=str(datos.get("edad", "—")),       inline=True)
+    e.add_field(name="Género",        value=datos.get("genero", "—"),          inline=True)
+    e.add_field(name="Nacionalidad",  value=datos.get("nacionalidad", "—"),    inline=True)
+    e.add_field(name="Clase",         value=datos.get("clase", "—"),           inline=True)
+    e.add_field(name="Psicotécnico",  value=datos.get("resultado_psico", "—"), inline=True)
 
     if datos.get("servicio_previo"):
-        e.add_field(name="Servicio previo", value=datos["servicio_previo"], inline=False)
-    if datos.get("destinos"):
-        e.add_field(name="Destinos / Operaciones", value=datos["destinos"], inline=False)
+        e.add_field(name="Servicio previo",   value=datos["servicio_previo"],       inline=False)
+    if datos.get("destinos_ops"):
+        e.add_field(name="Destinos/Ops",      value=datos["destinos_ops"],          inline=False)
 
-    e.add_field(name="Trasfondo", value=datos.get("trasfondo", "—")[:1024], inline=False)
+    e.add_field(name="Estudios",             value=datos.get("estudios", "—"),       inline=False)
+    e.add_field(name="Ocupaciones previas",  value=datos.get("ocupaciones_previas","—"), inline=False)
+    e.add_field(name="Trasfondo",            value=datos.get("trasfondo", "—")[:1024], inline=False)
 
-    # Examen psicotécnico — mostrar todas las respuestas para revisión manual
-    psi_respuestas: list[str] = datos.get("psi_respuestas", [])
-    if psi_respuestas:
-        from cogs.registro import PREGUNTAS_PSI  # importación local para evitar ciclos
-        e.add_field(
-            name="🧠 Examen Psicotécnico",
-            value="*(Respuestas de elaboración libre — revisar manualmente)*",
-            inline=False,
-        )
-        for idx, (pregunta, respuesta) in enumerate(
-            zip(PREGUNTAS_PSI, psi_respuestas), start=1
-        ):
-            # Truncar pregunta a ~80 chars para que quepa como label
-            label = f"P{idx}: {pregunta[:75]}…" if len(pregunta) > 75 else f"P{idx}: {pregunta}"
-            e.add_field(name=label, value=respuesta[:512] or "*(sin respuesta)*", inline=False)
+    if datos.get("avatar_path"):
+        e.set_thumbnail(url=f"attachment://avatar.png")
 
-    if avatar_url:
-        e.set_image(url=avatar_url)
-
-    e.set_footer(text=f"RAISA · ID: {datos.get('user_id')} — Pendiente de verificación")
+    e.set_footer(text=f"{FOOTER_TEXT} | Discord ID: {datos.get('user_id', '—')}")
     return e
 
 
+# ---------------------------------------------------------------------------
+# Embeds de inventario
+# ---------------------------------------------------------------------------
 
-# ── INVENTARIO ────────────────────────────────────────────────────────────────
-
-def embed_loadout(personaje: dict, loadout: dict, items: dict[int, dict]) -> discord.Embed:
+def loadout(personaje: str, slots: dict) -> discord.Embed:
     """
-    Construye el embed de visualización del loadout.
+    Embed mostrando el loadout completo de un personaje.
 
-    :param personaje: Dict del personaje.
-    :param loadout: Dict de la fila de loadout.
-    :param items: Dict {item_uuid: datos_item} para resolver nombres.
+    Args:
+        personaje : Nombre del personaje.
+        slots     : Dict {nombre_slot: nombre_item_o_vacío}.
     """
-    def nombre_item(item_id: int | None) -> str:
-        if not item_id:
-            return "*Vacío*"
-        item = items.get(item_id)
-        return item["nombre"] if item else f"[ID:{item_id}]"
+    e = discord.Embed(title=f"🎒  Loadout — {personaje}", color=C_DARK)
 
-    e = discord.Embed(
-        title=f"🎒 Loadout — {personaje['nombre']} {personaje['apellidos']}",
-        color=COLOR_NEUTRO,
-    )
-
-    # Armas
+    armas = {
+        "Primaria":   slots.get("primaria",   "— Vacío"),
+        "Secundaria": slots.get("secundaria", "— Vacío"),
+        "Terciaria":  slots.get("terciaria",  "— Vacío"),
+    }
     e.add_field(
         name="🔫 Armas",
-        value=(
-            f"**Primaria:** {nombre_item(loadout.get('arma_primaria_id'))}\n"
-            f"**Secundaria:** {nombre_item(loadout.get('arma_secundaria_id'))}\n"
-            f"**Terciaria:** {nombre_item(loadout.get('arma_terciaria_id'))}"
-        ),
-        inline=True,
-    )
-
-    # Protecciones
-    e.add_field(
-        name="🛡️ Protecciones",
-        value=(
-            f"**Chaleco:** {nombre_item(loadout.get('chaleco_id'))}\n"
-            f"**Portaplacas:** {nombre_item(loadout.get('portaplacas_id'))}\n"
-            f"**Placas:** {nombre_item(loadout.get('placas_id'))}\n"
-            f"**Soportes:** {nombre_item(loadout.get('soportes_id'))}\n"
-            f"**Casco:** {nombre_item(loadout.get('casco_id'))}"
-        ),
-        inline=True,
-    )
-
-    # Uniformidad
-    e.add_field(
-        name="👕 Uniformidad",
-        value=(
-            f"**Pantalón:** {nombre_item(loadout.get('pantalon_id'))}\n"
-            f"**Camisa:** {nombre_item(loadout.get('camisa_id'))}\n"
-            f"**Chaqueta:** {nombre_item(loadout.get('chaqueta_id'))}\n"
-            f"**Botas:** {nombre_item(loadout.get('botas_id'))}\n"
-            f"**Guantes:** {nombre_item(loadout.get('guantes_id'))}\n"
-            f"**Reloj:** {nombre_item(loadout.get('reloj_id'))}"
-        ),
+        value="\n".join(f"**{k}:** {v}" for k, v in armas.items()),
         inline=False,
     )
 
-    # Accesorios
+    prot = {
+        "Chaleco":      slots.get("chaleco",      "— Vacío"),
+        "Portaplacas":  slots.get("portaplacas",  "— Vacío"),
+        "Placas":       slots.get("placas",       "— Vacío"),
+        "Soporte":      slots.get("soporte",      "— Vacío"),
+        "Casco":        slots.get("casco",        "— Vacío"),
+    }
     e.add_field(
-        name="🎽 Accesorios",
-        value=(
-            f"**Mochila:** {nombre_item(loadout.get('mochila_id'))}\n"
-            f"**Cinturón:** {nombre_item(loadout.get('cinturon_id'))}\n"
-            f"**Radio:** {nombre_item(loadout.get('radio_id'))}"
-        ),
+        name="🛡️ Protecciones",
+        value="\n".join(f"**{k}:** {v}" for k, v in prot.items()),
+        inline=False,
+    )
+
+    uniforme = {
+        "Pantalón": slots.get("pantalon",  "—"),
+        "Camisa":   slots.get("camisa",    "—"),
+        "Chaqueta": slots.get("chaqueta",  "—"),
+        "Botas":    slots.get("botas",     "—"),
+        "Guantes":  slots.get("guantes",   "—"),
+        "Reloj":    slots.get("reloj",     "—"),
+    }
+    e.add_field(
+        name="👕 Uniformidad",
+        value="\n".join(f"**{k}:** {v}" for k, v in uniforme.items()),
         inline=True,
     )
 
-    # Parche (imagen si hay URL)
-    if loadout.get("parche_url"):
-        e.add_field(name="🔖 Parche", value=loadout["parche_url"], inline=True)
-        e.set_thumbnail(url=loadout["parche_url"])
+    accesorios = {
+        "Mochila":   slots.get("mochila",   "—"),
+        "Cinturón":  slots.get("cinturon",  "—"),
+        "Radio":     slots.get("radio",     "—"),
+    }
+    e.add_field(
+        name="🎽 Accesorios",
+        value="\n".join(f"**{k}:** {v}" for k, v in accesorios.items()),
+        inline=True,
+    )
+
+    if slots.get("parche_url"):
+        e.set_image(url=slots["parche_url"])
 
     e.set_footer(text=FOOTER_TEXT)
     return e
 
 
-# ── ESTADO MÉDICO ─────────────────────────────────────────────────────────────
-
-def embed_estado_medico(personaje: dict, medico: dict) -> discord.Embed:
+def inventario_general(personaje: str, items: list[dict], peso: float, vol: int,
+                        peso_max: float, vol_max: int) -> discord.Embed:
     """
-    Construye el embed del estado médico de un personaje.
+    Embed del inventario general (almacén personal).
 
-    :param personaje: Dict del personaje.
-    :param medico: Dict del estado médico (heridas y fracturas ya deserializadas).
+    Args:
+        personaje : Nombre del personaje.
+        items     : Lista de dicts {nombre, cantidad, peso_kg, estado}.
+        peso      : Peso total actual en kg.
+        vol       : Volumen total actual en unidades.
+        peso_max  : Límite de peso.
+        vol_max   : Límite de volumen.
     """
     e = discord.Embed(
-        title=f"🏥 Estado Médico — {personaje['nombre']} {personaje['apellidos']}",
-        color=COLOR_MEDICO,
+        title=f"📦  Inventario General — {personaje}",
+        color=C_INFO,
     )
+    if not items:
+        e.description = "*Inventario vacío.*"
+    else:
+        lineas = [
+            f"• **{it['nombre']}** ×{it['cantidad']} — {it['peso_kg']*it['cantidad']:.2f}kg"
+            + (f" _(dañado)_" if it.get("estado") == "dañado" else "")
+            for it in items
+        ]
+        e.description = "\n".join(lineas)
 
-    # Indicadores vitales
-    sangre = medico.get("sangre", 100)
-    barra = _barra_progreso(sangre, 100, 10)
     e.add_field(
-        name="🩸 Sangre",
-        value=f"{barra} `{sangre}%`",
+        name="Capacidad",
+        value=f"Peso: **{peso:.1f}** / {peso_max} kg\nVolumen: **{vol}** / {vol_max} u",
         inline=False,
     )
-    e.add_field(name="🧠 Consciencia", value=medico.get("consciencia", "—"), inline=True)
-    e.add_field(name="📊 Estado general", value=medico.get("estado_general", "—"), inline=True)
+    e.set_footer(text=FOOTER_TEXT)
+    return e
 
-    # Heridas
-    heridas = medico.get("heridas", [])
+
+# ---------------------------------------------------------------------------
+# Embeds médicos
+# ---------------------------------------------------------------------------
+
+_ESTADO_COLOR = {
+    "Operativo":      C_OK,
+    "Lesionado":      C_WARN,
+    "Herido":         C_WARN,
+    "Herido grave":   C_ERROR,
+    "Grave":          C_ERROR,
+    "Crítico":        C_ERROR,
+    "Muerte clínica": 0x000000,
+}
+
+
+def estado_medico(personaje: str, estado: dict) -> discord.Embed:
+    """
+    Embed del estado médico completo de un personaje.
+
+    Args:
+        personaje : Nombre del personaje.
+        estado    : Dict con campos de medical_state + estado_general calculado.
+    """
+    general = estado.get("estado_general", "Desconocido")
+    color   = _ESTADO_COLOR.get(general, C_NEUTRAL)
+
+    e = discord.Embed(
+        title=f"🏥  Estado médico — {personaje}",
+        color=color,
+    )
+    e.add_field(name="Estado general",  value=f"**{general}**",                   inline=True)
+    e.add_field(name="Consciencia",     value=estado.get("consciencia", "—"),     inline=True)
+    e.add_field(name="Sangre",          value=f"{estado.get('sangre', 0)}%",      inline=True)
+
+    heridas = estado.get("heridas", [])
     if heridas:
-        heridas_txt = "\n".join(
-            f"• **{h.get('tipo','?')}** en {h.get('localizacion','?')} "
-            f"— {h.get('gravedad','?')} [{h.get('estado_tratamiento','?')}]"
+        texto_heridas = "\n".join(
+            f"• {h.get('tipo','?')} en {h.get('localizacion','?')} "
+            f"({h.get('gravedad','?')}) — {h.get('estado_tratamiento','sin tratar')}"
             for h in heridas
         )
-        e.add_field(name=f"🩹 Heridas ({len(heridas)})", value=heridas_txt[:1024], inline=False)
+        e.add_field(name="🩹 Heridas activas", value=texto_heridas[:1024], inline=False)
     else:
-        e.add_field(name="🩹 Heridas", value="Ninguna registrada", inline=False)
+        e.add_field(name="🩹 Heridas activas", value="*Ninguna*", inline=False)
 
-    # Fracturas
-    fracturas = medico.get("fracturas", [])
+    fracturas = estado.get("fracturas", [])
     if fracturas:
-        frac_txt = "\n".join(
-            f"• {f.get('miembro','?')} — {f.get('tipo','?')}" for f in fracturas
+        texto_frac = "\n".join(
+            f"• {f.get('miembro','?')} — {f.get('tipo','?')}"
+            for f in fracturas
         )
-        e.add_field(name=f"🦴 Fracturas ({len(fracturas)})", value=frac_txt[:512], inline=False)
+        e.add_field(name="🦴 Fracturas", value=texto_frac, inline=False)
 
-    e.set_footer(
-        text=f"RAISA · Última actualización: {medico.get('ultima_actualizacion','—')}"
+    e.set_footer(text=FOOTER_TEXT)
+    return e
+
+
+# ---------------------------------------------------------------------------
+# Embeds de radio
+# ---------------------------------------------------------------------------
+
+def radio_estado(encendida: bool, canal: str | None, tiene_radio: bool) -> discord.Embed:
+    """
+    Embed del estado actual de la radio del usuario.
+
+    Args:
+        encendida   : True si la radio está encendida.
+        canal       : Nombre del canal activo, o None.
+        tiene_radio : True si el usuario tiene radio equipada.
+    """
+    if not tiene_radio:
+        return _base("📻  Radio", "No tienes una radio equipada en tu loadout.", C_ERROR)
+
+    estado = "🟢 **Encendida**" if encendida else "🔴 **Apagada**"
+    canal_txt = canal if canal else "—"
+
+    e = _base("📻  Estado de Radio", "", C_TEAL if encendida else C_NEUTRAL)
+    e.add_field(name="Estado",  value=estado,    inline=True)
+    e.add_field(name="Canal",   value=canal_txt, inline=True)
+    return e
+
+
+def radio_sin_equipo() -> discord.Embed:
+    """Embed de error cuando el usuario intenta usar radio sin tenerla equipada."""
+    return error(
+        "Sin radio equipada",
+        "Debes tener una radio en el slot de radio de tu loadout para usar este sistema.",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Embeds económicos
+# ---------------------------------------------------------------------------
+
+def saldo(personaje: str, cantidad: float, simbolo: str = "₢") -> discord.Embed:
+    """
+    Embed mostrando el saldo económico de un personaje.
+
+    Args:
+        personaje : Nombre del personaje.
+        cantidad  : Saldo actual.
+        simbolo   : Símbolo de la moneda.
+    """
+    e = _base(
+        f"💰  Saldo — {personaje}",
+        f"**{cantidad:,.2f} {simbolo}**",
+        C_GOLD,
     )
     return e
 
 
-# ── VEHÍCULOS ─────────────────────────────────────────────────────────────────
+def tienda_listado(items: list[dict], pagina: int, total_paginas: int,
+                   simbolo: str = "₢") -> discord.Embed:
+    """
+    Embed con el catálogo de la tienda.
 
-def embed_vehiculo(v: dict) -> discord.Embed:
-    """Construye el embed de estado de un vehículo."""
+    Args:
+        items         : Lista de dicts {nombre, precio, stock, descripcion}.
+        pagina        : Página actual (1-indexed).
+        total_paginas : Total de páginas.
+        simbolo       : Símbolo de la moneda.
+    """
     e = discord.Embed(
-        title=f"🚗 {v['nombre']}  —  {v['tipo'].replace('_',' ').title()}",
-        color=COLOR_INFO,
+        title="🏪  Tienda — Catálogo",
+        color=C_GOLD,
     )
-    e.add_field(name="Matrícula", value=v.get("matricula") or "—", inline=True)
-    e.add_field(name="Estado", value=v.get("estado_general", "—"), inline=True)
-    e.add_field(name="Asientos", value=str(v.get("asientos", "—")), inline=True)
+    for it in items:
+        stock_txt = "∞" if it.get("stock", -1) == -1 else str(it["stock"])
+        e.add_field(
+            name=f"{it['nombre']}",
+            value=f"Precio: **{it['precio']:,.0f} {simbolo}** | Stock: {stock_txt}\n"
+                  f"_{it.get('descripcion','')[:80]}_",
+            inline=False,
+        )
+    e.set_footer(text=f"{FOOTER_TEXT} | Página {pagina}/{total_paginas}")
+    return e
 
-    comb_actual = v.get("combustible_actual", 0)
-    comb_max    = v.get("combustible_max", 1)
-    barra_comb  = _barra_progreso(comb_actual, comb_max, 10)
+
+# ---------------------------------------------------------------------------
+# Embeds de vehículos
+# ---------------------------------------------------------------------------
+
+def ficha_vehiculo(v: dict) -> discord.Embed:
+    """
+    Embed con la ficha técnica de un vehículo.
+
+    Args:
+        v: Dict con todos los campos del vehículo (de la BBDD).
+    """
+    import json as _json
+
+    e = discord.Embed(title=f"🚗  {v.get('nombre','—')}", color=C_DARK)
+    e.add_field(name="Tipo",          value=v.get("tipo","—"),          inline=True)
+    e.add_field(name="Estado",        value=v.get("estado_general","—"),inline=True)
+    e.add_field(name="Asientos",      value=str(v.get("asientos","—")), inline=True)
     e.add_field(
-        name="⛽ Combustible",
-        value=f"{barra_comb} `{comb_actual:.0f}/{comb_max:.0f} L`",
-        inline=False,
+        name="Combustible",
+        value=f"{v.get('combustible_actual',0):.0f} / {v.get('combustible_max',0):.0f} L",
+        inline=True,
+    )
+    e.add_field(
+        name="Inventario",
+        value=f"Peso máx: {v.get('inv_peso_max_kg',0)} kg",
+        inline=True,
     )
 
-    componentes = v.get("componentes_json", {})
-    if isinstance(componentes, dict) and componentes:
-        comp_txt = "\n".join(f"• {k}: {val}" for k, val in componentes.items())
-        e.add_field(name="🔧 Componentes", value=comp_txt[:1024], inline=False)
+    comp = v.get("componentes") or {}
+    if isinstance(comp, str):
+        try:
+            comp = _json.loads(comp)
+        except Exception:
+            comp = {}
+    if comp:
+        estado_comp = "\n".join(f"• {k}: {val}" for k, val in comp.items())
+        e.add_field(name="🔧 Componentes", value=estado_comp[:1024], inline=False)
 
-    e.set_footer(text=f"RAISA · ID vehículo: {v['vehiculo_id']}")
+    mun = v.get("municion_json") or {}
+    if isinstance(mun, str):
+        try:
+            mun = _json.loads(mun)
+        except Exception:
+            mun = {}
+    if mun:
+        mun_txt = "\n".join(
+            f"• {arma}: {d.get('cargado',0)}/{d.get('max',0)} ({d.get('calibre','?')})"
+            for arma, d in mun.items()
+        )
+        e.add_field(name="🔫 Munición", value=mun_txt[:1024], inline=False)
+
+    e.set_footer(text=FOOTER_TEXT)
     return e
 
 
-# ── RADIO ─────────────────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# Embeds de eventos
+# ---------------------------------------------------------------------------
 
-def embed_radio_sin_equipo() -> discord.Embed:
-    """Embed de error para usuario sin radio equipada."""
-    return _base(
-        "📻 Sin radio",
-        "No tienes ninguna **radio** equipada en tu loadout.\n"
-        "Equipa una radio en el slot correspondiente para acceder a las comunicaciones.",
-        COLOR_ERROR,
+def evento_on(descripcion: str, activado_por: str) -> discord.Embed:
+    """Embed de anuncio de inicio de Evento-ON."""
+    e = _base(
+        "🔴  EVENTO ACTIVO",
+        f"**{descripcion}**\n\n"
+        "• Tienda: **bloqueada**\n"
+        "• Zonas seguras: **inactivas**\n"
+        "• Acceso a inventario general: **restringido**",
+        C_ERROR,
     )
-
-
-def embed_radio_canal(canal_nombre: str, unidad: str | None) -> discord.Embed:
-    """Embed de confirmación de cambio de canal."""
-    unit_txt = f" — Unidad: `{unidad}`" if unidad else ""
-    return _base(
-        "📻 Canal de radio activo",
-        f"Conectado a **{canal_nombre}**{unit_txt}.",
-        COLOR_RADIO,
-    )
-
-
-# ── EVENTOS ───────────────────────────────────────────────────────────────────
-
-def embed_estado_evento(modo: str, activado_por: int | None = None) -> discord.Embed:
-    """Embed de estado actual del evento."""
-    if modo == "ON":
-        titulo  = "🔴 EVENTO-ON — Activo"
-        desc    = "El evento está en curso.\n• Tienda **bloqueada**\n• Zonas seguras **inactivas**\n• Inventario: solo personal y vehículos"
-        color   = COLOR_ERROR
-    else:
-        titulo  = "🟢 EVENTO-OFF — Inactivo"
-        desc    = "No hay evento en curso.\n• Tienda **operativa**\n• Zonas seguras **activas**\n• Inventario general **accesible**"
-        color   = COLOR_OK
-
-    e = _base(titulo, desc, color)
-    if activado_por:
-        e.set_footer(text=f"RAISA · Activado por ID: {activado_por}")
+    e.set_footer(text=f"{FOOTER_TEXT} | Activado por {activado_por}")
     return e
 
 
-# ── UTILIDADES INTERNAS ───────────────────────────────────────────────────────
+def evento_off(activado_por: str) -> discord.Embed:
+    """Embed de anuncio de fin de evento (Evento-OFF)."""
+    e = _base(
+        "🟢  EVENTO FINALIZADO",
+        "• Tienda: **operativa**\n"
+        "• Zonas seguras: **activas**\n"
+        "• Acceso a inventario: **completo**",
+        C_OK,
+    )
+    e.set_footer(text=f"{FOOTER_TEXT} | Desactivado por {activado_por}")
+    return e
 
-def _barra_progreso(actual: float, maximo: float, longitud: int = 10) -> str:
-    """
-    Genera una barra de progreso de texto.
 
-    :param actual: Valor actual.
-    :param maximo: Valor máximo.
-    :param longitud: Número de bloques totales.
-    :returns: Cadena tipo '██████░░░░'.
-    """
-    if maximo <= 0:
-        return "░" * longitud
-    fraccion = max(0.0, min(1.0, actual / maximo))
-    llenos   = round(fraccion * longitud)
-    return "█" * llenos + "░" * (longitud - llenos)
+# ---------------------------------------------------------------------------
+# Embeds de SUDO
+# ---------------------------------------------------------------------------
+
+def sudo_solicitud() -> discord.Embed:
+    """Embed enviado por MD cuando se solicita autenticación SUDO."""
+    return _base(
+        "🔐  Autenticación SUDO",
+        "Responde a este mensaje con tu **clave SUDO**.\n"
+        "Tienes 2 minutos. Este mensaje se autodestruirá tras la verificación.\n\n"
+        "_Nunca compartas tu clave SUDO con nadie._",
+        C_PURPLE,
+    )
+
+
+def sudo_ok(minutos: int = 30) -> discord.Embed:
+    """Embed de confirmación de sesión SUDO activada."""
+    return ok("Sesión SUDO activada", f"Tendrás acceso SUDO durante **{minutos} minutos**.")
+
+
+def sudo_fail() -> discord.Embed:
+    """Embed de error de autenticación SUDO."""
+    return error("Autenticación fallida", "Clave incorrecta. El intento ha sido registrado.")
+
+
+def sudo_activa(segundos_restantes: int) -> discord.Embed:
+    """Embed informando del tiempo restante de la sesión SUDO activa."""
+    minutos = segundos_restantes // 60
+    segs    = segundos_restantes % 60
+    return info(
+        "Sesión SUDO activa",
+        f"Tu sesión SUDO expira en **{minutos}m {segs}s**.",
+    )

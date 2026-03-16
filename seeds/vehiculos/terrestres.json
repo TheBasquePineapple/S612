@@ -1,0 +1,206 @@
+[
+  {
+    "_comentario": "=== VEHÍCULOS TERRESTRES ===",
+
+    "nombre": "Toyota Land Cruiser (blindado ligero)",
+    "tipo": "blindado_ligero",
+    "subtipo": "SUV_blindado",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo"
+    },
+    "combustible_actual": 60.0,
+    "combustible_max": 90.0,
+    "consumo_por_km": 0.12,
+    "inv_peso_max_kg": 200.0,
+    "inv_volumen_max_u": 30,
+    "municion_json": {},
+    "hardpoints_json": [],
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "activo": 1
+  },
+  {
+    "nombre": "Oshkosh M-ATV (MRAP)",
+    "tipo": "blindado_pesado",
+    "subtipo": "MRAP",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "escotilla": "óptimo"
+    },
+    "combustible_actual": 120.0,
+    "combustible_max": 200.0,
+    "consumo_por_km": 0.25,
+    "inv_peso_max_kg": 400.0,
+    "inv_volumen_max_u": 60,
+    "municion_json": {},
+    "hardpoints_json": [],
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "activo": 1
+  },
+  {
+    "nombre": "Oshkosh M-ATV artillado (M2 .50cal)",
+    "tipo": "blindado_pesado",
+    "subtipo": "MRAP_artillado",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "torreta": "óptimo"
+    },
+    "combustible_actual": 120.0,
+    "combustible_max": 200.0,
+    "consumo_por_km": 0.27,
+    "inv_peso_max_kg": 380.0,
+    "inv_volumen_max_u": 55,
+    "municion_json": {
+      "M2_50cal": {
+        "cargado": 200,
+        "max": 800,
+        "calibre": ".50BMG",
+        "id_compat": "M2_HB_50BMG"
+      }
+    },
+    "hardpoints_json": [],
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "activo": 1
+  },
+  {
+    "nombre": "Furgoneta Ford Transit (civil)",
+    "tipo": "furgoneta",
+    "subtipo": "civil",
+    "asientos": 9,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo"
+    },
+    "combustible_actual": 50.0,
+    "combustible_max": 70.0,
+    "consumo_por_km": 0.09,
+    "inv_peso_max_kg": 600.0,
+    "inv_volumen_max_u": 120,
+    "municion_json": {},
+    "hardpoints_json": [],
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "activo": 1
+  },
+  {
+    "nombre": "Sedán Toyota Camry (civil)",
+    "tipo": "coche",
+    "subtipo": "civil",
+    "asientos": 5,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "ruedas": "óptimo"
+    },
+    "combustible_actual": 40.0,
+    "combustible_max": 60.0,
+    "consumo_por_km": 0.07,
+    "inv_peso_max_kg": 80.0,
+    "inv_volumen_max_u": 15,
+    "municion_json": {},
+    "hardpoints_json": [],
+    "artillado": 0,
+    "permite_transferencia_mun": 1,
+    "activo": 1
+  },
+  {
+    "nombre": "T-72B3 (MBT)",
+    "tipo": "mbt",
+    "subtipo": "T72",
+    "asientos": 3,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor": "óptimo",
+      "transmision": "óptimo",
+      "orugas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "canon_125mm": "óptimo",
+      "ametralladora_coaxial": "óptimo",
+      "dshk_12_7mm": "óptimo"
+    },
+    "combustible_actual": 400.0,
+    "combustible_max": 700.0,
+    "consumo_por_km": 2.8,
+    "inv_peso_max_kg": 200.0,
+    "inv_volumen_max_u": 20,
+    "municion_json": {
+      "canon_125mm": {
+        "cargado": 22,
+        "max": 45,
+        "calibre": "125mm",
+        "id_compat": "T72_125MM_OBUZ"
+      },
+      "ametralladora_coaxial_PKT": {
+        "cargado": 500,
+        "max": 2000,
+        "calibre": "7.62x54R",
+        "id_compat": "PKT_762x54R"
+      },
+      "dshk_12_7mm": {
+        "cargado": 150,
+        "max": 600,
+        "calibre": "12.7x108",
+        "id_compat": "DSHK_127x108"
+      }
+    },
+    "hardpoints_json": [],
+    "artillado": 1,
+    "permite_transferencia_mun": 0,
+    "activo": 1
+  },
+  {
+    "nombre": "BTR-80 (APC)",
+    "tipo": "blindado_pesado",
+    "subtipo": "APC",
+    "asientos": 10,
+    "estado_general": "óptimo",
+    "componentes": {
+      "motor": "óptimo",
+      "ruedas": "óptimo",
+      "blindaje": "óptimo",
+      "electronica": "óptimo",
+      "torreta_14_5mm": "óptimo"
+    },
+    "combustible_actual": 200.0,
+    "combustible_max": 300.0,
+    "consumo_por_km": 0.5,
+    "inv_peso_max_kg": 500.0,
+    "inv_volumen_max_u": 80,
+    "municion_json": {
+      "KPVT_14_5mm": {
+        "cargado": 100,
+        "max": 500,
+        "calibre": "14.5x114",
+        "id_compat": "KPVT_145x114"
+      }
+    },
+    "hardpoints_json": [],
+    "artillado": 1,
+    "permite_transferencia_mun": 1,
+    "activo": 1
+  }
+]

@@ -1,288 +1,350 @@
 """
-RAISA — Validaciones reutilizables centralizadas
-utils/validaciones.py
+utils/validaciones.py — Validaciones centralizadas y reutilizables de RAISA
+============================================================================
+Responsabilidad : Todas las reglas de negocio que se aplican en múltiples
+                  módulos. Importar desde aquí, nunca duplicar lógica.
+Dependencias    : stdlib únicamente (no importar cogs ni discord aquí)
+Autor           : RAISA Dev
 
-Responsabilidad : Lógica de validación compartida entre cogs.
-                  Compatibilidad de munición, límites de peso/volumen, etc.
-Dependencias    : db/repository
-Autor           : Proyecto RAISA
+Funciones exportadas
+--------------------
+  validar_compatibilidad_municion  — Regla absoluta de calibre + id_compat
+  validar_peso_volumen             — Límites de inventario personal
+  calcular_estado_general          — Estado médico calculado en runtime
+  validar_nombre_banlist           — Filtro de palabras prohibidas en nombres
+  validar_edad                     — Rango de edad del formulario
+  validar_url_imagen               — Formato y existencia de URL de imagen
 """
 
-import logging
+import json
+import re
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
-from db.repository import Repository  # noqa: F401 – class defined in db/repository
 
-log = logging.getLogger("raisa.validaciones")
+# ---------------------------------------------------------------------------
+# Resultado genérico de validación
+# ---------------------------------------------------------------------------
 
-
-# ──────────────────────────────────────────────────────────────────────────────
-# MUNICIÓN
-# ──────────────────────────────────────────────────────────────────────────────
-
-async def validar_municion(
-    repo: Repository,
-    arma_item_id: int,
-    cargador_item_id: int,
-) -> tuple[bool, str]:
+@dataclass
+class ResultadoValidacion:
     """
-    REGLA ABSOLUTA: La munición debe coincidir en calibre Y en id_compatibilidad.
-    Esta función centraliza la validación en todos los puntos de recarga.
+    Resultado inmutable de cualquier validación.
 
-    :param repo: Repositorio de datos.
-    :param arma_item_id: UUID del arma a recargar.
-    :param cargador_item_id: UUID del cargador a usar.
-    :returns: (True, "") si es válido, (False, mensaje_error) si no.
+    Attributes:
+        ok      : True si la validación pasó.
+        motivo  : Mensaje de error legible para el usuario (vacío si ok=True).
     """
-    arma     = await repo.get_item(arma_item_id)
-    cargador = await repo.get_item(cargador_item_id)
+    ok: bool
+    motivo: str = ""
 
-    if not arma:
-        return False, f"El arma con ID `{arma_item_id}` no existe en el sistema."
-    if not cargador:
-        return False, f"El cargador con ID `{cargador_item_id}` no existe en el sistema."
-
-    # Verificación de calibre
-    if arma.get("calibre") and cargador.get("calibre"):
-        if arma["calibre"] != cargador["calibre"]:
-            return (
-                False,
-                f"**Calibre incompatible.** "
-                f"El arma usa `{arma['calibre']}` pero el cargador es `{cargador['calibre']}`."
-            )
-
-    # Verificación de ID de compatibilidad (independiente al UUID del ítem)
-    if arma.get("id_compatibilidad") and cargador.get("id_compatibilidad"):
-        if arma["id_compatibilidad"] != cargador["id_compatibilidad"]:
-            return (
-                False,
-                f"**Cargador incompatible.** "
-                f"El arma requiere compatibilidad `{arma['id_compatibilidad']}` "
-                f"pero el cargador es `{cargador['id_compatibilidad']}`."
-            )
-
-    return True, ""
+    def __bool__(self) -> bool:
+        return self.ok
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# INVENTARIO — PESO Y VOLUMEN
-# ──────────────────────────────────────────────────────────────────────────────
+OK    = ResultadoValidacion(ok=True)
+_FAIL = lambda motivo: ResultadoValidacion(ok=False, motivo=motivo)
 
-async def validar_capacidad_inventario(
-    repo: Repository,
-    user_id: int,
-    item_uuid: int,
+
+# ---------------------------------------------------------------------------
+# 1. Validación de compatibilidad de munición — REGLA ABSOLUTA
+# ---------------------------------------------------------------------------
+
+def validar_compatibilidad_municion(arma: Any, cargador: Any) -> ResultadoValidacion:
+    """
+    Verifica que un cargador sea compatible con un arma.
+
+    REGLA ABSOLUTA: Ambas condiciones deben cumplirse simultáneamente:
+      1. cargador.calibre == arma.calibre
+      2. cargador.id_compatibilidad == arma.id_compatibilidad
+
+    Si cualquiera falla → devuelve error con descripción explícita.
+    Esta función no tiene excepciones ni bypass posibles.
+
+    Args:
+        arma     : Objeto o dict con campos 'calibre' e 'id_compatibilidad'.
+        cargador : Objeto o dict con campos 'calibre' e 'id_compatibilidad'.
+
+    Returns:
+        ResultadoValidacion con ok=True si compatible, ok=False + motivo si no.
+    """
+    def _get(obj, campo):
+        if isinstance(obj, dict):
+            return obj.get(campo)
+        return getattr(obj, campo, None)
+
+    calibre_arma   = _get(arma,    "calibre")
+    calibre_carg   = _get(cargador,"calibre")
+    compat_arma    = _get(arma,    "id_compatibilidad")
+    compat_carg    = _get(cargador,"id_compatibilidad")
+
+    if calibre_arma is None or calibre_carg is None:
+        return _FAIL("No se pudo determinar el calibre del arma o del cargador.")
+
+    if calibre_arma != calibre_carg:
+        return _FAIL(
+            f"Calibre incompatible: el arma usa **{calibre_arma}** "
+            f"pero el cargador es **{calibre_carg}**."
+        )
+
+    if compat_arma and compat_carg and compat_arma != compat_carg:
+        return _FAIL(
+            f"Cargador incompatible: el arma requiere compatibilidad "
+            f"**{compat_arma}** pero el cargador tiene **{compat_carg}**."
+        )
+
+    return OK
+
+
+# ---------------------------------------------------------------------------
+# 2. Validación de peso y volumen de inventario
+# ---------------------------------------------------------------------------
+
+def validar_peso_volumen(
+    peso_actual: float,
+    volumen_actual: int,
+    peso_item: float,
+    volumen_item: int,
     cantidad: int = 1,
-) -> tuple[bool, str]:
+    peso_max: float = 40.0,
+    volumen_max: int = 80,
+) -> ResultadoValidacion:
     """
-    Verifica si añadir `cantidad` unidades de un ítem al loadout supera
-    los límites de peso (40 kg) y volumen configurados.
+    Verifica que añadir un ítem no supere los límites del inventario.
 
-    Solo aplica al inventario personal/loadout.
-    El inventario general y de vehículos tienen sus propios límites.
+    Args:
+        peso_actual   : Peso actual del inventario en kg.
+        volumen_actual: Volumen actual en unidades.
+        peso_item     : Peso del ítem a añadir en kg.
+        volumen_item  : Volumen del ítem a añadir en unidades.
+        cantidad      : Cuántas unidades del ítem se añaden.
+        peso_max      : Límite de peso máximo (default 40 kg).
+        volumen_max   : Límite de volumen máximo.
 
-    :param repo: Repositorio de datos.
-    :param user_id: ID del usuario.
-    :param item_uuid: UUID del ítem a añadir.
-    :param cantidad: Unidades a añadir.
-    :returns: (True, "") si cabe, (False, mensaje_error) si no.
+    Returns:
+        ResultadoValidacion.
     """
-    import json
-    from pathlib import Path
+    nuevo_peso    = peso_actual    + (peso_item    * cantidad)
+    nuevo_volumen = volumen_actual + (volumen_item * cantidad)
 
-    item = await repo.get_item(item_uuid)
-    if not item:
-        return False, f"Ítem con ID `{item_uuid}` no encontrado."
+    errores = []
+    if nuevo_peso > peso_max:
+        exceso = nuevo_peso - peso_max
+        errores.append(f"Peso: **{nuevo_peso:.2f} kg** excede el límite de **{peso_max} kg** (+{exceso:.2f} kg)")
 
-    # Leer límite de volumen desde config
-    cfg_path = Path("config/inventario.json")
-    cfg = json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists() else {}
-    peso_max   = cfg.get("peso_maximo_kg", 40)
-    volumen_max = cfg.get("volumen_maximo_unidades", 100)
+    if nuevo_volumen > volumen_max:
+        exceso = nuevo_volumen - volumen_max
+        errores.append(f"Volumen: **{nuevo_volumen}u** excede el límite de **{volumen_max}u** (+{exceso}u)")
 
-    # Calcular peso/volumen actual del loadout
-    peso_actual, volumen_actual = await _calcular_carga_loadout(repo, user_id)
+    if errores:
+        return _FAIL("No hay espacio suficiente:\n" + "\n".join(errores))
 
-    peso_nuevo   = peso_actual   + item["peso_kg"]   * cantidad
-    volumen_nuevo = volumen_actual + item["volumen"]   * cantidad
+    return OK
 
-    if peso_nuevo > peso_max:
-        return (
-            False,
-            f"**Límite de peso superado.**\n"
-            f"Peso actual: `{peso_actual:.2f} kg` · Añadir: `{item['peso_kg'] * cantidad:.2f} kg`\n"
-            f"Máximo: `{peso_max} kg`"
+
+# ---------------------------------------------------------------------------
+# 3. Cálculo de estado médico general
+# ---------------------------------------------------------------------------
+
+# Orden de evaluación: del más grave al más leve (primera coincidencia gana)
+_ESTADOS_MEDICOS = [
+    "Muerte clínica",
+    "Crítico",
+    "Grave",
+    "Herido grave",
+    "Herido",
+    "Lesionado",
+    "Operativo",
+]
+
+
+def calcular_estado_general(
+    sangre: int,
+    consciencia: str,
+    heridas: list[dict],
+    fracturas: list[dict],
+) -> str:
+    """
+    Calcula el estado médico general en tiempo de lectura.
+
+    NO se persiste en BBDD para evitar inconsistencias con los campos fuente.
+    Ver REVIEW.md §1.3 para la justificación completa.
+
+    Args:
+        sangre       : Valor 0-100.
+        consciencia  : 'Consciente' | 'Semiconsciente' | 'Inconsciente' | 'Clínico'.
+        heridas      : Lista de dicts {tipo, localizacion, gravedad, estado_tratamiento}.
+        fracturas    : Lista de dicts {miembro, tipo}.
+
+    Returns:
+        String con el estado general calculado.
+    """
+    # Muerte clínica
+    if sangre == 0 or consciencia == "Clínico":
+        return "Muerte clínica"
+
+    # Crítico
+    if sangre < 20 or consciencia == "Inconsciente":
+        return "Crítico"
+
+    # Grave
+    if sangre < 40 or consciencia == "Semiconsciente":
+        return "Grave"
+
+    # Herido grave (fractura expuesta)
+    if any(f.get("tipo") == "expuesta" for f in fracturas):
+        return "Herido grave"
+
+    # Herido (herida grave activa)
+    if any(h.get("gravedad") == "grave" for h in heridas):
+        return "Herido"
+
+    # Lesionado (cualquier herida o fractura)
+    if heridas or fracturas:
+        return "Lesionado"
+
+    return "Operativo"
+
+
+# ---------------------------------------------------------------------------
+# 4. Validación de nombre contra banlist
+# ---------------------------------------------------------------------------
+
+_banlist_cache: list[str] | None = None
+_BANLIST_PATH = Path("config/banlist.json")
+
+
+def _cargar_banlist() -> list[str]:
+    """Carga y cachea la banlist desde config/banlist.json."""
+    global _banlist_cache
+    if _banlist_cache is not None:
+        return _banlist_cache
+    try:
+        with _BANLIST_PATH.open(encoding="utf-8") as f:
+            data = json.load(f)
+        _banlist_cache = [p.lower() for p in data.get("palabras", [])]
+    except Exception:
+        _banlist_cache = []
+    return _banlist_cache
+
+
+def invalidar_cache_banlist() -> None:
+    """Invalida el caché de banlist (llamar si se modifica el archivo)."""
+    global _banlist_cache
+    _banlist_cache = None
+
+
+def validar_nombre_banlist(nombre: str) -> ResultadoValidacion:
+    """
+    Verifica que el nombre de personaje no contenga palabras prohibidas.
+
+    Args:
+        nombre: Nombre completo del personaje.
+
+    Returns:
+        ResultadoValidacion.
+    """
+    nombre_lower = nombre.lower()
+    banlist = _cargar_banlist()
+    for palabra in banlist:
+        if palabra in nombre_lower:
+            return _FAIL(
+                f"El nombre contiene una palabra no permitida. "
+                f"Por favor elige otro nombre."
+            )
+    return OK
+
+
+# ---------------------------------------------------------------------------
+# 5. Validación de edad
+# ---------------------------------------------------------------------------
+
+def validar_edad(valor: str) -> ResultadoValidacion:
+    """
+    Valida que la edad sea un entero en el rango 18-60.
+    El límite superior (60) NO se menciona en el mensaje de error al usuario.
+
+    Args:
+        valor: Texto introducido por el usuario.
+
+    Returns:
+        ResultadoValidacion.
+    """
+    try:
+        edad = int(valor.strip())
+    except ValueError:
+        return _FAIL("La edad debe ser un número entero.")
+
+    if edad < 18:
+        return _FAIL("Debes tener al menos **18 años** para registrarte.")
+
+    # Límite superior sin mencionar al usuario (spec explícito)
+    if edad > 60:
+        return _FAIL("La edad introducida no es válida para el registro.")
+
+    return OK
+
+
+# ---------------------------------------------------------------------------
+# 6. Validación de URL de imagen
+# ---------------------------------------------------------------------------
+
+_URL_PATTERN = re.compile(
+    r"^https?://.+\.(png|jpg|jpeg|webp|gif)(\?.*)?$",
+    re.IGNORECASE,
+)
+
+
+def validar_url_imagen(url: str) -> ResultadoValidacion:
+    """
+    Valida el formato de una URL de imagen (extensión + protocolo).
+    No hace request HTTP — solo valida formato.
+    La verificación real de existencia debe hacerse con aiohttp en el cog.
+
+    Args:
+        url: URL a validar.
+
+    Returns:
+        ResultadoValidacion.
+    """
+    if not url or not isinstance(url, str):
+        return _FAIL("No se proporcionó una URL.")
+
+    url = url.strip()
+    if not _URL_PATTERN.match(url):
+        return _FAIL(
+            "La URL no parece ser una imagen válida.\n"
+            "Formatos admitidos: `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`\n"
+            "La URL debe comenzar con `https://`."
         )
+    return OK
 
-    if volumen_nuevo > volumen_max:
-        return (
-            False,
-            f"**Límite de volumen superado.**\n"
-            f"Volumen actual: `{volumen_actual:.2f}` · Añadir: `{item['volumen'] * cantidad:.2f}`\n"
-            f"Máximo: `{volumen_max}`"
+
+# ---------------------------------------------------------------------------
+# 7. Validación de slots de pouches
+# ---------------------------------------------------------------------------
+
+def validar_slots_pouches(
+    slots_disponibles: int,
+    slots_usados: int,
+    slots_que_ocupa: int,
+) -> ResultadoValidacion:
+    """
+    Verifica que haya slots suficientes en una protección antes de asignar un pouch.
+
+    Args:
+        slots_disponibles : Total de slots de la protección.
+        slots_usados      : Slots ya ocupados.
+        slots_que_ocupa   : Slots que consumiría el nuevo pouch.
+
+    Returns:
+        ResultadoValidacion.
+    """
+    libres = slots_disponibles - slots_usados
+    if slots_que_ocupa > libres:
+        return _FAIL(
+            f"No hay suficientes slots libres.\n"
+            f"Slots libres: **{libres}** | Slots requeridos: **{slots_que_ocupa}**"
         )
-
-    return True, ""
-
-
-async def _calcular_carga_loadout(repo: Repository, user_id: int) -> tuple[float, float]:
-    """
-    Calcula el peso y volumen total actual del loadout de un usuario.
-
-    :returns: (peso_total_kg, volumen_total)
-    """
-    loadout = await repo.get_loadout(user_id)
-    if not loadout:
-        return 0.0, 0.0
-
-    SLOTS_ITEM = [
-        "arma_primaria_id", "arma_secundaria_id", "arma_terciaria_id",
-        "chaleco_id", "portaplacas_id", "placas_id", "soportes_id", "casco_id",
-        "pantalon_id", "camisa_id", "chaqueta_id", "botas_id",
-        "guantes_id", "reloj_id", "mochila_id", "cinturon_id", "radio_id",
-    ]
-
-    peso_total = 0.0
-    volumen_total = 0.0
-
-    for slot in SLOTS_ITEM:
-        item_id = loadout.get(slot)
-        if item_id:
-            item = await repo.get_item(item_id)
-            if item:
-                peso_total    += item.get("peso_kg", 0)
-                volumen_total += item.get("volumen", 0)
-
-    # Sumar pouches
-    for contenedor in ("chaleco", "portaplacas", "soportes"):
-        pouches = await repo.get_pouches(user_id, contenedor)
-        for pouch in pouches:
-            peso_total    += pouch.get("peso_kg", 0)
-            volumen_total += pouch.get("volumen", 0)
-
-    return peso_total, volumen_total
-
-
-async def validar_capacidad_vehiculo(
-    repo: Repository,
-    vehiculo_id: int,
-    item_uuid: int,
-    cantidad: int = 1,
-) -> tuple[bool, str]:
-    """
-    Verifica si añadir un ítem al inventario de un vehículo supera sus límites.
-
-    :returns: (True, "") si cabe, (False, mensaje_error) si no.
-    """
-    vehiculo = await repo.get_vehiculo(vehiculo_id)
-    item     = await repo.get_item(item_uuid)
-
-    if not vehiculo:
-        return False, "Vehículo no encontrado."
-    if not item:
-        return False, "Ítem no encontrado."
-
-    peso_actual   = vehiculo.get("inventario_peso_actual", 0)
-    peso_max      = vehiculo.get("inventario_peso_max", 0)
-    vol_actual    = vehiculo.get("inventario_volumen_actual", 0)
-    vol_max       = vehiculo.get("inventario_volumen_max", 0)
-
-    peso_nuevo = peso_actual + item["peso_kg"] * cantidad
-    vol_nuevo  = vol_actual  + item["volumen"]  * cantidad
-
-    if peso_nuevo > peso_max:
-        return False, f"El vehículo no tiene capacidad de peso suficiente. (`{peso_actual:.1f}/{peso_max:.1f} kg`)"
-    if vol_nuevo > vol_max:
-        return False, f"El vehículo no tiene capacidad de volumen suficiente. (`{vol_actual:.1f}/{vol_max:.1f}`)"
-
-    return True, ""
-
-
-# ──────────────────────────────────────────────────────────────────────────────
-# TRANSFERENCIA DE MUNICIÓN (Regla de vehículos)
-# ──────────────────────────────────────────────────────────────────────────────
-
-TIPOS_PERMITEN_TRANSFERENCIA = {
-    "coche", "furgoneta", "blindado_ligero", "blindado_pesado", "mbt",
-    "helo_transporte",
-}
-
-def validar_transferencia_municion(tipo_vehiculo: str) -> tuple[bool, str]:
-    """
-    Verifica si un tipo de vehículo permite transferencia de munición
-    desde el inventario personal a sus armas.
-
-    :param tipo_vehiculo: Tipo del vehículo (campo 'tipo' en BBDD).
-    :returns: (True, "") si está permitido, (False, mensaje) si no.
-    """
-    if tipo_vehiculo in TIPOS_PERMITEN_TRANSFERENCIA:
-        return True, ""
-    return (
-        False,
-        f"La transferencia de munición **no está permitida** para vehículos de tipo `{tipo_vehiculo}`.\n"
-        f"Solo está disponible en vehículos terrestres y helicópteros de transporte."
-    )
-
-
-# ──────────────────────────────────────────────────────────────────────────────
-# SLOTS DE POUCHES
-# ──────────────────────────────────────────────────────────────────────────────
-
-async def validar_slot_pouch(
-    repo: Repository,
-    user_id: int,
-    contenedor: str,
-    pouch_tipo: str,
-) -> tuple[bool, str, int]:
-    """
-    Verifica si hay espacio para añadir un pouch en el contenedor.
-
-    :param repo: Repositorio de datos.
-    :param user_id: ID del usuario.
-    :param contenedor: 'chaleco' | 'portaplacas' | 'soportes'.
-    :param pouch_tipo: 'simple' | 'dual' | 'doble'.
-    :returns: (True, "", slot_libre) o (False, mensaje, -1).
-    """
-    import json
-    from pathlib import Path
-
-    cfg = json.loads(Path("config/inventario.json").read_text(encoding="utf-8"))
-    slots_por_tipo = cfg.get("tipos_pouch", {})
-    slots_requeridos = slots_por_tipo.get(pouch_tipo, {}).get("slots", 1)
-
-    # Obtener el contenedor del loadout para saber cuántos slots tiene
-    loadout = await repo.get_loadout(user_id)
-    if not loadout:
-        return False, "No tienes loadout inicializado.", -1
-
-    contenedor_id = loadout.get(f"{contenedor}_id")
-    if not contenedor_id:
-        return False, f"No tienes ningún **{contenedor}** equipado.", -1
-
-    contenedor_item = await repo.get_item(contenedor_id)
-    if not contenedor_item:
-        return False, "Error al obtener datos del contenedor.", -1
-
-    slots_totales = contenedor_item.get("slots_pouches", 0)
-    if slots_totales == 0:
-        return False, f"El {contenedor} equipado no tiene slots de pouches.", -1
-
-    # Ver cuántos slots están ocupados
-    pouches = await repo.get_pouches(user_id, contenedor)
-    slots_ocupados = sum(
-        slots_por_tipo.get(p.get("tipo_pouch", "simple"), {}).get("slots", 1)
-        for p in pouches
-    )
-    slots_libres = slots_totales - slots_ocupados
-
-    if slots_libres < slots_requeridos:
-        return (
-            False,
-            f"No hay suficientes slots libres en el {contenedor}.\n"
-            f"Libres: `{slots_libres}` · Requeridos: `{slots_requeridos}`",
-            -1,
-        )
-
-    # Encontrar el primer slot numérico libre
-    ocupados_set = {p["slot_numero"] for p in pouches}
-    slot_libre = next(i for i in range(1, slots_totales + 1) if i not in ocupados_set)
-    return True, "", slot_libre
+    return OK

@@ -1,385 +1,534 @@
 """
-RAISA — Cog de Sistema de Inventario
-cogs/inventario.py
+cogs/inventario.py — Sistema de inventario de RAISA
+=====================================================
+Responsabilidad : Gestión del loadout, inventario general y sistema de pouches.
+Dependencias    : db.repository, utils.embeds, utils.permisos,
+                  utils.validaciones, cogs.eventos
+Autor           : RAISA Dev
 
-Responsabilidad : Gestión del loadout, inventario general y pouches.
-                  Control de peso/volumen, asignación de slots.
-Dependencias    : discord.py, db/repository, utils/permisos, utils/embeds, utils/validaciones
-Autor           : Proyecto RAISA
+Comandos
+--------
+  /loadout ver                — Ver loadout propio (Usuario+)
+  /loadout equipar [slot] [item] — Equipar ítem en slot (Usuario+)
+  /loadout desequipar [slot]  — Vaciar slot del loadout (Usuario+)
+  /loadout parche [url]       — Establecer parche de uniformidad (Usuario+)
+  /inventario ver             — Ver inventario general (Usuario+)
+  /inventario mover [item] [slot] — Mover de general a loadout (Usuario+)
+  /pouches añadir [proteccion] [pouch] — Asignar pouch (Usuario+)
+  /pouches ver                — Ver pouches asignados (Usuario+)
+  /pouches quitar [id]        — Retirar pouch (Usuario+)
 """
 
-import logging
+import json
+from pathlib import Path
 
 import discord
-from discord import app_commands
+from discord import Interaction, app_commands
 from discord.ext import commands
 
-from utils.embeds import embed_loadout, embed_ok, embed_error, embed_aviso
-from utils.permisos import require_role, RANGO_USUARIO, RANGO_NARRADOR
-from utils.validaciones import validar_capacidad_inventario, validar_slot_pouch
+from cogs.eventos import evento_activo
+from db import repository as repo
+from utils import embeds as emb
+from utils.logger import log_info
+from utils.permisos import USUARIO, get_user_level, require_role
+from utils.validaciones import (
+    validar_peso_volumen,
+    validar_slots_pouches,
+    validar_url_imagen,
+)
 
-log = logging.getLogger("raisa.inventario")
-
-SLOTS_ARMA = ["arma_primaria_id", "arma_secundaria_id", "arma_terciaria_id"]
-SLOTS_PROTECCION = ["chaleco_id", "portaplacas_id", "placas_id", "soportes_id", "casco_id"]
-SLOTS_UNIFORMIDAD = ["pantalon_id", "camisa_id", "chaqueta_id", "botas_id", "guantes_id", "reloj_id"]
-SLOTS_ACCESORIOS = ["mochila_id", "cinturon_id", "radio_id"]
-
-NOMBRE_SLOTS = {
-    "arma_primaria_id": "Arma primaria",
-    "arma_secundaria_id": "Arma secundaria",
-    "arma_terciaria_id": "Arma terciaria",
-    "chaleco_id": "Chaleco",
-    "portaplacas_id": "Portaplacas",
-    "placas_id": "Placas",
-    "soportes_id": "Soportes",
-    "casco_id": "Casco",
-    "pantalon_id": "Pantalón",
-    "camisa_id": "Camisa",
-    "chaqueta_id": "Chaqueta",
-    "botas_id": "Botas",
-    "guantes_id": "Guantes",
-    "reloj_id": "Reloj",
-    "mochila_id": "Mochila/Backpanel",
-    "cinturon_id": "Cinturón",
-    "radio_id": "Radio",
+# ---------------------------------------------------------------------------
+# Slots válidos del loadout
+# ---------------------------------------------------------------------------
+SLOTS_VALIDOS = {
+    "primaria", "secundaria", "terciaria",
+    "chaleco", "portaplacas", "placas", "soporte", "casco",
+    "pantalon", "camisa", "chaqueta", "botas", "guantes", "reloj",
+    "mochila", "cinturon", "radio",
+    # 'parche' se maneja por separado (URL, no item_id)
 }
-TODOS_SLOTS = list(NOMBRE_SLOTS.keys())
+
+SLOTS_PROTECCION = {"chaleco", "portaplacas", "soporte"}
+
+
+def _cargar_inv_config() -> dict:
+    """Carga config/inventario.json con defaults."""
+    try:
+        with Path("config/inventario.json").open(encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"limites_globales": {"peso_max_kg": 40.0, "volumen_max_u": 80}}
 
 
 class InventarioCog(commands.Cog, name="Inventario"):
-    """Cog para el sistema de inventario y loadout de RAISA."""
+    """Cog del sistema de inventario."""
 
     def __init__(self, bot: commands.Bot) -> None:
-        self.bot = bot
+        self.bot    = bot
+        self.cfg    = _cargar_inv_config()
+        self.peso_max = float(self.cfg["limites_globales"]["peso_max_kg"])
+        self.vol_max  = int(self.cfg["limites_globales"]["volumen_max_u"])
 
-    @property
-    def repo(self):
-        return self.bot.repo
+    # -----------------------------------------------------------------------
+    # Grupos de comandos
+    # -----------------------------------------------------------------------
 
-    # ──────────────────────────────────────────────────────────────────────
-    # LOADOUT — Visualización
-    # ──────────────────────────────────────────────────────────────────────
+    loadout_group   = app_commands.Group(name="loadout",    description="Gestión del loadout equipado")
+    inventario_group= app_commands.Group(name="inventario", description="Inventario general")
+    pouches_group   = app_commands.Group(name="pouches",    description="Sistema de pouches MOLLE")
 
-    inv_group = app_commands.Group(name="inventario", description="Gestión de inventario y loadout")
+    # -----------------------------------------------------------------------
+    # /loadout ver
+    # -----------------------------------------------------------------------
 
-    @inv_group.command(name="loadout", description="Muestra tu loadout actual.")
-    @require_role(RANGO_USUARIO)
-    async def ver_loadout(self, interaction: discord.Interaction) -> None:
-        """Visualiza el loadout completo del usuario."""
-        uid = interaction.user.id
-        personaje = await self.repo.get_personaje(uid)
-        if not personaje:
-            await interaction.response.send_message(embed=embed_error("No tienes personaje registrado."), ephemeral=True)
-            return
+    @loadout_group.command(name="ver", description="Ver tu loadout completo")
+    @require_role(USUARIO)
+    async def loadout_ver(self, interaction: Interaction) -> None:
+        """
+        Muestra el loadout completo del personaje del usuario.
 
-        loadout = await self.repo.get_loadout(uid)
-        if not loadout:
-            await interaction.response.send_message(embed=embed_error("Error al cargar el loadout."), ephemeral=True)
-            return
+        Args:
+            interaction: Contexto de Discord.
+        """
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, interaction.user.id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "No tienes un personaje activo."),
+                    ephemeral=True,
+                )
+                return
+            slots_rows = await repo.get_loadout(conn, interaction.user.id)
 
-        # Resolver nombres de ítems (solo los que no son None)
-        item_ids = {v for k, v in loadout.items() if k.endswith("_id") and v is not None}
-        items_data = {}
-        for iid in item_ids:
-            item = await self.repo.get_item(iid)
-            if item:
-                items_data[iid] = item
+        # Construir dict de slots para el embed
+        slots_dict: dict[str, str] = {}
+        parche_url: str | None = None
 
-        embed = embed_loadout(personaje, loadout, items_data)
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        for row in slots_rows:
+            nombre_item = row["item_nombre"] or "— Vacío"
+            slots_dict[row["slot"]] = nombre_item
+            if row["slot"] == "parche" and row.get("parche_url"):
+                parche_url = row["parche_url"]
 
-    @inv_group.command(name="general", description="Muestra tu inventario general.")
-    @require_role(RANGO_USUARIO)
-    async def ver_inventario_general(self, interaction: discord.Interaction) -> None:
-        """Visualiza el inventario general. Solo disponible en Evento-OFF."""
-        modo = await self.repo.get_modo_evento()
-        if modo == "ON":
-            await interaction.response.send_message(
-                embed=embed_aviso("Acceso restringido", "El inventario general no es accesible durante un **Evento-ON**."),
-                ephemeral=True,
-            )
-            return
+        slots_dict["parche_url"] = parche_url or ""
 
-        uid = interaction.user.id
-        items = await self.repo.get_inventario_general(uid)
+        await interaction.response.send_message(
+            embed=emb.loadout(char["nombre_completo"], slots_dict),
+            ephemeral=True,
+        )
 
-        if not items:
-            await interaction.response.send_message(
-                embed=embed_ok("Inventario general", "Tu inventario general está vacío."),
-                ephemeral=True,
-            )
-            return
+    # -----------------------------------------------------------------------
+    # /loadout equipar
+    # -----------------------------------------------------------------------
 
-        # Agrupar por categoría
-        categorias: dict[str, list] = {}
-        for it in items:
-            cat = it.get("categoria", "Miscelánea")
-            categorias.setdefault(cat, []).append(it)
-
-        embed = discord.Embed(title="🗃️ Inventario General", color=discord.Color.blue())
-        for cat, cat_items in categorias.items():
-            lineas = "\n".join(
-                f"• **{it['nombre']}** ×{it['cantidad']} — `{it['peso_kg']} kg`"
-                for it in cat_items
-            )
-            embed.add_field(name=cat, value=lineas[:1024], inline=False)
-
-        from utils.embeds import FOOTER_TEXT
-        embed.set_footer(text=FOOTER_TEXT)
-        await interaction.response.send_message(embed=embed, ephemeral=True)
-
-    # ──────────────────────────────────────────────────────────────────────
-    # LOADOUT — Equipar / Desequipar
-    # ──────────────────────────────────────────────────────────────────────
-
-    @inv_group.command(name="equipar", description="Equipa un ítem del inventario general en un slot del loadout.")
-    @app_commands.describe(
-        item_id="ID del ítem a equipar",
-        slot="Slot donde equiparlo (ej: arma_primaria_id)",
-    )
-    @app_commands.choices(slot=[app_commands.Choice(name=v, value=k) for k, v in NOMBRE_SLOTS.items()])
-    @require_role(RANGO_USUARIO)
-    async def equipar_item(
-        self, interaction: discord.Interaction, item_id: int, slot: str
-    ) -> None:
+    @loadout_group.command(name="equipar",
+                           description="Equipar un ítem del inventario general en un slot")
+    @app_commands.describe(slot="Slot del loadout", nombre_item="Nombre del ítem a equipar")
+    @require_role(USUARIO)
+    async def loadout_equipar(self, interaction: Interaction,
+                               slot: str, nombre_item: str) -> None:
         """
         Equipa un ítem del inventario general en el slot indicado del loadout.
-        Verifica límites de peso/volumen antes de asignar.
+        Mueve el ítem: sale de inventario general y va al loadout.
+
+        Args:
+            interaction : Contexto de Discord.
+            slot        : Nombre del slot destino.
+            nombre_item : Nombre del ítem a equipar.
         """
-        uid = interaction.user.id
-
-        # Verificar que el ítem está en el inventario general del usuario
-        inv = await self.repo.get_inventario_general(uid)
-        tiene_item = any(it["item_uuid"] == item_id for it in inv)
-        if not tiene_item:
+        slot = slot.lower().strip()
+        if slot == "parche":
             await interaction.response.send_message(
-                embed=embed_error(f"No tienes el ítem `{item_id}` en tu inventario general."),
+                embed=emb.error("Slot parche",
+                                "Usa `/loadout parche [url]` para establecer el parche."),
                 ephemeral=True,
             )
             return
 
-        # Validar capacidad (solo aplica a ítems que añaden peso)
-        ok, msg = await validar_capacidad_inventario(self.repo, uid, item_id)
-        if not ok:
-            await interaction.response.send_message(embed=embed_error(msg), ephemeral=True)
-            return
-
-        # Verificar si el slot ya está ocupado
-        loadout = await self.repo.get_loadout(uid)
-        slot_actual = loadout.get(slot)
-        if slot_actual:
-            # Devolver al inventario general antes de reemplazar
-            await self.repo.añadir_item_inventario(uid, slot_actual, 1)
-
-        # Asignar en loadout y retirar del general
-        await self.repo.set_slot_loadout(uid, slot, item_id)
-        await self.repo.retirar_item_inventario(uid, item_id, 1)
-
-        item = await self.repo.get_item(item_id)
-        await interaction.response.send_message(
-            embed=embed_ok(
-                "Ítem equipado",
-                f"**{item['nombre']}** equipado en slot **{NOMBRE_SLOTS.get(slot, slot)}**."
-            ),
-        )
-
-    @inv_group.command(name="desequipar", description="Retira un ítem del loadout al inventario general.")
-    @app_commands.describe(slot="Slot a desequipar")
-    @app_commands.choices(slot=[app_commands.Choice(name=v, value=k) for k, v in NOMBRE_SLOTS.items()])
-    @require_role(RANGO_USUARIO)
-    async def desequipar_item(self, interaction: discord.Interaction, slot: str) -> None:
-        """Desequipa el ítem del slot indicado y lo devuelve al inventario general."""
-        uid = interaction.user.id
-        loadout = await self.repo.get_loadout(uid)
-        item_id = loadout.get(slot) if loadout else None
-
-        if not item_id:
+        if slot not in SLOTS_VALIDOS:
             await interaction.response.send_message(
-                embed=embed_error(f"El slot **{NOMBRE_SLOTS.get(slot, slot)}** está vacío."),
+                embed=emb.error("Slot inválido",
+                                f"Slots válidos: {', '.join(sorted(SLOTS_VALIDOS))}"),
                 ephemeral=True,
             )
             return
 
-        await self.repo.set_slot_loadout(uid, slot, None)
-        await self.repo.añadir_item_inventario(uid, item_id, 1)
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, interaction.user.id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "No tienes personaje activo."),
+                    ephemeral=True,
+                )
+                return
 
-        item = await self.repo.get_item(item_id)
+            # Buscar ítem en el catálogo
+            item = await repo.get_item_by_name(conn, nombre_item)
+            if not item:
+                await interaction.response.send_message(
+                    embed=emb.error("Ítem no encontrado",
+                                    f"No se encontró **{nombre_item}** en el catálogo."),
+                    ephemeral=True,
+                )
+                return
+
+            # Verificar que el usuario tiene el ítem en inventario general
+            quitado = await repo.remove_from_general_inventory(
+                conn, interaction.user.id, item["id"]
+            )
+            if not quitado:
+                await interaction.response.send_message(
+                    embed=emb.error("Sin ítem",
+                                    f"No tienes **{nombre_item}** en tu inventario general."),
+                    ephemeral=True,
+                )
+                return
+
+            # Si el slot ya tiene un ítem, devolverlo al inventario general
+            slots_actuales = await repo.get_loadout(conn, interaction.user.id)
+            for row in slots_actuales:
+                if row["slot"] == slot and row["item_id"]:
+                    await repo.add_to_general_inventory(
+                        conn, interaction.user.id, row["item_id"]
+                    )
+                    break
+
+            # Equipar el nuevo ítem
+            await repo.upsert_loadout_slot(conn, interaction.user.id, slot, item["id"])
+
         await interaction.response.send_message(
-            embed=embed_ok("Ítem desequipado", f"**{item['nombre']}** devuelto al inventario general."),
+            embed=emb.ok("Ítem equipado",
+                          f"**{nombre_item}** equipado en slot `{slot}`."),
+            ephemeral=True,
         )
 
-    @inv_group.command(name="parche", description="Establece la URL del parche de uniformidad.")
-    @app_commands.describe(url="URL de la imagen del parche (máx. 1)")
-    @require_role(RANGO_USUARIO)
-    async def set_parche(self, interaction: discord.Interaction, url: str) -> None:
-        """Asigna la URL de imagen del parche. Máximo 1 parche."""
-        uid = interaction.user.id
-        await self.repo.set_slot_loadout(uid, "parche_url", url)
-        embed = embed_ok("Parche actualizado", f"Parche de uniformidad establecido.")
+    # -----------------------------------------------------------------------
+    # /loadout desequipar
+    # -----------------------------------------------------------------------
+
+    @loadout_group.command(name="desequipar", description="Retirar un ítem del loadout")
+    @app_commands.describe(slot="Slot a vaciar")
+    @require_role(USUARIO)
+    async def loadout_desequipar(self, interaction: Interaction, slot: str) -> None:
+        """
+        Retira el ítem de un slot del loadout y lo devuelve al inventario general.
+        Solo disponible en Evento-OFF para ítems no de combate.
+
+        Args:
+            interaction: Contexto de Discord.
+            slot       : Slot a vaciar.
+        """
+        slot = slot.lower().strip()
+
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, interaction.user.id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "No tienes personaje activo."), ephemeral=True
+                )
+                return
+
+            slots_actuales = await repo.get_loadout(conn, interaction.user.id)
+            slot_row = next((r for r in slots_actuales if r["slot"] == slot), None)
+
+            if not slot_row or not slot_row["item_id"]:
+                await interaction.response.send_message(
+                    embed=emb.advertencia("Slot vacío",
+                                          f"El slot `{slot}` ya está vacío."),
+                    ephemeral=True,
+                )
+                return
+
+            # Devolver al inventario general y vaciar slot
+            await repo.add_to_general_inventory(conn, interaction.user.id, slot_row["item_id"])
+            await repo.upsert_loadout_slot(conn, interaction.user.id, slot, None)
+
+        await interaction.response.send_message(
+            embed=emb.ok("Slot vaciado",
+                          f"**{slot_row['item_nombre']}** devuelto al inventario general."),
+            ephemeral=True,
+        )
+
+    # -----------------------------------------------------------------------
+    # /loadout parche
+    # -----------------------------------------------------------------------
+
+    @loadout_group.command(name="parche",
+                           description="Establecer parche de uniformidad (URL de imagen)")
+    @app_commands.describe(url="URL de la imagen del parche (PNG/JPG/WEBP)")
+    @require_role(USUARIO)
+    async def loadout_parche(self, interaction: Interaction, url: str) -> None:
+        """
+        Establece el parche de uniformidad como URL de imagen.
+        Solo puede haber 1 parche activo. Se renderiza en el embed de loadout.
+        Ver REVIEW.md §3.5 — validación de URL.
+
+        Args:
+            interaction: Contexto de Discord.
+            url        : URL de la imagen del parche.
+        """
+        resultado = validar_url_imagen(url)
+        if not resultado:
+            await interaction.response.send_message(
+                embed=emb.error("URL inválida", resultado.motivo), ephemeral=True
+            )
+            return
+
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, interaction.user.id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "No tienes personaje activo."), ephemeral=True
+                )
+                return
+            await repo.upsert_loadout_slot(
+                conn, interaction.user.id, "parche",
+                item_id=None, parche_url=url
+            )
+
+        embed = emb.ok("Parche establecido", "Tu parche de uniformidad ha sido actualizado.")
         embed.set_thumbnail(url=url)
-        await interaction.response.send_message(embed=embed)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    # ──────────────────────────────────────────────────────────────────────
-    # POUCHES
-    # ──────────────────────────────────────────────────────────────────────
+    # -----------------------------------------------------------------------
+    # /inventario ver
+    # -----------------------------------------------------------------------
 
-    @inv_group.command(name="pouch_añadir", description="Añade un pouch a un contenedor del loadout.")
+    @inventario_group.command(name="ver", description="Ver tu inventario general")
+    @require_role(USUARIO)
+    async def inventario_ver(self, interaction: Interaction) -> None:
+        """
+        Muestra el inventario general del personaje.
+        Solo disponible en Evento-OFF.
+
+        Args:
+            interaction: Contexto de Discord.
+        """
+        if await evento_activo():
+            await interaction.response.send_message(
+                embed=emb.evento_bloqueado("El inventario general"), ephemeral=True
+            )
+            return
+
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, interaction.user.id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "No tienes personaje activo."), ephemeral=True
+                )
+                return
+
+            items      = await repo.get_inventory_general(conn, interaction.user.id)
+            peso, vol  = await repo.get_inventory_totals(conn, interaction.user.id)
+
+        await interaction.response.send_message(
+            embed=emb.inventario_general(
+                char["nombre_completo"],
+                [dict(it) for it in items],
+                peso, int(vol),
+                self.peso_max, self.vol_max,
+            ),
+            ephemeral=True,
+        )
+
+    # -----------------------------------------------------------------------
+    # /pouches añadir
+    # -----------------------------------------------------------------------
+
+    @pouches_group.command(name="añadir",
+                           description="Asignar un pouch a una protección del loadout")
     @app_commands.describe(
-        contenedor="Contenedor donde añadir el pouch",
-        item_id="ID del pouch a añadir",
+        slot_proteccion="chaleco, portaplacas o soporte",
+        nombre_pouch="Nombre del pouch a asignar",
     )
-    @app_commands.choices(contenedor=[
-        app_commands.Choice(name="Chaleco", value="chaleco"),
-        app_commands.Choice(name="Portaplacas", value="portaplacas"),
-        app_commands.Choice(name="Soportes", value="soportes"),
-    ])
-    @require_role(RANGO_USUARIO)
-    async def pouch_añadir(
-        self, interaction: discord.Interaction, contenedor: str, item_id: int
-    ) -> None:
-        """Equipa un pouch del inventario general en el contenedor especificado."""
-        uid = interaction.user.id
-        item = await self.repo.get_item(item_id)
-        if not item or not item.get("tipo_pouch"):
+    @require_role(USUARIO)
+    async def pouches_añadir(self, interaction: Interaction,
+                              slot_proteccion: str, nombre_pouch: str) -> None:
+        """
+        Asigna un pouch del inventario general a una protección del loadout.
+        Verifica disponibilidad de slots antes de asignar.
+
+        Args:
+            interaction     : Contexto de Discord.
+            slot_proteccion : 'chaleco', 'portaplacas' o 'soporte'.
+            nombre_pouch    : Nombre del pouch a asignar.
+        """
+        slot_proteccion = slot_proteccion.lower().strip()
+        if slot_proteccion not in SLOTS_PROTECCION:
             await interaction.response.send_message(
-                embed=embed_error(f"El ítem `{item_id}` no es un pouch válido."),
+                embed=emb.error("Slot inválido",
+                                "El slot de protección debe ser: chaleco, portaplacas o soporte"),
                 ephemeral=True,
             )
             return
 
-        # Verificar que lo tiene en inventario general
-        inv = await self.repo.get_inventario_general(uid)
-        if not any(it["item_uuid"] == item_id for it in inv):
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, interaction.user.id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "No tienes personaje activo."), ephemeral=True
+                )
+                return
+
+            # Verificar que hay protección equipada en ese slot
+            slots_rows = await repo.get_loadout(conn, interaction.user.id)
+            prot_row   = next((r for r in slots_rows if r["slot"] == slot_proteccion), None)
+
+            if not prot_row or not prot_row["item_id"]:
+                await interaction.response.send_message(
+                    embed=emb.error("Sin protección",
+                                    f"No tienes ninguna protección equipada en `{slot_proteccion}`."),
+                    ephemeral=True,
+                )
+                return
+
+            slots_totales = prot_row["slots_pouches"] or 0
+
+            # Calcular slots ya usados
+            pouches_actuales = await repo.get_pouches(conn, interaction.user.id)
+            slots_usados = sum(
+                p["slots_ocupa"] for p in pouches_actuales
+                if p["slot_proteccion"] == slot_proteccion
+            )
+
+            # Buscar el pouch en el catálogo
+            pouch_item = await repo.get_item_by_name(conn, nombre_pouch)
+            if not pouch_item or pouch_item["categoria"] != "pouch":
+                await interaction.response.send_message(
+                    embed=emb.error("Pouch no encontrado",
+                                    f"No se encontró **{nombre_pouch}** como pouch válido."),
+                    ephemeral=True,
+                )
+                return
+
+            slots_ocupa = pouch_item["slots_ocupa"] or 1
+
+            # Validar slots disponibles
+            resultado = validar_slots_pouches(slots_totales, slots_usados, slots_ocupa)
+            if not resultado:
+                await interaction.response.send_message(
+                    embed=emb.error("Sin slots", resultado.motivo), ephemeral=True
+                )
+                return
+
+            # Retirar del inventario general y asignar pouch
+            quitado = await repo.remove_from_general_inventory(
+                conn, interaction.user.id, pouch_item["id"]
+            )
+            if not quitado:
+                await interaction.response.send_message(
+                    embed=emb.error("Sin pouch",
+                                    f"No tienes **{nombre_pouch}** en tu inventario general."),
+                    ephemeral=True,
+                )
+                return
+
+            await repo.add_pouch(conn, interaction.user.id, slot_proteccion, pouch_item["id"])
+
+        await interaction.response.send_message(
+            embed=emb.ok("Pouch asignado",
+                          f"**{nombre_pouch}** asignado a `{slot_proteccion}` "
+                          f"({slots_ocupa} slot(s) usados)"),
+            ephemeral=True,
+        )
+
+    # -----------------------------------------------------------------------
+    # /pouches ver
+    # -----------------------------------------------------------------------
+
+    @pouches_group.command(name="ver", description="Ver los pouches asignados a tus protecciones")
+    @require_role(USUARIO)
+    async def pouches_ver(self, interaction: Interaction) -> None:
+        """
+        Muestra todos los pouches asignados a las protecciones del personaje.
+
+        Args:
+            interaction: Contexto de Discord.
+        """
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, interaction.user.id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "No tienes personaje activo."), ephemeral=True
+                )
+                return
+            pouches = await repo.get_pouches(conn, interaction.user.id)
+
+        if not pouches:
             await interaction.response.send_message(
-                embed=embed_error(f"No tienes el ítem `{item_id}` en tu inventario general."),
-                ephemeral=True,
+                embed=emb.info("Sin pouches", "No tienes pouches asignados."), ephemeral=True
             )
             return
 
-        ok, msg, slot = await validar_slot_pouch(self.repo, uid, contenedor, item["tipo_pouch"])
-        if not ok:
-            await interaction.response.send_message(embed=embed_error(msg), ephemeral=True)
-            return
+        embed = discord.Embed(
+            title=f"🎽  Pouches — {char['nombre_completo']}",
+            color=emb.C_INFO,
+        )
+        agrupados: dict[str, list] = {}
+        for p in pouches:
+            agrupados.setdefault(p["slot_proteccion"], []).append(p)
 
-        await self.repo.añadir_pouch(uid, contenedor, slot, item_id)
-        await self.repo.retirar_item_inventario(uid, item_id, 1)
+        for slot, lista in agrupados.items():
+            lineas = [
+                f"[{p['id']}] **{p['pouch_nombre']}** ({p['tipo_pouch']}, {p['slots_ocupa']} slot(s))"
+                for p in lista
+            ]
+            embed.add_field(name=f"🛡️ {slot.capitalize()}", value="\n".join(lineas), inline=False)
+
+        embed.set_footer(text=emb.FOOTER_TEXT)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    # -----------------------------------------------------------------------
+    # /pouches quitar
+    # -----------------------------------------------------------------------
+
+    @pouches_group.command(name="quitar", description="Retirar un pouch de tus protecciones")
+    @app_commands.describe(pouch_id="ID del pouch (ver /pouches ver)")
+    @require_role(USUARIO)
+    async def pouches_quitar(self, interaction: Interaction, pouch_id: int) -> None:
+        """
+        Retira un pouch de las protecciones y lo devuelve al inventario general.
+
+        Args:
+            interaction: Contexto de Discord.
+            pouch_id   : ID del registro de pouch (de /pouches ver).
+        """
+        async with await repo.get_conn() as conn:
+            char = await repo.get_character(conn, interaction.user.id)
+            if not char or char["estado"] != "activo":
+                await interaction.response.send_message(
+                    embed=emb.error("Sin personaje", "No tienes personaje activo."), ephemeral=True
+                )
+                return
+
+            # Verificar que el pouch pertenece al usuario
+            pouches = await repo.get_pouches(conn, interaction.user.id)
+            pouch   = next((p for p in pouches if p["id"] == pouch_id), None)
+            if not pouch:
+                await interaction.response.send_message(
+                    embed=emb.error("Pouch no encontrado",
+                                    f"No se encontró pouch con ID `{pouch_id}` en tu equipo."),
+                    ephemeral=True,
+                )
+                return
+
+            # Retirar y devolver al inventario
+            pouch_item = await repo.get_item_by_name(conn, pouch["pouch_nombre"])
+            await repo.remove_pouch(conn, pouch_id, interaction.user.id)
+            if pouch_item:
+                await repo.add_to_general_inventory(conn, interaction.user.id, pouch_item["id"])
+
         await interaction.response.send_message(
-            embed=embed_ok("Pouch añadido", f"**{item['nombre']}** en slot `{slot}` de **{contenedor}**."),
+            embed=emb.ok("Pouch retirado",
+                          f"**{pouch['pouch_nombre']}** devuelto al inventario general."),
+            ephemeral=True,
         )
 
-    @inv_group.command(name="pouch_retirar", description="Retira un pouch de un contenedor.")
-    @app_commands.describe(contenedor="Contenedor", slot="Número de slot")
-    @app_commands.choices(contenedor=[
-        app_commands.Choice(name="Chaleco", value="chaleco"),
-        app_commands.Choice(name="Portaplacas", value="portaplacas"),
-        app_commands.Choice(name="Soportes", value="soportes"),
-    ])
-    @require_role(RANGO_USUARIO)
-    async def pouch_retirar(
-        self, interaction: discord.Interaction, contenedor: str, slot: int
-    ) -> None:
-        """Retira un pouch de un slot y lo devuelve al inventario general."""
-        uid = interaction.user.id
-        pouches = await self.repo.get_pouches(uid, contenedor)
-        pouch = next((p for p in pouches if p["slot_numero"] == slot), None)
-        if not pouch:
-            await interaction.response.send_message(
-                embed=embed_error(f"No hay pouch en slot `{slot}` del {contenedor}."),
-                ephemeral=True,
-            )
-            return
 
-        await self.repo.retirar_pouch(uid, contenedor, slot)
-        await self.repo.añadir_item_inventario(uid, pouch["pouch_item_id"], 1)
-        await interaction.response.send_message(
-            embed=embed_ok("Pouch retirado", f"**{pouch['nombre']}** devuelto al inventario general."),
-        )
-
-    # ──────────────────────────────────────────────────────────────────────
-    # NARRADOR — CRUD de ítems en inventario de usuario
-    # ──────────────────────────────────────────────────────────────────────
-
-    @inv_group.command(name="entregar", description="[Narrador] Entrega un ítem al inventario general de un usuario.")
-    @app_commands.describe(usuario="Usuario objetivo", item_id="ID del ítem", cantidad="Cantidad")
-    @require_role(RANGO_NARRADOR)
-    async def entregar_item(
-        self, interaction: discord.Interaction,
-        usuario: discord.Member, item_id: int, cantidad: int = 1
-    ) -> None:
-        """Narrador entrega ítems al inventario general del usuario."""
-        item = await self.repo.get_item(item_id)
-        if not item:
-            await interaction.response.send_message(embed=embed_error(f"Ítem `{item_id}` no encontrado."), ephemeral=True)
-            return
-
-        await self.repo.añadir_item_inventario(usuario.id, item_id, cantidad)
-        await interaction.response.send_message(
-            embed=embed_ok("Ítem entregado", f"**{item['nombre']}** ×{cantidad} entregado a {usuario.mention}."),
-        )
-
-    @inv_group.command(name="retirar", description="[Narrador] Retira un ítem del inventario general de un usuario.")
-    @app_commands.describe(usuario="Usuario objetivo", item_id="ID del ítem", cantidad="Cantidad")
-    @require_role(RANGO_NARRADOR)
-    async def retirar_item_narrador(
-        self, interaction: discord.Interaction,
-        usuario: discord.Member, item_id: int, cantidad: int = 1
-    ) -> None:
-        """Narrador retira ítems del inventario general del usuario."""
-        ok = await self.repo.retirar_item_inventario(usuario.id, item_id, cantidad)
-        if not ok:
-            await interaction.response.send_message(
-                embed=embed_error(f"El usuario no tiene suficiente cantidad del ítem `{item_id}`."),
-                ephemeral=True,
-            )
-            return
-
-        item = await self.repo.get_item(item_id)
-        nombre = item["nombre"] if item else str(item_id)
-        await interaction.response.send_message(
-            embed=embed_ok("Ítem retirado", f"**{nombre}** ×{cantidad} retirado de {usuario.mention}."),
-        )
-
-    @inv_group.command(name="crear_item", description="[Narrador] Crea un nuevo ítem en el catálogo.")
-    @require_role(RANGO_NARRADOR)
-    async def crear_item_modal(self, interaction: discord.Interaction) -> None:
-        """Abre un modal para que el Narrador cree un nuevo ítem."""
-        await interaction.response.send_modal(CrearItemModal(self))
-
-
-class CrearItemModal(discord.ui.Modal, title="Crear nuevo ítem"):
-    nombre      = discord.ui.TextInput(label="Nombre",      placeholder="Ej: Chaleco táctico IOTV")
-    categoria   = discord.ui.TextInput(label="Categoría",   placeholder="Protecciones / Armamento / Munición …")
-    peso        = discord.ui.TextInput(label="Peso (kg)",   placeholder="Ej: 1.5")
-    volumen     = discord.ui.TextInput(label="Volumen",     placeholder="Ej: 5")
-    precio_base = discord.ui.TextInput(label="Precio base", placeholder="Ej: 500")
-
-    def __init__(self, cog) -> None:
-        super().__init__()
-        self.cog = cog
-
-    async def on_submit(self, interaction: discord.Interaction) -> None:
-        try:
-            peso_val   = float(self.peso.value.replace(",", "."))
-            vol_val    = float(self.volumen.value.replace(",", "."))
-            precio_val = float(self.precio_base.value.replace(",", "."))
-        except ValueError:
-            await interaction.response.send_message(
-                embed=embed_error("Peso, volumen y precio deben ser números válidos."), ephemeral=True
-            )
-            return
-
-        item_id = await self.cog.repo.crear_item({
-            "nombre": self.nombre.value,
-            "categoria": self.categoria.value,
-            "peso_kg": peso_val,
-            "volumen": vol_val,
-            "precio_base": precio_val,
-        })
-        await interaction.response.send_message(
-            embed=embed_ok("Ítem creado", f"**{self.nombre.value}** creado con ID `{item_id}`."),
-        )
-
+# ---------------------------------------------------------------------------
+# Setup
+# ---------------------------------------------------------------------------
 
 async def setup(bot: commands.Bot) -> None:
+    """Registra el cog en el bot."""
     await bot.add_cog(InventarioCog(bot))
