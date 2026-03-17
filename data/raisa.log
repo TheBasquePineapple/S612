@@ -23,27 +23,28 @@
 2026-03-17 20:20:25 | INFO     | Limpieza periódica de sesiones SUDO iniciada
 2026-03-17 20:20:25 | ERROR    | Error restaurando views de verificación: threads can only be started once
 2026-03-17 20:21:18 | INFO     | 👋  RAISA desconectada
-2026-03-17 20:21:47 | INFO     | ================================================================================
-2026-03-17 20:21:47 | INFO     | RAISA — Record and Information Administration
-2026-03-17 20:21:47 | INFO     | Sistema de gestión operativa de la Fundación SCP
-2026-03-17 20:21:47 | INFO     | ================================================================================
-2026-03-17 20:21:47 | INFO     | 
-2026-03-17 20:21:47 | INFO     | Iniciando bot...
-2026-03-17 20:21:47 | INFO     | 
-2026-03-17 20:21:48 | INFO     | ✅  Base de datos verificada: data\raisa.db
-2026-03-17 20:21:48 | INFO     | ✅  Tablas críticas encontradas: 4/4
-2026-03-17 20:21:48 | INFO     |   📋  Configuración de roles cargada
-2026-03-17 20:21:48 | INFO     |   ✅  Cog cargado: cogs.registro
-2026-03-17 20:21:48 | ERROR    |   ❌  Error cargando cog cogs.inventario: Extension 'cogs.inventario' raised an error: KeyError: 'limites_globales'
-2026-03-17 20:21:48 | INFO     |   ✅  Cog cargado: cogs.medico
-2026-03-17 20:21:48 | INFO     |   ✅  Cog cargado: cogs.radio
-2026-03-17 20:21:48 | INFO     |   ✅  Cog cargado: cogs.vehiculos
-2026-03-17 20:21:48 | INFO     | [ECONOMÍA] Tarea de salarios iniciada (cada 168h)
-2026-03-17 20:21:48 | INFO     |   ✅  Cog cargado: cogs.economia
-2026-03-17 20:21:48 | INFO     |   ✅  Cog cargado: cogs.eventos
-2026-03-17 20:21:48 | INFO     |   ✅  Cog cargado: cogs.sudo
-2026-03-17 20:21:49 | INFO     |   🔄  9 comandos slash sincronizados
-2026-03-17 20:21:52 | INFO     | RAISA conectada como RAISA#7656 (ID: 1428659120583741613)
-2026-03-17 20:21:52 | INFO     | Servidores: 1
-2026-03-17 20:21:52 | INFO     | Limpieza periódica de sesiones SUDO iniciada
-2026-03-17 20:21:52 | ERROR    | Error restaurando views de verificación: threads can only be started once
+2026-03-17 20:30:05 | INFO     | 👋  RAISA desconectada
+2026-03-17 20:30:23 | INFO     | ================================================================================
+2026-03-17 20:30:23 | INFO     | RAISA — Record and Information Administration
+2026-03-17 20:30:23 | INFO     | Sistema de gestión operativa de la Fundación SCP
+2026-03-17 20:30:23 | INFO     | ================================================================================
+2026-03-17 20:30:23 | INFO     | 
+2026-03-17 20:30:23 | INFO     | Iniciando bot...
+2026-03-17 20:30:23 | INFO     | 
+2026-03-17 20:30:24 | INFO     | ✅  Base de datos verificada: data\raisa.db
+2026-03-17 20:30:24 | INFO     | ✅  Tablas críticas encontradas: 4/4
+2026-03-17 20:30:24 | INFO     |   📋  Configuración de roles cargada
+2026-03-17 20:30:24 | INFO     |   ✅  Cog cargado: cogs.registro
+2026-03-17 20:30:24 | INFO     |   ✅  Cog cargado: cogs.inventario
+2026-03-17 20:30:24 | INFO     |   ✅  Cog cargado: cogs.medico
+2026-03-17 20:30:24 | INFO     |   ✅  Cog cargado: cogs.radio
+2026-03-17 20:30:24 | INFO     |   ✅  Cog cargado: cogs.vehiculos
+2026-03-17 20:30:24 | INFO     | [ECONOMÍA] Tarea de salarios iniciada (cada 168h)
+2026-03-17 20:30:24 | INFO     |   ✅  Cog cargado: cogs.economia
+2026-03-17 20:30:24 | INFO     |   ✅  Cog cargado: cogs.eventos
+2026-03-17 20:30:24 | INFO     |   ✅  Cog cargado: cogs.sudo
+2026-03-17 20:30:25 | INFO     |   🔄  12 comandos slash sincronizados
+2026-03-17 20:30:27 | INFO     | RAISA conectada como RAISA#7656 (ID: 1428659120583741613)
+2026-03-17 20:30:27 | INFO     | Servidores: 1
+2026-03-17 20:30:27 | INFO     | Limpieza periódica de sesiones SUDO iniciada
+2026-03-17 20:37:01 | INFO     | 👋  RAISA desconectada

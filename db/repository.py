@@ -38,22 +38,33 @@ DB_PATH = Path(os.getenv("DB_PATH", "data/raisa.db"))
 # 1. Conexión
 # ---------------------------------------------------------------------------
 
-async def get_conn() -> aiosqlite.Connection:
+class ConnWrapper:
     """
-    Abre y devuelve una conexión aiosqlite con las pragmas de producción.
-    El llamador es responsable de cerrarla con await conn.close().
-    En la mayoría de casos, usar como context manager:
-        async with aiosqlite.connect(DB_PATH) as conn: ...
+    Wrapper para permitir doble 'await' y 'async with' en la misma conexión
+    sin reiniciar el thread interno de aiosqlite, evitando el error:
+    'threads can only be started once'.
+    """
+    def __init__(self, conn: aiosqlite.Connection):
+        self.conn = conn
 
-    Returns:
-        Conexión aiosqlite configurada.
+    async def __aenter__(self):
+        return self.conn
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.conn.close()
+
+async def get_conn() -> ConnWrapper:
+    """
+    Abre y devuelve un wrapper de conexión aiosqlite con pragmas de producción.
+    El llamador puede hacer `async with await get_conn() as conn:` 
+    de forma segura.
     """
     conn = await aiosqlite.connect(DB_PATH)
     conn.row_factory = aiosqlite.Row
     await conn.execute("PRAGMA journal_mode = WAL")
     await conn.execute("PRAGMA foreign_keys = ON")
     await conn.execute("PRAGMA synchronous = NORMAL")
-    return conn
+    return ConnWrapper(conn)
 
 
 async def _one(conn: aiosqlite.Connection, sql: str, params: tuple = ()) -> aiosqlite.Row | None:

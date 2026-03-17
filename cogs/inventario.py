@@ -66,8 +66,10 @@ class InventarioCog(commands.Cog, name="Inventario"):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot    = bot
         self.cfg    = _cargar_inv_config()
-        self.peso_max = float(self.cfg["limites_globales"]["peso_max_kg"])
-        self.vol_max  = int(self.cfg["limites_globales"]["volumen_max_u"])
+        
+        limites = self.cfg.get("limites_globales", {})
+        self.peso_max = float(limites.get("peso_max_kg", 40.0))
+        self.vol_max  = int(limites.get("volumen_max_u", 80))
 
     # -----------------------------------------------------------------------
     # Grupos de comandos
