@@ -1,103 +1,1243 @@
 [
   {
-    "nombre": "Torniquete CAT (Combat Application Tourniquet)",
-    "descripcion": "Torniquete de aplicación en combate. Detiene hemorragia de extremidades.",
+    "nombre": "Estetoscopio",
+    "descripcion": "Evaluación de ruidos cardíacos y pulmonares.",
     "categoria": "medico",
-    "subcategoria": "torniquete",
+    "subcategoria": "0_diagnostico_signos_vitales",
+    "peso_kg": 0.15,
+    "volumen_u": 1,
+    "precio_base": 45.0,
+    "codigo": "MED-DSV-001"
+  },
+  {
+    "nombre": "Tensiómetro",
+    "descripcion": "Esfigmomanómetro manual para presión arterial.",
+    "categoria": "medico",
+    "subcategoria": "0_diagnostico_signos_vitales",
+    "peso_kg": 0.25,
+    "volumen_u": 1,
+    "precio_base": 35.0,
+    "codigo": "MED-DSV-002"
+  },
+  {
+    "nombre": "Pulsioxímetro",
+    "descripcion": "Medición de SpO2 y frecuencia cardíaca.",
+    "categoria": "medico",
+    "subcategoria": "0_diagnostico_signos_vitales",
+    "peso_kg": 0.08,
+    "volumen_u": 0,
+    "precio_base": 120.0,
+    "codigo": "MED-DSV-003"
+  },
+  {
+    "nombre": "Ecógrafo Portátil",
+    "descripcion": "Dispositivo portátil para protocolos FAST (detección de fluidos internos), colocación de REBOA y neumotórax.",
+    "categoria": "medico",
+    "subcategoria": "0_diagnostico_signos_vitales",
+    "peso_kg": 2.5,
+    "volumen_u": 6,
+    "precio_base": 8500.0,
+    "codigo": "MED-DSV-004"
+  },
+  {
+    "nombre": "CoagSense",
+    "descripcion": "Dispositivo de medición de tiempo de protrombina (coagulación).",
+    "categoria": "medico",
+    "subcategoria": "0_diagnostico_signos_vitales",
+    "peso_kg": 0.12,
+    "volumen_u": 1,
+    "precio_base": 650.0,
+    "codigo": "MED-DSV-005"
+  },
+  {
+    "nombre": "Linterna de Diagnóstico",
+    "descripcion": "Evaluación pupilar.",
+    "categoria": "medico",
+    "subcategoria": "0_diagnostico_signos_vitales",
+    "peso_kg": 0.05,
+    "volumen_u": 0,
+    "precio_base": 15.0,
+    "codigo": "MED-DSV-006"
+  },
+  {
+    "nombre": "Torniquete CAT",
+    "descripcion": "Para hemorragias exanguinantes en extremidades.",
+    "categoria": "medico",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
     "peso_kg": 0.155,
     "volumen_u": 1,
     "precio_base": 38.0,
-    "codigo": "MED-001"
+    "codigo": "MED-CHH-001"
   },
   {
     "nombre": "Torniquete SOFTT-W",
-    "descripcion": "Tourniquete especial fuerzas operativas. Alternativa al CAT.",
+    "descripcion": "Para hemorragias exanguinantes en extremidades.",
     "categoria": "medico",
-    "subcategoria": "torniquete",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
     "peso_kg": 0.17,
     "volumen_u": 1,
     "precio_base": 42.0,
-    "codigo": "MED-002"
+    "codigo": "MED-CHH-002"
   },
   {
-    "nombre": "Vendaje hemostático QuikClot (1 pieza)",
-    "descripcion": "Gasa impregnada en agente hemostático. Para heridas que no admiten torniquete.",
+    "nombre": "Bendaje Israeli (4\")",
+    "descripcion": "Vendaje compresivo multiusos. Cubre 2-3 heridas.",
     "categoria": "medico",
-    "subcategoria": "hemostasia",
-    "peso_kg": 0.085,
-    "volumen_u": 1,
-    "precio_base": 28.0,
-    "codigo": "MED-003"
-  },
-  {
-    "nombre": "Vendaje israelí (Emergency Bandage)",
-    "descripcion": "Vendaje de presión para control de hemorragia. Incluye barra de presión.",
-    "categoria": "medico",
-    "subcategoria": "vendaje",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
     "peso_kg": 0.12,
     "volumen_u": 1,
     "precio_base": 15.0,
-    "codigo": "MED-004"
+    "codigo": "MED-CHH-003"
   },
   {
-    "nombre": "Apósito oclusivo torácico (par)",
-    "descripcion": "Sello torácico para heridas de entrada/salida en tórax. Prevent neumotórax.",
+    "nombre": "Emergency Trauma Dressing (ETD)",
+    "descripcion": "Vendaje de alta capacidad. Cubre 5-6 heridas.",
     "categoria": "medico",
-    "subcategoria": "apósito",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
+    "peso_kg": 0.18,
+    "volumen_u": 1,
+    "precio_base": 22.0,
+    "codigo": "MED-CHH-004"
+  },
+  {
+    "nombre": "Gasa Hemostática - QuikClot",
+    "descripcion": "Gasa impregnada con agentes procoagulantes.",
+    "categoria": "medico",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
+    "peso_kg": 0.085,
+    "volumen_u": 1,
+    "precio_base": 28.0,
+    "codigo": "MED-CHH-005"
+  },
+  {
+    "nombre": "Gasa Hemostática - Celox",
+    "descripcion": "Gasa impregnada con agentes procoagulantes.",
+    "categoria": "medico",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
+    "peso_kg": 0.08,
+    "volumen_u": 1,
+    "precio_base": 26.0,
+    "codigo": "MED-CHH-006"
+  },
+  {
+    "nombre": "Injector hemostático (XStat)",
+    "descripcion": "Aplicador de esponjas hemostáticas para heridas profundas/estrechas.",
+    "categoria": "medico",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
+    "peso_kg": 0.12,
+    "volumen_u": 1,
+    "precio_base": 95.0,
+    "codigo": "MED-CHH-007"
+  },
+  {
+    "nombre": "Vendaje abdominal",
+    "descripcion": "Almohadilla abdominal para evisceraciones o heridas masivas.",
+    "categoria": "medico",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
     "peso_kg": 0.06,
     "volumen_u": 1,
-    "precio_base": 45.0,
-    "codigo": "MED-005"
+    "precio_base": 8.0,
+    "codigo": "MED-CHH-008"
+  },
+  {
+    "nombre": "Gasa comprimida",
+    "descripcion": "Gasa de algodón para empaquetamiento.",
+    "categoria": "medico",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
+    "peso_kg": 0.04,
+    "volumen_u": 0,
+    "precio_base": 5.0,
+    "codigo": "MED-CHH-009"
+  },
+  {
+    "nombre": "Gasa 4x4 (pack 10ud)",
+    "descripcion": "Gasa de algodón estándar 4x4 pulgadas.",
+    "categoria": "medico",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
+    "peso_kg": 0.05,
+    "volumen_u": 0,
+    "precio_base": 6.0,
+    "codigo": "MED-CHH-010"
+  },
+  {
+    "nombre": "Rollo de gasa",
+    "descripcion": "Vendas para fijación y compresión leve.",
+    "categoria": "medico",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
+    "peso_kg": 0.03,
+    "volumen_u": 0,
+    "precio_base": 4.0,
+    "codigo": "MED-CHH-011"
+  },
+  {
+    "nombre": "Venda elástica",
+    "descripcion": "Venda elástica para fijación y compresión.",
+    "categoria": "medico",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
+    "peso_kg": 0.04,
+    "volumen_u": 0,
+    "precio_base": 5.0,
+    "codigo": "MED-CHH-012"
+  },
+  {
+    "nombre": "Tirítas (pack 20ud)",
+    "descripcion": "Tiritas/Vendas pequeñas para abrasiones menores.",
+    "categoria": "medico",
+    "subcategoria": "1_cuidado_heridas_hemorragia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 3.0,
+    "codigo": "MED-CHH-013"
   },
   {
     "nombre": "NPA (Nasopharyngeal Airway)",
-    "descripcion": "Cánula nasofaríngea para mantenimiento de vía aérea en semiconsciente.",
+    "descripcion": "Cánula nasofaríngea básica.",
     "categoria": "medico",
-    "subcategoria": "via_aerea",
+    "subcategoria": "2_via_aerea_respiracion",
     "peso_kg": 0.03,
     "volumen_u": 1,
     "precio_base": 12.0,
-    "codigo": "MED-006"
+    "codigo": "MED-VAR-001"
   },
   {
-    "nombre": "Botiquín IFAK básico",
-    "descripcion": "Individual First Aid Kit. Incluye: 2 torniquetes CAT, 2 vendajes, 1 QuikClot, guantes.",
+    "nombre": "OPA / Guedel (Oropharyngeal Airway)",
+    "descripcion": "Cánula orofaríngea básica.",
     "categoria": "medico",
-    "subcategoria": "kit",
-    "peso_kg": 0.6,
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 8.0,
+    "codigo": "MED-VAR-002"
+  },
+  {
+    "nombre": "IGEL (Supraglótico)",
+    "descripcion": "Dispositivo supraglótico avanzado.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.05,
+    "volumen_u": 1,
+    "precio_base": 45.0,
+    "codigo": "MED-VAR-003"
+  },
+  {
+    "nombre": "King LT (Supraglótico)",
+    "descripcion": "Dispositivo supraglótico avanzado.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.06,
+    "volumen_u": 1,
+    "precio_base": 48.0,
+    "codigo": "MED-VAR-004"
+  },
+  {
+    "nombre": "Laringoscopio",
+    "descripcion": "Con hojas Macintosh/Miller para visualización glótica.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.35,
     "volumen_u": 2,
-    "precio_base": 120.0,
-    "codigo": "MED-007"
+    "precio_base": 180.0,
+    "codigo": "MED-VAR-005"
   },
   {
-    "nombre": "Botiquín avanzado (Sanitario)",
-    "descripcion": "Kit médico avanzado para Sanitario certificado. Incluye suero, desfibrilador, etc.",
+    "nombre": "ETT (Tubo Endotraqueal) 6.0mm",
+    "descripcion": "Tubo endotraqueal para aislamiento total de vía aérea.",
     "categoria": "medico",
-    "subcategoria": "kit_avanzado",
-    "peso_kg": 2.5,
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 15.0,
+    "codigo": "MED-VAR-006"
+  },
+  {
+    "nombre": "ETT (Tubo Endotraqueal) 6.5mm",
+    "descripcion": "Tubo endotraqueal para aislamiento total de vía aérea.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 15.0,
+    "codigo": "MED-VAR-007"
+  },
+  {
+    "nombre": "ETT (Tubo Endotraqueal) 7.0mm",
+    "descripcion": "Tubo endotraqueal para aislamiento total de vía aérea.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 15.0,
+    "codigo": "MED-VAR-008"
+  },
+  {
+    "nombre": "ETT (Tubo Endotraqueal) 7.5mm",
+    "descripcion": "Tubo endotraqueal para aislamiento total de vía aérea.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 15.0,
+    "codigo": "MED-VAR-009"
+  },
+  {
+    "nombre": "ETT (Tubo Endotraqueal) 8.0mm",
+    "descripcion": "Tubo endotraqueal para aislamiento total de vía aérea.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 15.0,
+    "codigo": "MED-VAR-010"
+  },
+  {
+    "nombre": "ETT (Tubo Endotraqueal) 8.5mm",
+    "descripcion": "Tubo endotraqueal para aislamiento total de vía aérea.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 15.0,
+    "codigo": "MED-VAR-011"
+  },
+  {
+    "nombre": "BVM (Bag-Valve Mask)",
+    "descripcion": "Resucitador manual (Ambú).",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.45,
+    "volumen_u": 2,
+    "precio_base": 65.0,
+    "codigo": "MED-VAR-012"
+  },
+  {
+    "nombre": "Pocket BVM",
+    "descripcion": "Resucitador manual compacto.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.15,
+    "volumen_u": 1,
+    "precio_base": 35.0,
+    "codigo": "MED-VAR-013"
+  },
+  {
+    "nombre": "Tanque de oxígeno portátil (2L)",
+    "descripcion": "Suministro de O2 suplementario portátil.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 3.5,
+    "volumen_u": 8,
+    "precio_base": 280.0,
+    "codigo": "MED-VAR-014"
+  },
+  {
+    "nombre": "Cánula nasal",
+    "descripcion": "Cánula nasal para bajo flujo y monitorización de EtCO2.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 5.0,
+    "codigo": "MED-VAR-015"
+  },
+  {
+    "nombre": "Sello toráctico - Par",
+    "descripcion": "Apósito valvulado para heridas penetrantes en tórax.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.06,
+    "volumen_u": 1,
+    "precio_base": 45.0,
+    "codigo": "MED-VAR-016"
+  },
+  {
+    "nombre": "Accuvac (Aspirador de Secreciones)",
+    "descripcion": "Aspirador manual de secreciones y fluidos.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.35,
+    "volumen_u": 2,
+    "precio_base": 85.0,
+    "codigo": "MED-VAR-017"
+  },
+  {
+    "nombre": "Succión manual desechable",
+    "descripcion": "Bomba manual de aspiración portátil.",
+    "categoria": "medico",
+    "subcategoria": "2_via_aerea_respiracion",
+    "peso_kg": 0.25,
+    "volumen_u": 1,
+    "precio_base": 45.0,
+    "codigo": "MED-VAR-018"
+  },
+  {
+    "nombre": "IV - 14G",
+    "descripcion": "Catéter intravenoso calibre 14G. Acceso trauma de alta emergencia.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 8.0,
+    "codigo": "MED-CAV-001"
+  },
+  {
+    "nombre": "IV - 16G",
+    "descripcion": "Catéter intravenoso calibre 16G. Acceso trauma estándar.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 6.0,
+    "codigo": "MED-CAV-002"
+  },
+  {
+    "nombre": "IV - 18G",
+    "descripcion": "Catéter intravenoso calibre 18G. Uso general.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 5.0,
+    "codigo": "MED-CAV-003"
+  },
+  {
+    "nombre": "IV - 20G",
+    "descripcion": "Catéter intravenoso calibre 20G. Medicación fina.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 4.0,
+    "codigo": "MED-CAV-004"
+  },
+  {
+    "nombre": "EZ-IO (Intraóseo)",
+    "descripcion": "Sistema de acceso intraóseo para extremidades.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.45,
+    "volumen_u": 2,
+    "precio_base": 850.0,
+    "codigo": "MED-CAV-005"
+  },
+  {
+    "nombre": "FAST IO (Intraóseo Esternal)",
+    "descripcion": "Sistema de acceso intraóseo para esternón.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.15,
+    "volumen_u": 1,
+    "precio_base": 380.0,
+    "codigo": "MED-CAV-006"
+  },
+  {
+    "nombre": "AED (Desfibrilador Automático)",
+    "descripcion": "Desfibrilador externo automático.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 2.2,
+    "volumen_u": 5,
+    "precio_base": 1800.0,
+    "codigo": "MED-CAV-007"
+  },
+  {
+    "nombre": "AED-X (Desfibrilador con Monitor ECG)",
+    "descripcion": "Desfibrilador automático con monitor de ECG integrado.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 2.8,
     "volumen_u": 6,
-    "precio_base": 450.0,
-    "codigo": "MED-008"
+    "precio_base": 3500.0,
+    "codigo": "MED-CAV-008"
   },
   {
-    "nombre": "Tijeras trauma (EMT shears)",
-    "descripcion": "Tijeras de trauma para cortar ropa y equipo en emergencia. Acero inoxidable.",
+    "nombre": "Suero Salino 0.9% (100ml)",
+    "descripcion": "Solución salina isotónica para reposición de fluidos.",
     "categoria": "medico",
-    "subcategoria": "herramienta",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.1,
+    "volumen_u": 1,
+    "precio_base": 2.0,
+    "codigo": "MED-CAV-009"
+  },
+  {
+    "nombre": "Suero Salino 0.9% (250ml)",
+    "descripcion": "Solución salina isotónica para reposición de fluidos.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.25,
+    "volumen_u": 1,
+    "precio_base": 5.0,
+    "codigo": "MED-CAV-010"
+  },
+  {
+    "nombre": "Suero Salino 0.9% (500ml)",
+    "descripcion": "Solución salina isotónica para reposición de fluidos.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.5,
+    "volumen_u": 1,
+    "precio_base": 8.0,
+    "codigo": "MED-CAV-011"
+  },
+  {
+    "nombre": "Suero Salino 0.9% (1000ml)",
+    "descripcion": "Solución salina isotónica para reposición de fluidos.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 1.0,
+    "volumen_u": 2,
+    "precio_base": 12.0,
+    "codigo": "MED-CAV-012"
+  },
+  {
+    "nombre": "Ringer Lactato (250ml)",
+    "descripcion": "Solución electrolítica balanceada para reposición.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.25,
+    "volumen_u": 1,
+    "precio_base": 5.0,
+    "codigo": "MED-CAV-013"
+  },
+  {
+    "nombre": "Ringer Lactato (500ml)",
+    "descripcion": "Solución electrolítica balanceada para reposición.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.5,
+    "volumen_u": 1,
+    "precio_base": 10.0,
+    "codigo": "MED-CAV-014"
+  },
+  {
+    "nombre": "Ringer Lactato (1000ml)",
+    "descripcion": "Solución electrolítica balanceada para reposición.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 1.0,
+    "volumen_u": 2,
+    "precio_base": 15.0,
+    "codigo": "MED-CAV-015"
+  },
+  {
+    "nombre": "Plasma (250ml)",
+    "descripcion": "Plasma fresco congelado. Factores de coagulación.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.25,
+    "volumen_u": 1,
+    "precio_base": 90.0,
+    "codigo": "MED-CAV-016"
+  },
+  {
+    "nombre": "Plasma (500ml)",
+    "descripcion": "Plasma fresco congelado. Factores de coagulación.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.5,
+    "volumen_u": 1,
+    "precio_base": 180.0,
+    "codigo": "MED-CAV-017"
+  },
+  {
+    "nombre": "Plasma (1000ml)",
+    "descripcion": "Plasma fresco congelado. Factores de coagulación.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 1.0,
+    "volumen_u": 1,
+    "precio_base": 360.0,
+    "codigo": "MED-CAV-018"
+  },
+  {
+    "nombre": "Sangre (-0) - 500ml",
+    "descripcion": "Sangre completa para transfusión de emergencia.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.5,
+    "volumen_u": 1,
+    "precio_base": 220.0,
+    "codigo": "MED-CAV-019"
+  },
+  {
+    "nombre": "Sangre (-0) - 1000ml",
+    "descripcion": "Sangre completa para transfusión de emergencia.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 1,
+    "volumen_u": 2,
+    "precio_base": 440.0,
+    "codigo": "MED-CAV-020"
+  },
+  {
+    "nombre": "PRBC - 500ml",
+    "descripcion": "Concentrado de hematíes para transfusión.",
+    "categoria": "medico",
+    "subcategoria": "3_circulacion_acceso_vascular",
+    "peso_kg": 0.5,
+    "volumen_u": 1,
+    "precio_base": 200.0,
+    "codigo": "MED-CAV-021"
+  },
+  {
+    "nombre": "Calentador de linea de fluidos",
+    "descripcion": "Calentador eléctrico para evitar choque térmico por fluidos fríos.",
+    "categoria": "medico",
+    "subcategoria": "4_hipotermia_cuidados_especializados",
+    "peso_kg": 0.65,
+    "volumen_u": 2,
+    "precio_base": 280.0,
+    "codigo": "MED-HCE-001"
+  },
+  {
+    "nombre": "Calentador de manos (pack 10ud)",
+    "descripcion": "Parches químicos de calor para axilas/ingles.",
+    "categoria": "medico",
+    "subcategoria": "4_hipotermia_cuidados_especializados",
+    "peso_kg": 0.2,
+    "volumen_u": 1,
+    "precio_base": 12.0,
+    "codigo": "MED-HCE-002"
+  },
+  {
+    "nombre": "Solución de Lavado Ocular",
+    "descripcion": "Solución estéril para lavado de ojos.",
+    "categoria": "medico",
+    "subcategoria": "4_hipotermia_cuidados_especializados",
+    "peso_kg": 0.25,
+    "volumen_u": 1,
+    "precio_base": 15.0,
+    "codigo": "MED-HCE-003"
+  },
+  {
+    "nombre": "Parche Ocular Rígido",
+    "descripcion": "Parche protector rígido para lesiones oculares.",
+    "categoria": "medico",
+    "subcategoria": "4_hipotermia_cuidados_especializados",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 8.0,
+    "codigo": "MED-HCE-004"
+  },
+  {
+    "nombre": "Manta Térmica Aluminizada",
+    "descripcion": "Manta de emergencia para retención de calor corporal.",
+    "categoria": "medico",
+    "subcategoria": "4_hipotermia_cuidados_especializados",
+    "peso_kg": 0.05,
+    "volumen_u": 0,
+    "precio_base": 5.0,
+    "codigo": "MED-HCE-005"
+  },
+  {
+    "nombre": "REBOA",
+    "descripcion": "Catéter de oclusión aórtica para hemorragias no compresibles en torso.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.15,
+    "volumen_u": 1,
+    "precio_base": 1200.0,
+    "codigo": "MED-SQTA-001"
+  },
+  {
+    "nombre": "Dressing Vacuum (NPWT)",
+    "descripcion": "Sistema de presión negativa para cierre temporal de heridas complejas.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 1.8,
+    "volumen_u": 4,
+    "precio_base": 850.0,
+    "codigo": "MED-SQTA-002"
+  },
+  {
+    "nombre": "Placa Ósea",
+    "descripcion": "Kit de osteosíntesis de emergencia para estabilizar fracturas.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.35,
+    "volumen_u": 1,
+    "precio_base": 420.0,
+    "codigo": "MED-SQTA-003"
+  },
+  {
+    "nombre": "Bisutí #10",
+    "descripcion": "Hoja de bisturí #10 para incisiones.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 3.0,
+    "codigo": "MED-SQTA-004"
+  },
+  {
+    "nombre": "Bisutí #11",
+    "descripcion": "Hoja de bisturí #11 para incisiones de precisión.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 3.0,
+    "codigo": "MED-SQTA-005"
+  },
+  {
+    "nombre": "Bisutí #15",
+    "descripcion": "Hoja de bisturí #15 para incisiones curvas.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 3.0,
+    "codigo": "MED-SQTA-006"
+  },
+  {
+    "nombre": "Mando de Bisutí #3",
+    "descripcion": "Mango de bisturí #3 reutilizable.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.03,
+    "volumen_u": 0,
+    "precio_base": 18.0,
+    "codigo": "MED-SQTA-007"
+  },
+  {
+    "nombre": "Retractor (Separador Quirúrgico)",
+    "descripcion": "Para visualización de cavidades o fracturas.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.08,
+    "volumen_u": 1,
+    "precio_base": 35.0,
+    "codigo": "MED-SQTA-008"
+  },
+  {
+    "nombre": "Pinza Hemostática - Clamp",
+    "descripcion": "Para control de vasos mediante clampeo.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.05,
+    "volumen_u": 0,
+    "precio_base": 25.0,
+    "codigo": "MED-SQTA-009"
+  },
+  {
+    "nombre": "Pinza Hemostática - Mosquito",
+    "descripcion": "Para pinzar vasos sangrantes pequeños.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.04,
+    "volumen_u": 0,
+    "precio_base": 22.0,
+    "codigo": "MED-SQTA-010"
+  },
+  {
+    "nombre": "Pinza Hemostática - Kelly",
+    "descripcion": "Para pinzar vasos sangrantes medianos.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.06,
+    "volumen_u": 0,
+    "precio_base": 28.0,
+    "codigo": "MED-SQTA-011"
+  },
+  {
+    "nombre": "Porta-agujas Mayo-Hegar",
+    "descripcion": "Para sutura de tejidos.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.08,
+    "volumen_u": 1,
+    "precio_base": 45.0,
+    "codigo": "MED-SQTA-012"
+  },
+  {
+    "nombre": "Pinzas de Disección con Dientes",
+    "descripcion": "Para manipulación de tejidos con mejor agarre.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.04,
+    "volumen_u": 0,
+    "precio_base": 20.0,
+    "codigo": "MED-SQTA-013"
+  },
+  {
+    "nombre": "Pinzas de Disección sin Dientes",
+    "descripcion": "Para manipulación delicada de tejidos.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.04,
+    "volumen_u": 0,
+    "precio_base": 20.0,
+    "codigo": "MED-SQTA-014"
+  },
+  {
+    "nombre": "Separadores Farabeuf (par)",
+    "descripcion": "Para exposición de planos profundos.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.12,
+    "volumen_u": 1,
+    "precio_base": 35.0,
+    "codigo": "MED-SQTA-015"
+  },
+  {
+    "nombre": "Sutura Seda Negra Trenzada 2-0",
+    "descripcion": "Sutura no absorbible para tejidos externos.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 8.0,
+    "codigo": "MED-SQTA-016"
+  },
+  {
+    "nombre": "Sutura Seda Negra Trenzada 3-0",
+    "descripcion": "Sutura no absorbible para tejidos externos.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 8.0,
+    "codigo": "MED-SQTA-017"
+  },
+  {
+    "nombre": "Sutura Vicryl 2-0",
+    "descripcion": "Sutura absorbible para tejidos internos.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 12.0,
+    "codigo": "MED-SQTA-018"
+  },
+  {
+    "nombre": "Sutura Nylon 4-0",
+    "descripcion": "Sutura no absorbible para piel.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 10.0,
+    "codigo": "MED-SQTA-019"
+  },
+  {
+    "nombre": "Grapadora Cutánea",
+    "descripcion": "Para cierre rápido de piel en entorno táctico.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
+    "peso_kg": 0.15,
+    "volumen_u": 1,
+    "precio_base": 35.0,
+    "codigo": "MED-SQTA-020"
+  },
+  {
+    "nombre": "Tijeras de Trauma",
+    "descripcion": "Tijeras reforzadas para cortar ropa y equipo táctico.",
+    "categoria": "medico",
+    "subcategoria": "5_seccion_quirurgica_trauma_avanzado",
     "peso_kg": 0.07,
     "volumen_u": 0,
     "precio_base": 10.0,
-    "codigo": "MED-009"
+    "codigo": "MED-SQTA-021"
   },
   {
-    "nombre": "Morfina (autoinyectable) — uso Sanitario",
-    "descripcion": "Analgésico opioide. Solo puede administrarlo personal con clase Sanitario.",
+    "nombre": "Epinefrina 1mg/ml (1:1000) - Vial",
+    "descripcion": "Vasopresor de emergencia. Anafilaxia y paro cardíaco.",
     "categoria": "medico",
-    "subcategoria": "farmaco",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 18.0,
+    "codigo": "MED-FARM-001"
+  },
+  {
+    "nombre": "Epinefrina 1mg/ml (1:1000) - Autoinyector",
+    "descripcion": "Autoinyector de epinefrina para anafilaxia.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.05,
+    "volumen_u": 0,
+    "precio_base": 95.0,
+    "codigo": "MED-FARM-002"
+  },
+  {
+    "nombre": "Norepinefrina 4mg/ml - Vial",
+    "descripcion": "Vasopresor potente para choque distributivo.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 22.0,
+    "codigo": "MED-FARM-003"
+  },
+  {
+    "nombre": "Fenilefrina 10mg/ml - Vial",
+    "descripcion": "Vasopresor de acción rápida.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 20.0,
+    "codigo": "MED-FARM-004"
+  },
+  {
+    "nombre": "Adenosina 6mg/2ml - Vial",
+    "descripcion": "Antiarrítmico para taquicardia supraventricular.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 28.0,
+    "codigo": "MED-FARM-005"
+  },
+  {
+    "nombre": "Amiodarona 150mg/3ml - Vial",
+    "descripcion": "Antiarrítmico de amplio espectro.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 32.0,
+    "codigo": "MED-FARM-006"
+  },
+  {
+    "nombre": "Atropina 1mg/1ml - Vial",
+    "descripcion": "Anticolinérgico para bradicardia.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 15.0,
+    "codigo": "MED-FARM-007"
+  },
+  {
+    "nombre": "Fentanilo 100mcg/2ml - Vial",
+    "descripcion": "Analgésico opioide potente.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
     "peso_kg": 0.02,
     "volumen_u": 0,
     "precio_base": 25.0,
-    "codigo": "MED-010"
+    "codigo": "MED-FARM-008"
+  },
+  {
+    "nombre": "Fentanilo 800mcg - Lozenge",
+    "descripcion": "Analgésico opioide transmucoso.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 35.0,
+    "codigo": "MED-FARM-009"
+  },
+  {
+    "nombre": "Morfina 10mg/1ml - Vial",
+    "descripcion": "Analgésico opioide estándar.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 18.0,
+    "codigo": "MED-FARM-010"
+  },
+  {
+    "nombre": "Morfina 5mg - Autoinyector",
+    "descripcion": "Autoinyector de morfina para analgesia rápida.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.05,
+    "volumen_u": 0,
+    "precio_base": 45.0,
+    "codigo": "MED-FARM-011"
+  },
+  {
+    "nombre": "Nalbufina 10mg/ml - Vial",
+    "descripcion": "Analgésico opioide agonista-antagonista.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 22.0,
+    "codigo": "MED-FARM-012"
+  },
+  {
+    "nombre": "Ketamina 500mg/10ml - Vial",
+    "descripcion": "Anestésico disociativo. Analgesia y sedación.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 35.0,
+    "codigo": "MED-FARM-013"
+  },
+  {
+    "nombre": "Etomidato 2mg/ml - Vial",
+    "descripcion": "Inductor anestésico de acción rápida.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 28.0,
+    "codigo": "MED-FARM-014"
+  },
+  {
+    "nombre": "Midazolam 5mg/5ml - Vial",
+    "descripcion": "Benzodiacepina. Sedación y anticonvulsivo.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 20.0,
+    "codigo": "MED-FARM-015"
+  },
+  {
+    "nombre": "Midazolam 5mg/1ml - Vial",
+    "descripcion": "Benzodiacepina concentrada.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 22.0,
+    "codigo": "MED-FARM-016"
+  },
+  {
+    "nombre": "Lorazepam 2mg/ml - Vial",
+    "descripcion": "Ansiolítico y anticonvulsivo.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 18.0,
+    "codigo": "MED-FARM-017"
+  },
+  {
+    "nombre": "Lidocaína 100mg/5ml - Vial",
+    "descripcion": "Anestésico local y antiarrítmico.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 12.0,
+    "codigo": "MED-FARM-018"
+  },
+  {
+    "nombre": "Naloxona 0.4mg/1ml - Vial",
+    "descripcion": "Reversor de opioides.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 35.0,
+    "codigo": "MED-FARM-019"
+  },
+  {
+    "nombre": "Flumazenil 0.1mg/ml - Vial",
+    "descripcion": "Reversor de benzodiacepinas.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 40.0,
+    "codigo": "MED-FARM-020"
+  },
+  {
+    "nombre": "Ondansetrón 4mg/2ml - Vial",
+    "descripcion": "Antiemético potente.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 15.0,
+    "codigo": "MED-FARM-021"
+  },
+  {
+    "nombre": "TXA (Ácido Tranexámico) 1g/10ml - Vial",
+    "descripcion": "Antifibrinolítico. Reduce mortalidad por hemorragia.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 28.0,
+    "codigo": "MED-FARM-022"
+  },
+  {
+    "nombre": "EACA 250mg/ml - Vial",
+    "descripcion": "Ácido epsilon-aminocaproico. Antifibrinolítico.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 25.0,
+    "codigo": "MED-FARM-023"
+  },
+  {
+    "nombre": "Alteplasa (tPA) 50mg - Vial Liofilizado",
+    "descripcion": "Trombolítico para infarto o embolia.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.03,
+    "volumen_u": 0,
+    "precio_base": 850.0,
+    "codigo": "MED-FARM-024"
+  },
+  {
+    "nombre": "Rocuronio 50mg/5ml - Vial",
+    "descripcion": "Relajante neuromuscular.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 32.0,
+    "codigo": "MED-FARM-025"
+  },
+  {
+    "nombre": "Pancuronio 4mg/2ml - Vial",
+    "descripcion": "Relajante neuromuscular de larga duración.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 28.0,
+    "codigo": "MED-FARM-026"
+  },
+  {
+    "nombre": "Cloruro de Calcio 1g/10ml (10%) - Vial",
+    "descripcion": "Electrolito para hipocalcemia o hiperpotasemia.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 10.0,
+    "codigo": "MED-FARM-027"
+  },
+  {
+    "nombre": "Sulfato de Magnesio 1.25g/5ml - Vial",
+    "descripcion": "Electrolito para arritmias o eclampsia.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 12.0,
+    "codigo": "MED-FARM-028"
+  },
+  {
+    "nombre": "Nitroglicerina 0.4mg - Sublingual",
+    "descripcion": "Vasodilatador para angina de pecho.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 8.0,
+    "codigo": "MED-FARM-029"
+  },
+  {
+    "nombre": "Nitroglicerina - Spray Sublingual",
+    "descripcion": "Vasodilatador de acción rápida.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.03,
+    "volumen_u": 0,
+    "precio_base": 18.0,
+    "codigo": "MED-FARM-030"
+  },
+  {
+    "nombre": "ATNA (Atropina + Pralidoxima) - Autoinyector",
+    "descripcion": "Antídoto para agentes nerviosos organofosforados.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.06,
+    "volumen_u": 1,
+    "precio_base": 120.0,
+    "codigo": "MED-FARM-031"
+  },
+  {
+    "nombre": "Cafeína 20mg/ml - Vial",
+    "descripcion": "Estimulante del sistema nervioso central.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 10.0,
+    "codigo": "MED-FARM-032"
+  },
+  {
+    "nombre": "Amoniaco (Inhalador) - Ampolla Rompible",
+    "descripcion": "Estimulante aromático para desmayos.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.01,
+    "volumen_u": 0,
+    "precio_base": 5.0,
+    "codigo": "MED-FARM-033"
+  },
+  {
+    "nombre": "Carbonato de Amonio - Inhalador",
+    "descripcion": "Estimulante aromático para síncope.",
+    "categoria": "medico",
+    "subcategoria": "6_farmacologia",
+    "peso_kg": 0.02,
+    "volumen_u": 0,
+    "precio_base": 8.0,
+    "codigo": "MED-FARM-034"
+  },
+  {
+    "nombre": "Camilla Plegable",
+    "descripcion": "Camilla de transporte plegable.",
+    "categoria": "medico",
+    "subcategoria": "7_logistica_y_varios",
+    "peso_kg": 5.5,
+    "volumen_u": 12,
+    "precio_base": 280.0,
+    "codigo": "MED-LOG-001"
+  },
+  {
+    "nombre": "Tablilla de rescate",
+    "descripcion": "Camilla rígida usada para traslado de pacientes traumáticos.",
+    "categoria": "medico",
+    "subcategoria": "7_logistica_y_varios",
+    "peso_kg": 3.8,
+    "volumen_u": 10,
+    "precio_base": 450.0,
+    "codigo": "MED-LOG-002"
+  },
+  {
+    "nombre": "Syringe 1ml (Luer Lock) - Pack 10ud",
+    "descripcion": "Jeringas de 1ml con sistema Luer Lock.",
+    "categoria": "medico",
+    "subcategoria": "7_logistica_y_varios",
+    "peso_kg": 0.05,
+    "volumen_u": 0,
+    "precio_base": 5.0,
+    "codigo": "MED-LOG-003"
+  },
+  {
+    "nombre": "Syringe 3ml (Luer Lock) - Pack 10ud",
+    "descripcion": "Jeringas de 3ml con sistema Luer Lock.",
+    "categoria": "medico",
+    "subcategoria": "7_logistica_y_varios",
+    "peso_kg": 0.08,
+    "volumen_u": 0,
+    "precio_base": 6.0,
+    "codigo": "MED-LOG-004"
+  },
+  {
+    "nombre": "Syringe 5ml (Luer Lock) - Pack 10ud",
+    "descripcion": "Jeringas de 5ml con sistema Luer Lock.",
+    "categoria": "medico",
+    "subcategoria": "7_logistica_y_varios",
+    "peso_kg": 0.12,
+    "volumen_u": 0,
+    "precio_base": 7.0,
+    "codigo": "MED-LOG-005"
+  },
+  {
+    "nombre": "Syringe 10ml (Luer Lock) - Pack 10ud",
+    "descripcion": "Jeringas de 10ml con sistema Luer Lock.",
+    "categoria": "medico",
+    "subcategoria": "7_logistica_y_varios",
+    "peso_kg": 0.18,
+    "volumen_u": 1,
+    "precio_base": 8.0,
+    "codigo": "MED-LOG-006"
   },
   {
     "nombre": "Radio táctica AN/PRC-152",

@@ -617,5 +617,193 @@
     "slots_pouches": 10,
     "precio_base": 600.0,
     "codigo": "PP029"
+  },
+  {
+    "nombre": "Kit de Cricotirotomía (CricKit)",
+    "descripcion": "Orientado a vía aérea quirúrgica de emergencia. Contiene: bisturí #11, tubo traqueostomía 6.0mm con manguito, gancho traqueal, jeringa 10ml, correa velcro, 2 gasas 4x4.",
+    "categoria": "kit",
+    "subcategoria": "via_aerea_emergencia",
+    "peso_kg": 0.42,
+    "volumen_u": 2,
+    "slots_pouch": 1,
+    "es_kit": true,
+    "espacio_libre_pct": 10,
+    "contenido": [
+      {"item_codigo": "MED-SQTA-005", "cantidad": 1},
+      {"item_codigo": "MED-VAR-006", "cantidad": 1},
+      {"item_codigo": "MED-LOG-005", "cantidad": 1},
+      {"item_codigo": "MED-CHH-010", "cantidad": 2}
+    ],
+    "precio_base": 185.0,
+    "codigo": "KIT-001"
+  },
+  {
+    "nombre": "Kit de Descompresión Torácica (AAT/NCD Kit)",
+    "descripcion": "Tratamiento de neumotórax a tensión. Contiene: 2 agujas 14G x 3.25\", 2 válvulas unidireccionales, 4 toallitas antisépticas, 1 par guantes nitrilo.",
+    "categoria": "kit",
+    "subcategoria": "trauma_toracico",
+    "peso_kg": 0.18,
+    "volumen_u": 1,
+    "slots_pouch": 1,
+    "es_kit": true,
+    "espacio_libre_pct": 15,
+    "contenido": [
+      {"item_codigo": "MED-CAV-001", "cantidad": 2}
+    ],
+    "precio_base": 85.0,
+    "codigo": "KIT-002"
+  },
+  {
+    "nombre": "Kit de Vía Central (Central Line Kit)",
+    "descripcion": "Acceso venoso profundo (yugular/subclavia). Contiene: catéter triple luz 7Fr, guía metálica en J con introductor, dilatador, bisturí #11, jeringa 5ml, 2 suturas seda 2-0, apósito Tegaderm.",
+    "categoria": "kit",
+    "subcategoria": "acceso_vascular_avanzado",
+    "peso_kg": 0.32,
+    "volumen_u": 2,
+    "slots_pouch": 1,
+    "es_kit": true,
+    "espacio_libre_pct": 10,
+    "contenido": [
+      {"item_codigo": "MED-SQTA-005", "cantidad": 1},
+      {"item_codigo": "MED-LOG-004", "cantidad": 1},
+      {"item_codigo": "MED-SQTA-016", "cantidad": 2}
+    ],
+    "precio_base": 220.0,
+    "codigo": "KIT-003"
+  },
+  {
+    "nombre": "Kit de Transfusión de Campo (FBTK)",
+    "descripcion": "Protocolos Walking Blood Bank (donante vivo a paciente). Contiene: bolsa colectora 450-500ml con CPD, set administración con filtro 170 micras, tarjeta tipaje rápido EldonCard, lanceta, torniquete punción, 2 agujas 16G.",
+    "categoria": "kit",
+    "subcategoria": "transfusion_emergencia",
+    "peso_kg": 0.55,
+    "volumen_u": 2,
+    "slots_pouch": 1,
+    "es_kit": true,
+    "espacio_libre_pct": 5,
+    "contenido": [
+      {"item_codigo": "MED-CAV-002", "cantidad": 2}
+    ],
+    "precio_base": 165.0,
+    "codigo": "KIT-004"
+  },
+  {
+    "nombre": "Kit de Tubo de Tórax (Chest Tube Kit)",
+    "descripcion": "Drenaje de hemotórax o neumotórax masivo. Contiene: tubo torácico 28-32Fr, pinza Kelly larga, bisturí #10, conector drenaje 3 vías, válvula Heimlich, 2 suturas seda 0-2-0, 4 gasas vaselina Xeroform.",
+    "categoria": "kit",
+    "subcategoria": "trauma_toracico",
+    "peso_kg": 0.68,
+    "volumen_u": 3,
+    "slots_pouch": 2,
+    "es_kit": true,
+    "espacio_libre_pct": 10,
+    "contenido": [
+      {"item_codigo": "MED-SQTA-011", "cantidad": 1},
+      {"item_codigo": "MED-SQTA-004", "cantidad": 1},
+      {"item_codigo": "MED-SQTA-016", "cantidad": 2}
+    ],
+    "precio_base": 320.0,
+    "codigo": "KIT-005"
+  },
+  {
+    "nombre": "Kit Quirúrgico (Surgical Kit)",
+    "descripcion": "Cierre de heridas y control de daños. Contiene: porta-agujas Mayo-Hegar, tijera Metzenbaum, 2 pinzas mosquito curvas, pinza disección con dientes Adson, 3 sobres sutura seda 3-0, 3 sobres sutura nylon 4-0, 10 gasas estériles.",
+    "categoria": "kit",
+    "subcategoria": "cirugia_campo",
+    "peso_kg": 0.52,
+    "volumen_u": 3,
+    "slots_pouch": 2,
+    "es_kit": true,
+    "espacio_libre_pct": 15,
+    "contenido": [
+      {"item_codigo": "MED-SQTA-012", "cantidad": 1},
+      {"item_codigo": "MED-SQTA-010", "cantidad": 2},
+      {"item_codigo": "MED-SQTA-013", "cantidad": 1},
+      {"item_codigo": "MED-SQTA-017", "cantidad": 3},
+      {"item_codigo": "MED-SQTA-019", "cantidad": 3},
+      {"item_codigo": "MED-CHH-010", "cantidad": 10}
+    ],
+    "precio_base": 380.0,
+    "codigo": "KIT-006"
+  },
+  {
+    "nombre": "Kit de Acceso Intraóseo (IO Kit)",
+    "descripcion": "Acceso vascular de emergencia. Contiene: taladro manual o motorizado EZ-IO, 3 agujas IO (15mm rosa, 25mm azul, 45mm amarilla), conector estabilizador EZ-Connect, pulsera ID IO, jeringa 10ml flush.",
+    "categoria": "kit",
+    "subcategoria": "acceso_vascular_emergencia",
+    "peso_kg": 0.82,
+    "volumen_u": 3,
+    "slots_pouch": 2,
+    "es_kit": true,
+    "espacio_libre_pct": 10,
+    "contenido": [
+      {"item_codigo": "MED-CAV-005", "cantidad": 1},
+      {"item_codigo": "MED-LOG-006", "cantidad": 1}
+    ],
+    "precio_base": 920.0,
+    "codigo": "KIT-007"
+  },
+  {
+    "nombre": "Kit de Acceso Intravenoso (IV Kit)",
+    "descripcion": "Acceso venoso periférico estándar. Contiene: 4 catéteres IV (mezcla 14G, 16G, 18G), torniquete elástico, 2 Tegaderm, 2 llaves 3 pasos, 5 toallitas alcohol, alargador de vía.",
+    "categoria": "kit",
+    "subcategoria": "acceso_vascular_basico",
+    "peso_kg": 0.25,
+    "volumen_u": 2,
+    "slots_pouch": 1,
+    "es_kit": true,
+    "espacio_libre_pct": 20,
+    "contenido": [
+      {"item_codigo": "MED-CAV-001", "cantidad": 1},
+      {"item_codigo": "MED-CAV-002", "cantidad": 2},
+      {"item_codigo": "MED-CAV-003", "cantidad": 1}
+    ],
+    "precio_base": 95.0,
+    "codigo": "KIT-008"
+  },
+  {
+    "nombre": "IFAK (Individual First Aid Kit)",
+    "descripcion": "Botiquín individual de combate. Contiene: torniquete CAT, vendaje israelí 4\", gasa hemostática QuikClot, cánula NPA con lubricante, 2 sellos pecho, manta térmica, tijeras trauma.",
+    "categoria": "kit",
+    "subcategoria": "primeros_auxilios_individual",
+    "peso_kg": 0.65,
+    "volumen_u": 3,
+    "slots_pouch": 2,
+    "es_kit": true,
+    "espacio_libre_pct": 15,
+    "contenido": [
+      {"item_codigo": "MED-CHH-001", "cantidad": 1},
+      {"item_codigo": "MED-CHH-003", "cantidad": 1},
+      {"item_codigo": "MED-CHH-005", "cantidad": 1},
+      {"item_codigo": "MED-VAR-001", "cantidad": 1},
+      {"item_codigo": "MED-VAR-016", "cantidad": 1},
+      {"item_codigo": "MED-HCE-005", "cantidad": 1},
+      {"item_codigo": "MED-SQTA-021", "cantidad": 1}
+    ],
+    "precio_base": 145.0,
+    "codigo": "KIT-009"
+  },
+  {
+    "nombre": "AFAK (Advanced First Aid Kit)",
+    "descripcion": "Botiquín avanzado para sanitario de combate. Contiene: 2x IFAK completos, dispositivo i-gel talla 4, aguja descompresión NCD, pulsioxímetro dedo, pocket BVM, kit fármacos básico (morfina, TXA, epinefrina).",
+    "categoria": "kit",
+    "subcategoria": "primeros_auxilios_avanzado",
+    "peso_kg": 2.15,
+    "volumen_u": 7,
+    "slots_pouch": 2,
+    "es_kit": true,
+    "espacio_libre_pct": 10,
+    "contenido": [
+      {"item_codigo": "KIT-009", "cantidad": 2},
+      {"item_codigo": "MED-VAR-003", "cantidad": 1},
+      {"item_codigo": "MED-CAV-001", "cantidad": 1},
+      {"item_codigo": "MED-DSV-003", "cantidad": 1},
+      {"item_codigo": "MED-VAR-013", "cantidad": 1},
+      {"item_codigo": "MED-FARM-011", "cantidad": 2},
+      {"item_codigo": "MED-FARM-022", "cantidad": 2},
+      {"item_codigo": "MED-FARM-002", "cantidad": 1}
+    ],
+    "precio_base": 580.0,
+    "codigo": "KIT-010"
   }
 ]
