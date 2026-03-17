@@ -19,6 +19,7 @@ Secciones
   9. Eventos
   10. Auditoría (escritura)
   11. Webhooks
+  12. Ítems (consultas de catálogo)
 
 NOTA: Todas las funciones son async. Usar `await` siempre.
 """
@@ -95,6 +96,18 @@ async def get_character(conn, user_id: int) -> aiosqlite.Row | None:
 async def get_character_by_id(conn, char_id: int) -> aiosqlite.Row | None:
     """Obtiene un personaje por su ID interno."""
     return await _one(conn, "SELECT * FROM characters WHERE id = ?", (char_id,))
+
+
+async def get_characters_activos(conn) -> list[aiosqlite.Row]:
+    """
+    Devuelve todos los personajes con estado='activo'.
+    
+    Usada por el sistema de economía para el pago automático de salarios.
+    
+    Returns:
+        Lista de filas de characters.
+    """
+    return await _all(conn, "SELECT * FROM characters WHERE estado='activo'")
 
 
 async def create_character(conn, data: dict) -> int:

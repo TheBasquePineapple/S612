@@ -15,9 +15,13 @@ Comandos
   /tienda vender [item]        — Vender ítem (Usuario+)  — bloqueado en Evento-ON
   /tienda añadir ...           — Añadir ítem a tienda (Narrador+)
   /tienda quitar [item]        — Quitar ítem de tienda (Narrador+)
-  /admin entregar [user] [amt] — Dar dinero (Narrador+)
-  /admin retirar [user] [amt]  — Quitar dinero (Narrador+)
-  /admin salarios              — Pagar salarios manualmente (Narrador+)
+  /admin-eco entregar [user] [amt] — Dar dinero (Narrador+)
+  /admin-eco retirar [user] [amt]  — Quitar dinero (Narrador+)
+  /admin-eco salarios              — Pagar salarios manualmente (Narrador+)
+
+CORRECCIONES APLICADAS:
+- Eliminado _patch_repo() (función movida a db/repository.py)
+- Mejorado manejo de config/inventario.json con try/except y fallback
 """
 
 import json
@@ -27,7 +31,6 @@ import discord
 from discord import Interaction, app_commands
 from discord.ext import commands, tasks
 
-import aiosqlite
 from cogs.eventos import evento_activo
 from db import repository as repo
 from utils import embeds as emb
@@ -35,7 +38,7 @@ from utils.logger import audit, log_info, log_error
 from utils.permisos import NARRADOR, USUARIO, get_user_level, require_role
 
 # ---------------------------------------------------------------------------
-# Carga de configuración económica
+# Carga de configuración económica e inventario
 # ---------------------------------------------------------------------------
 
 def _cargar_economia_config() -> dict:
@@ -56,12 +59,31 @@ def _cargar_economia_config() -> dict:
         }
 
 
+def _cargar_inventario_config() -> dict:
+    """
+    Carga config/inventario.json con fallback a defaults.
+    
+    CORREGIDO: Manejo robusto de FileNotFoundError para evitar crashes
+    en tienda_comprar cuando el archivo no existe.
+    """
+    try:
+        with Path("config/inventario.json").open(encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        log_error("[ECONOMÍA] config/inventario.json no encontrado, usando valores por defecto")
+        return {"limites_globales": {"peso_max_kg": 40.0, "volumen_max_u": 80}}
+    except Exception as e:
+        log_error(f"[ECONOMÍA] Error cargando config/inventario.json: {e}")
+        return {"limites_globales": {"peso_max_kg": 40.0, "volumen_max_u": 80}}
+
+
 class EconomiaCog(commands.Cog, name="Economía"):
     """Cog del sistema económico y tienda."""
 
     def __init__(self, bot: commands.Bot) -> None:
         self.bot     = bot
         self.cfg     = _cargar_economia_config()
+        self.inv_cfg = _cargar_inventario_config()  # Cargado una vez al init
         self.simbolo = self.cfg["moneda"]["simbolo"]
         self._salario_task_started = False
 
@@ -97,38 +119,34 @@ class EconomiaCog(commands.Cog, name="Economía"):
         Recorre todos los personajes activos y les paga el salario según su rango.
         Registra cada pago en transactions.
         """
-        from utils.permisos import NIVEL_NOMBRES, USUARIO as N_USUARIO
-
         montos = self.cfg["salarios"]["montos_por_rango"]
-        pagados = 0
+        async with await repo.get_conn() as conn:
+            # CORREGIDO: Ahora usa la función directamente de repository.py
+            personajes = await repo.get_characters_activos(conn)
+            
+            for char in personajes:
+                rango = await self._determinar_rango(char["user_id"])
+                monto = montos.get(rango, 0)
+                
+                if monto <= 0:
+                    continue
+                
+                try:
+                    await repo.update_balance(
+                        conn,
+                        user_id     = char["user_id"],
+                        delta       = monto,
+                        tipo        = "salario",
+                        descripcion = f"Salario automático — rango {rango}",
+                        ejecutado_por = None,  # Sistema
+                    )
+                    log_info(f"[ECONOMÍA] Salario pagado: {char['nombre_completo']} ({rango}) → {monto} {self.simbolo}")
+                except Exception as exc:
+                    log_error(f"[ECONOMÍA] Error pagando salario a {char['user_id']}: {exc}")
 
-        try:
-            async with await repo.get_conn() as conn:
-                chars = await repo.get_characters_activos(conn)
-                for char in chars:
-                    user_id = char["user_id"]
-                    rango_nombre = await self._get_rango_nombre(user_id)
-                    monto = montos.get(rango_nombre, 0)
-                    if monto <= 0:
-                        continue
-                    try:
-                        await repo.update_balance(
-                            conn, user_id=user_id, delta=monto,
-                            tipo="salario",
-                            descripcion=f"Salario semanal — rango {rango_nombre}",
-                            ejecutado_por=None,
-                        )
-                        pagados += 1
-                    except Exception as exc:
-                        log_error(f"[SALARIOS] Error pagando a {user_id}: {exc}")
-
-            log_info(f"[SALARIOS] {pagados} salarios pagados automáticamente")
-        except Exception as exc:
-            log_error(f"[SALARIOS] Error en tarea automática: {exc}")
-
-    async def _get_rango_nombre(self, user_id: int) -> str:
+    async def _determinar_rango(self, user_id: int) -> str:
         """
-        Obtiene el nombre de rango de un usuario consultando sus roles en el servidor.
+        Determina el rango de un usuario basándose en sus roles de Discord.
         Devuelve el rango en minúsculas para coincidir con la config de salarios.
 
         Args:
@@ -181,17 +199,21 @@ class EconomiaCog(commands.Cog, name="Economía"):
             interaction: Contexto de Discord.
         """
         async with await repo.get_conn() as conn:
-            char   = await repo.get_character(conn, interaction.user.id)
+            char = await repo.get_character(conn, interaction.user.id)
             if not char or char["estado"] != "activo":
                 await interaction.response.send_message(
                     embed=emb.error("Sin personaje", "No tienes un personaje activo registrado."),
                     ephemeral=True,
                 )
                 return
-            saldo  = await repo.get_balance(conn, interaction.user.id)
+
+            saldo = await repo.get_balance(conn, interaction.user.id)
 
         await interaction.response.send_message(
-            embed=emb.saldo(char["nombre_completo"], saldo, self.simbolo),
+            embed=emb.info(
+                f"💰 Saldo — {char['nombre_completo']}",
+                f"**{saldo:,.2f} {self.simbolo}**"
+            ),
             ephemeral=True,
         )
 
@@ -204,15 +226,15 @@ class EconomiaCog(commands.Cog, name="Economía"):
     @require_role(USUARIO)
     async def eco_historial(self, interaction: Interaction, pagina: int = 1) -> None:
         """
-        Muestra el historial de transacciones del usuario (paginado, 10 por página).
+        Muestra el historial de transacciones del usuario paginado.
 
         Args:
             interaction: Contexto de Discord.
-            pagina     : Página solicitada.
+            pagina     : Número de página.
         """
-        pagina   = max(1, pagina)
-        por_pag  = 10
-        offset   = (pagina - 1) * por_pag
+        pagina  = max(1, pagina)
+        por_pag = 10
+        offset  = (pagina - 1) * por_pag
 
         async with await repo.get_conn() as conn:
             char = await repo.get_character(conn, interaction.user.id)
@@ -341,13 +363,12 @@ class EconomiaCog(commands.Cog, name="Economía"):
                 )
                 return
 
-            # Verificar límites de inventario
+            # CORREGIDO: Verificar límites de inventario con fallback robusto
             from utils.validaciones import validar_peso_volumen
-            import json as _json
-            with Path("config/inventario.json").open() as f:
-                inv_cfg = _json.load(f)
-            peso_max = inv_cfg["limites_globales"]["peso_max_kg"]
-            vol_max  = inv_cfg["limites_globales"]["volumen_max_u"]
+            
+            # Usar config cargada en __init__ en lugar de cargar cada vez
+            peso_max = self.inv_cfg["limites_globales"]["peso_max_kg"]
+            vol_max  = self.inv_cfg["limites_globales"]["volumen_max_u"]
 
             peso_actual, vol_actual = await repo.get_inventory_totals(conn, interaction.user.id)
             resultado = validar_peso_volumen(
@@ -366,11 +387,11 @@ class EconomiaCog(commands.Cog, name="Economía"):
             try:
                 nuevo_saldo = await repo.update_balance(
                     conn,
-                    user_id    = interaction.user.id,
-                    delta      = -precio,
-                    tipo       = "compra",
-                    descripcion= f"Compra: {listing['nombre']}",
-                    item_id    = listing["item_id"],
+                    user_id     = interaction.user.id,
+                    delta       = -precio,
+                    tipo        = "compra",
+                    descripcion = f"Compra: {listing['nombre']}",
+                    item_id     = listing["item_id"],
                 )
                 await repo.add_to_general_inventory(conn, interaction.user.id, listing["item_id"])
                 await repo.reduce_shop_stock(conn, listing["listing_id"])
@@ -399,7 +420,7 @@ class EconomiaCog(commands.Cog, name="Economía"):
     async def tienda_vender(self, interaction: Interaction, nombre: str) -> None:
         """
         Vende un ítem del inventario general del usuario.
-        Bloqueado en Evento-ON. El precio de venta es 50% del precio de tienda.
+        Bloqueado en Evento-ON. El precio de venta es 50% del precio base.
 
         Args:
             interaction: Contexto de Discord.
@@ -488,10 +509,10 @@ class EconomiaCog(commands.Cog, name="Economía"):
         async with await repo.get_conn() as conn:
             nuevo_saldo = await repo.update_balance(
                 conn,
-                user_id     = usuario.id,
-                delta       = cantidad,
-                tipo        = "entrega",
-                descripcion = motivo,
+                user_id       = usuario.id,
+                delta         = cantidad,
+                tipo          = "entrega",
+                descripcion   = motivo,
                 ejecutado_por = interaction.user.id,
             )
             await audit(
@@ -516,7 +537,7 @@ class EconomiaCog(commands.Cog, name="Economía"):
     # -----------------------------------------------------------------------
 
     @admin_eco_group.command(name="retirar", description="Retirar dinero a un usuario (Narrador+)")
-    @app_commands.describe(usuario="Usuario", cantidad="Cantidad a retirar",
+    @app_commands.describe(usuario="Usuario afectado", cantidad="Cantidad a retirar",
                             motivo="Motivo (opcional)")
     @require_role(NARRADOR)
     async def admin_retirar(self, interaction: Interaction,
@@ -524,7 +545,7 @@ class EconomiaCog(commands.Cog, name="Economía"):
                              cantidad: float,
                              motivo: str = "Retiro por Narrador") -> None:
         """
-        Retira dinero de la cuenta de un usuario. Registrado en audit_log.
+        Retira dinero de un usuario. Registrado en audit_log.
 
         Args:
             interaction: Contexto de Discord.
@@ -593,26 +614,9 @@ class EconomiaCog(commands.Cog, name="Economía"):
 
 
 # ---------------------------------------------------------------------------
-# Método de repositorio adicional necesario
-# ---------------------------------------------------------------------------
-
-async def _patch_repo() -> None:
-    """
-    Añade get_characters_activos a repo si no existe.
-    Solución limpia: implementar directamente en repository.py en producción.
-    """
-    if not hasattr(repo, "get_characters_activos"):
-        async def get_characters_activos(conn):
-            from db.repository import _all
-            return await _all(conn, "SELECT * FROM characters WHERE estado='activo'")
-        repo.get_characters_activos = get_characters_activos
-
-
-# ---------------------------------------------------------------------------
-# Setup
+# Setup - CORREGIDO: Ya no usa _patch_repo()
 # ---------------------------------------------------------------------------
 
 async def setup(bot: commands.Bot) -> None:
     """Registra el cog en el bot."""
-    await _patch_repo()
     await bot.add_cog(EconomiaCog(bot))

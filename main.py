@@ -17,6 +17,10 @@ Variables de entorno requeridas (.env)
   HOLDER_ID      — Discord user_id del Holder
   SUDO_KEY       — Clave SUDO para comandos críticos
   DB_PATH        — Ruta a la BBDD SQLite (default: data/raisa.db)
+  
+CORRECCIONES APLICADAS:
+-  Agregado check de inicialización de BD en setup_hook
+- Advertencia clara si la BD no existe o no está inicializada
 """
 
 import asyncio
@@ -41,6 +45,7 @@ OWNER_ID      = int(os.getenv("OWNER_ID",  "0"))
 HOLDER_ID     = int(os.getenv("HOLDER_ID", "0"))
 SUDO_KEY      = os.getenv("SUDO_KEY", "")
 DEBUG         = os.getenv("DEBUG", "0") == "1"
+DB_PATH       = Path(os.getenv("DB_PATH", "data/raisa.db"))
 
 if not DISCORD_TOKEN:
     raise RuntimeError("DISCORD_TOKEN no está configurado en .env")
@@ -103,8 +108,11 @@ class RAISA(commands.Bot):
     async def setup_hook(self) -> None:
         """
         Llamado por discord.py antes de conectar.
-        Carga configuración y registra todos los cogs.
+        Carga configuración, verifica BD y registra todos los cogs.
         """
+        # CORREGIDO: Verificar que la base de datos existe y está inicializada
+        await self._check_database()
+        
         # Cargar config de roles
         self._load_config()
 
@@ -125,6 +133,56 @@ class RAISA(commands.Bot):
             log_info(f"  🔄  {len(synced)} comandos slash sincronizados")
         except Exception as exc:
             log_error(f"  ❌  Error sincronizando slash commands: {exc}")
+
+    async def _check_database(self) -> None:
+        """
+        CORREGIDO: Verifica que la base de datos existe y tiene tablas críticas.
+        Si no existe o está vacía, emite advertencia clara.
+        
+        Esto previene el error fatal reportado en el bug report donde el bot
+        intenta consultar tablas que no existen.
+        """
+        if not DB_PATH.exists():
+            log_error("=" * 80)
+            log_error("⚠️  BASE DE DATOS NO ENCONTRADA")
+            log_error(f"⚠️  No se encontró el archivo: {DB_PATH}")
+            log_error("⚠️  ")
+            log_error("⚠️  Debes inicializar la base de datos antes de arrancar el bot:")
+            log_error("⚠️  1. python tools/migrate.py init")
+            log_error("⚠️  2. python tools/migrate.py seed --all")
+            log_error("⚠️  ")
+            log_error("⚠️  El bot continuará pero FALLARÁ al ejecutar cualquier comando.")
+            log_error("=" * 80)
+            return
+        
+        # Verificar que tiene tablas críticas
+        try:
+            import aiosqlite
+            conn = await aiosqlite.connect(DB_PATH)
+            cursor = await conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name IN "
+                "('characters', 'items', 'economy', 'vehicles')"
+            )
+            tables = await cursor.fetchall()
+            await conn.close()
+            
+            if len(tables) < 4:
+                log_warning("=" * 80)
+                log_warning("⚠️  BASE DE DATOS INCOMPLETA")
+                log_warning(f"⚠️  Solo se encontraron {len(tables)}/4 tablas críticas")
+                log_warning("⚠️  ")
+                log_warning("⚠️  Probablemente necesitas ejecutar:")
+                log_warning("⚠️  python tools/migrate.py init")
+                log_warning("⚠️  python tools/migrate.py seed --all")
+                log_warning("⚠️  ")
+                log_warning("⚠️  El bot puede fallar al ejecutar comandos.")
+                log_warning("=" * 80)
+            else:
+                log_info(f"✅  Base de datos verificada: {DB_PATH}")
+                log_info(f"✅  Tablas críticas encontradas: {len(tables)}/4")
+                
+        except Exception as exc:
+            log_error(f"❌  Error verificando base de datos: {exc}")
 
     def _load_config(self) -> None:
         """Carga y cachea la configuración de roles desde config/roles.json."""
@@ -210,51 +268,68 @@ class RAISA(commands.Bot):
         No expone detalles técnicos al usuario.
         """
         from utils import embeds as emb
+        
+        # Registrar el error completo en logs
+        log_error(f"Error en comando slash: {error}")
+        log_error(f"  Comando: {interaction.command.name if interaction.command else 'desconocido'}")
+        log_error(f"  Usuario: {interaction.user} (ID: {interaction.user.id})")
 
-        log_error(f"Error en slash command: {error}")
-
-        if interaction.response.is_done():
-            method = interaction.followup.send
-        else:
-            method = interaction.response.send_message
-
-        await method(
-            embed=emb.error(
-                "Error interno",
-                "Se produjo un error inesperado. El equipo técnico ha sido notificado.",
-            ),
-            ephemeral=True,
-        )
-
-    async def on_member_remove(self, member: discord.Member) -> None:
-        """
-        Cuando un usuario abandona el servidor, registrar en log.
-        No eliminar datos automáticamente — decisión del Gestor.
-        """
-        log_info(f"[MEMBER_REMOVE] {member} ({member.id}) abandonó el servidor")
+        # Respuesta genérica al usuario (sin detalles técnicos)
+        try:
+            if not interaction.response.is_done():
+                await interaction.response.send_message(
+                    embed=emb.error(
+                        "Error interno",
+                        "Ha ocurrido un error al ejecutar el comando. "
+                        "El incidente ha sido registrado."
+                    ),
+                    ephemeral=True,
+                )
+            else:
+                await interaction.followup.send(
+                    embed=emb.error(
+                        "Error interno",
+                        "Ha ocurrido un error al procesar tu solicitud."
+                    ),
+                    ephemeral=True,
+                )
+        except Exception:
+            # Si incluso el envío de error falla, solo registrar
+            log_error("No se pudo enviar mensaje de error al usuario")
 
 
 # ---------------------------------------------------------------------------
-# Entry point
+# Punto de entrada
 # ---------------------------------------------------------------------------
 
 async def main() -> None:
-    """Función principal asíncrona."""
-    # Crear directorios necesarios si no existen
-    for d in ["data", "data/characters", "data/backups", "assets/radio"]:
-        Path(d).mkdir(parents=True, exist_ok=True)
-
+    """Función principal asíncrona que arranca el bot."""
     bot = RAISA()
-
+    
+    log_info("=" * 80)
+    log_info("RAISA — Record and Information Administration")
+    log_info("Sistema de gestión operativa de la Fundación SCP")
+    log_info("=" * 80)
+    log_info("")
+    log_info("Iniciando bot...")
+    log_info("")
+    
     try:
         async with bot:
             await bot.start(DISCORD_TOKEN)
     except KeyboardInterrupt:
-        log_info("Apagando RAISA...")
-    except discord.LoginFailure:
-        log_error("Token de Discord inválido. Verifica DISCORD_TOKEN en .env")
-        raise
+        log_info("\n🛑  Interrupción de teclado detectada")
+        log_info("🔌  Cerrando conexiones...")
+    except Exception as exc:
+        log_error(f"❌  Error fatal: {exc}")
+        if DEBUG:
+            raise
+    finally:
+        log_info("👋  RAISA desconectada")
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        pass  # Ya manejado en main()
