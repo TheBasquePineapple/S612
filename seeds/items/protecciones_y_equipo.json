@@ -1,6 +1,6 @@
 [
   {
-    "nombre": "Placas Rígidas NIJ III (III001)",
+    "nombre": "Placas Rígidas NIJ III",
     "descripcion": "Placas rígidas nivel III. Protección contra proyectiles de rifle hasta 7.62×51mm FMJ.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -11,7 +11,7 @@
     "codigo": "III001"
   },
   {
-    "nombre": "Placas Rígidas NIJ III (III002)",
+    "nombre": "Placas Rígidas NIJ III",
     "descripcion": "Placas rígidas nivel III de alto rendimiento. Mayor área de cobertura.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -22,7 +22,7 @@
     "codigo": "III002"
   },
   {
-    "nombre": "Placas Rígidas NIJ III (III003)",
+    "nombre": "Placas Rígidas NIJ III",
     "descripcion": "Placas rígidas nivel III premium. Certificación VPAM. Bajo peso relativo.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -33,7 +33,7 @@
     "codigo": "III003"
   },
   {
-    "nombre": "Placas Compuestas NIJ III (III004)",
+    "nombre": "Placas Compuestas NIJ III",
     "descripcion": "Placas compuestas cerámica/polietileno nivel III. Balance peso-protección optimizado.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -44,7 +44,7 @@
     "codigo": "III004"
   },
   {
-    "nombre": "Placas Compuestas NIJ III (III005)",
+    "nombre": "Placas Compuestas NIJ III",
     "descripcion": "Placas compuestas nivel III avanzadas. Resiste múltiples impactos en zona.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -55,7 +55,7 @@
     "codigo": "III005"
   },
   {
-    "nombre": "Placas Rígidas NIJ III (III006)",
+    "nombre": "Placas Rígidas NIJ III",
     "descripcion": "Placas rígidas nivel III de alta gama. Máxima resistencia en categoría III.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -66,7 +66,7 @@
     "codigo": "III006"
   },
   {
-    "nombre": "Chaleco NIJ IIIA (IIIA001)",
+    "nombre": "Chaleco NIJ IIIA",
     "descripcion": "Chaleco blando nivel IIIA. Protección contra proyectiles de pistola hasta .44 Magnum.",
     "categoria": "proteccion",
     "subcategoria": "chaleco",
@@ -78,7 +78,7 @@
     "codigo": "IIIA001"
   },
   {
-    "nombre": "Chaleco Blando NIJ IIIA (IIIA002)",
+    "nombre": "Chaleco Blando NIJ IIIA",
     "descripcion": "Chaleco blando nivel IIIA de perfil reducido. Discreción operativa.",
     "categoria": "proteccion",
     "subcategoria": "chaleco",
@@ -90,7 +90,7 @@
     "codigo": "IIIA002"
   },
   {
-    "nombre": "Chaleco NIJ IIIA (IIIA003)",
+    "nombre": "Chaleco NIJ IIIA",
     "descripcion": "Chaleco nivel IIIA de alta cobertura. Compatible con inserciones de placa adicional.",
     "categoria": "proteccion",
     "subcategoria": "chaleco",
@@ -102,7 +102,7 @@
     "codigo": "IIIA003"
   },
   {
-    "nombre": "Placas Rígidas NIJ IV (IV001)",
+    "nombre": "Placas Rígidas NIJ IV",
     "descripcion": "Placas rígidas nivel IV. Resiste proyectiles AP .30 calibre M2.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -113,7 +113,7 @@
     "codigo": "IV001"
   },
   {
-    "nombre": "Placas Rígidas NIJ IV (IV002)",
+    "nombre": "Placas Rígidas NIJ IV",
     "descripcion": "Placas rígidas nivel IV de alto rendimiento. Mayor cobertura balistic.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -124,7 +124,7 @@
     "codigo": "IV002"
   },
   {
-    "nombre": "Placas Compuestas NIJ IV (IV003)",
+    "nombre": "Placas Compuestas NIJ IV",
     "descripcion": "Placas compuestas nivel IV. Cerámica avanzada sobre backing UHMWPE.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -135,7 +135,7 @@
     "codigo": "IV003"
   },
   {
-    "nombre": "Placas Rígidas NIJ IV (IV004)",
+    "nombre": "Placas Rígidas NIJ IV",
     "descripcion": "Placas rígidas nivel IV de perfil delgado. Reducción de peso respecto a IV001.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -146,7 +146,7 @@
     "codigo": "IV004"
   },
   {
-    "nombre": "Placas Compuestas NIJ IV (IV005)",
+    "nombre": "Placas Compuestas NIJ IV",
     "descripcion": "Placas compuestas nivel IV premium. Multi-hit certificado.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -157,7 +157,7 @@
     "codigo": "IV005"
   },
   {
-    "nombre": "Placas Alto Rendimiento NIJ IV (IV006)",
+    "nombre": "Placas Alto Rendimiento NIJ IV",
     "descripcion": "Placas nivel IV de máximo rendimiento. Certificadas contra múltiples amenazas de fusil.",
     "categoria": "proteccion",
     "subcategoria": "placas",
@@ -620,10 +620,10 @@
   },
   {
     "nombre": "Kit de Cricotirotomía (CricKit)",
-    "descripcion": "Orientado a vía aérea quirúrgica de emergencia. Contiene: bisturí #11, tubo traqueostomía 6.0mm con manguito, gancho traqueal, jeringa 10ml, correa velcro, 2 gasas 4x4.",
+    "descripcion": "Orientado a vía aérea quirúrgica de emergencia. Contiene: bisturí desechable #11, tubo traqueostomía 6.0mm con manguito, gancho traqueal, jeringa 10ml, correa velcro, 2 gasas 4x4.",
     "categoria": "kit",
     "subcategoria": "via_aerea_emergencia",
-    "peso_kg": 0.42,
+    "peso_kg": 0.18,
     "volumen_u": 2,
     "slots_pouch": 1,
     "es_kit": true,
@@ -631,7 +631,7 @@
     "contenido": [
       {"item_codigo": "MED-SQTA-005", "cantidad": 1},
       {"item_codigo": "MED-VAR-006", "cantidad": 1},
-      {"item_codigo": "MED-LOG-005", "cantidad": 1},
+      {"item_codigo": "MED-LOG-006", "cantidad": 1},
       {"item_codigo": "MED-CHH-010", "cantidad": 2}
     ],
     "precio_base": 185.0,
@@ -642,7 +642,7 @@
     "descripcion": "Tratamiento de neumotórax a tensión. Contiene: 2 agujas 14G x 3.25\", 2 válvulas unidireccionales, 4 toallitas antisépticas, 1 par guantes nitrilo.",
     "categoria": "kit",
     "subcategoria": "trauma_toracico",
-    "peso_kg": 0.18,
+    "peso_kg": 0.08,
     "volumen_u": 1,
     "slots_pouch": 1,
     "es_kit": true,
@@ -658,7 +658,7 @@
     "descripcion": "Acceso venoso profundo (yugular/subclavia). Contiene: catéter triple luz 7Fr, guía metálica en J con introductor, dilatador, bisturí #11, jeringa 5ml, 2 suturas seda 2-0, apósito Tegaderm.",
     "categoria": "kit",
     "subcategoria": "acceso_vascular_avanzado",
-    "peso_kg": 0.32,
+    "peso_kg": 0.12,
     "volumen_u": 2,
     "slots_pouch": 1,
     "es_kit": true,
@@ -676,7 +676,7 @@
     "descripcion": "Protocolos Walking Blood Bank (donante vivo a paciente). Contiene: bolsa colectora 450-500ml con CPD, set administración con filtro 170 micras, tarjeta tipaje rápido EldonCard, lanceta, torniquete punción, 2 agujas 16G.",
     "categoria": "kit",
     "subcategoria": "transfusion_emergencia",
-    "peso_kg": 0.55,
+    "peso_kg": 0.08,
     "volumen_u": 2,
     "slots_pouch": 1,
     "es_kit": true,
@@ -692,7 +692,7 @@
     "descripcion": "Drenaje de hemotórax o neumotórax masivo. Contiene: tubo torácico 28-32Fr, pinza Kelly larga, bisturí #10, conector drenaje 3 vías, válvula Heimlich, 2 suturas seda 0-2-0, 4 gasas vaselina Xeroform.",
     "categoria": "kit",
     "subcategoria": "trauma_toracico",
-    "peso_kg": 0.68,
+    "peso_kg": 0.18,
     "volumen_u": 3,
     "slots_pouch": 2,
     "es_kit": true,
@@ -710,7 +710,7 @@
     "descripcion": "Cierre de heridas y control de daños. Contiene: porta-agujas Mayo-Hegar, tijera Metzenbaum, 2 pinzas mosquito curvas, pinza disección con dientes Adson, 3 sobres sutura seda 3-0, 3 sobres sutura nylon 4-0, 10 gasas estériles.",
     "categoria": "kit",
     "subcategoria": "cirugia_campo",
-    "peso_kg": 0.52,
+    "peso_kg": 0.37,
     "volumen_u": 3,
     "slots_pouch": 2,
     "es_kit": true,
@@ -731,7 +731,7 @@
     "descripcion": "Acceso vascular de emergencia. Contiene: taladro manual o motorizado EZ-IO, 3 agujas IO (15mm rosa, 25mm azul, 45mm amarilla), conector estabilizador EZ-Connect, pulsera ID IO, jeringa 10ml flush.",
     "categoria": "kit",
     "subcategoria": "acceso_vascular_emergencia",
-    "peso_kg": 0.82,
+    "peso_kg": 0.63,
     "volumen_u": 3,
     "slots_pouch": 2,
     "es_kit": true,
@@ -745,18 +745,19 @@
   },
   {
     "nombre": "Kit de Acceso Intravenoso (IV Kit)",
-    "descripcion": "Acceso venoso periférico estándar. Contiene: 4 catéteres IV (mezcla 14G, 16G, 18G), torniquete elástico, 2 Tegaderm, 2 llaves 3 pasos, 5 toallitas alcohol, alargador de vía.",
+    "descripcion": "Acceso venoso periférico estándar. Contiene: 4 catéteres IV (mezcla 14G, 16G, 18G, 20G), torniquete elástico, 2 Tegaderm, 2 llaves 3 pasos, 5 toallitas alcohol, alargador de vía.",
     "categoria": "kit",
     "subcategoria": "acceso_vascular_basico",
-    "peso_kg": 0.25,
+    "peso_kg": 0.12,
     "volumen_u": 2,
     "slots_pouch": 1,
     "es_kit": true,
     "espacio_libre_pct": 20,
     "contenido": [
       {"item_codigo": "MED-CAV-001", "cantidad": 1},
-      {"item_codigo": "MED-CAV-002", "cantidad": 2},
-      {"item_codigo": "MED-CAV-003", "cantidad": 1}
+      {"item_codigo": "MED-CAV-002", "cantidad": 1},
+      {"item_codigo": "MED-CAV-003", "cantidad": 1},
+      {"item_codigo": "MED-CAV-004", "cantidad": 1}
     ],
     "precio_base": 95.0,
     "codigo": "KIT-008"
@@ -766,7 +767,7 @@
     "descripcion": "Botiquín individual de combate. Contiene: torniquete CAT, vendaje israelí 4\", gasa hemostática QuikClot, cánula NPA con lubricante, 2 sellos pecho, manta térmica, tijeras trauma.",
     "categoria": "kit",
     "subcategoria": "primeros_auxilios_individual",
-    "peso_kg": 0.65,
+    "peso_kg": 0.46,
     "volumen_u": 3,
     "slots_pouch": 2,
     "es_kit": true,
@@ -788,17 +789,23 @@
     "descripcion": "Botiquín avanzado para sanitario de combate. Contiene: 2x IFAK completos, dispositivo i-gel talla 4, aguja descompresión NCD, pulsioxímetro dedo, pocket BVM, kit fármacos básico (morfina, TXA, epinefrina).",
     "categoria": "kit",
     "subcategoria": "primeros_auxilios_avanzado",
-    "peso_kg": 2.15,
+    "peso_kg": 1.31,
     "volumen_u": 7,
     "slots_pouch": 2,
     "es_kit": true,
     "espacio_libre_pct": 10,
     "contenido": [
-      {"item_codigo": "KIT-009", "cantidad": 2},
+      {"item_codigo": "MED-CHH-001", "cantidad": 2},
+      {"item_codigo": "MED-CHH-003", "cantidad": 2},
+      {"item_codigo": "MED-CHH-005", "cantidad": 2},
+      {"item_codigo": "MED-VAR-001", "cantidad": 2},
+      {"item_codigo": "MED-VAR-016", "cantidad": 2},
+      {"item_codigo": "MED-HCE-005", "cantidad": 2},
       {"item_codigo": "MED-VAR-003", "cantidad": 1},
       {"item_codigo": "MED-CAV-001", "cantidad": 1},
       {"item_codigo": "MED-DSV-003", "cantidad": 1},
       {"item_codigo": "MED-VAR-013", "cantidad": 1},
+      {"item_codigo": "MED-LOG-006", "cantidad": 1},
       {"item_codigo": "MED-FARM-011", "cantidad": 2},
       {"item_codigo": "MED-FARM-022", "cantidad": 2},
       {"item_codigo": "MED-FARM-002", "cantidad": 1}

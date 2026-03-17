@@ -1200,7 +1200,7 @@
     "codigo": "MED-LOG-002"
   },
   {
-    "nombre": "Syringe 1ml (Luer Lock) - Pack 10ud",
+    "nombre": "Jeringuilla 1ml (Luer Lock) - Pack 10ud",
     "descripcion": "Jeringas de 1ml con sistema Luer Lock.",
     "categoria": "medico",
     "subcategoria": "7_logistica_y_varios",
@@ -1210,7 +1210,7 @@
     "codigo": "MED-LOG-003"
   },
   {
-    "nombre": "Syringe 3ml (Luer Lock) - Pack 10ud",
+    "nombre": "Jeringuilla 3ml (Luer Lock) - Pack 10ud",
     "descripcion": "Jeringas de 3ml con sistema Luer Lock.",
     "categoria": "medico",
     "subcategoria": "7_logistica_y_varios",
@@ -1220,7 +1220,7 @@
     "codigo": "MED-LOG-004"
   },
   {
-    "nombre": "Syringe 5ml (Luer Lock) - Pack 10ud",
+    "nombre": "Jeringuilla 5ml (Luer Lock) - Pack 10ud",
     "descripcion": "Jeringas de 5ml con sistema Luer Lock.",
     "categoria": "medico",
     "subcategoria": "7_logistica_y_varios",
@@ -1230,7 +1230,7 @@
     "codigo": "MED-LOG-005"
   },
   {
-    "nombre": "Syringe 10ml (Luer Lock) - Pack 10ud",
+    "nombre": "Jeringuilla 10ml (Luer Lock) - Pack 10ud",
     "descripcion": "Jeringas de 10ml con sistema Luer Lock.",
     "categoria": "medico",
     "subcategoria": "7_logistica_y_varios",
